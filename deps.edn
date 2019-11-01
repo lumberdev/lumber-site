@@ -1,11 +1,16 @@
-{:paths ["resources" "src"]
+{:paths ["src" "resources"]
  :deps
- {org.clojure/clojure          {:mvn/version "RELEASE"}
+ {org.clojure/clojure          {:mvn/version "1.10.0"}
 
   org.clojure/tools.deps.alpha {:git/url "https://github.com/clojure/tools.deps.alpha.git"
                                 :sha     "d0b33e0d346736aa985c150145b332f97b92135e"}
 
+  thheller/shadow-cljs         {:mvn/version "2.8.40"}
+
+  binaryage/devtools           {:mvn/version "0.9.10"}
+
   org.clojure/clojurescript    {:mvn/version "RELEASE"}
+
 
   mount                        {:mvn/version "0.1.16"}
 
@@ -15,17 +20,14 @@
   uix.dom                      {:git/url   "https://github.com/roman01la/uix.git"
                                 :deps/root "dom"
                                 :sha       "451dcae46fc5787eb43e94e1a46692ff5b917052"}}
+
  :aliases
 
  {:dev {:extra-paths ["dev"]}
-  :dev/cljs {:extra-deps  {thheller/shadow-cljs {:mvn/version "2.8.52"}
-                           binaryage/devtools   {:mvn/version "0.9.10"}}}
+  :dev/cljs {:extra-deps  {
+                           thheller/shadow-cljs {:mvn/version "2.8.40"}
+                           binaryage/devtools   {:mvn/version "0.9.10"}
+                           }}
   :depster  {:extra-deps  {seancorfield/depstar {:mvn/version "0.3.1"}}}
-
-  :test   {:extra-paths ["test"]
-           :extra-deps {org.clojure/test.check {:mvn/version "0.10.0"}}}
-  :runner {:extra-deps {com.cognitect/test-runner
-                        {:git/url "https://github.com/cognitect-labs/test-runner"
-                         :sha "76568540e7f40268ad2b646110f237a60295fa3c"}}
-  :main-opts ["-m" "cognitect.test-runner"
-              "-d" "test"]}}}
+ }
+}

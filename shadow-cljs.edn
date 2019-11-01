@@ -1,2 +1,14 @@
 {:deps true
- :builds {:app {:devtools {:repl-pprint true}}}}
+ :source-paths ["src"]
+ :dev-http {8080 "resources/public/"}
+ :builds
+ {:app {:target :browser
+        :output-dir "resources/public/js"
+        :asset-path "/js"
+        :modules {:main {:entries [lumber.core]}}
+
+        :devtools {:repl-pprint true
+                   :before-load lumber.core/stop
+                   :after-load lumber.core/start
+                   }}}}
+
