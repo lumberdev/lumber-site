@@ -11,3 +11,16 @@ pom.xml.asc
 /.nrepl-port
 .hgignore
 .hg/
+**/*.png
+**/*.svg
+**/*.jpg
+**/*.jpeg
+**/*.woff
+**/*.woff2
+**/*.eot
+**/*.pdf
+**/cljs-runtime
+**/images
+**/fonts
+
+
