@@ -2,10 +2,22 @@
   (:require
    [uix.dom.alpha :as uix.dom]
    [uix.core.alpha :as uix]
+   [xframe.core.alpha :as xf :refer [<sub]]
+   #?(:cljs [cljs-bean.core :as bean])
+
    [lumber.ui :as ui]
    [lumber.dots :as dots]
-   [xframe.core.alpha :as xf :refer [<sub]]
-   #?(:cljs [cljs-bean.core :as bean])))
+
+   [goog.events :as events]
+   [goog.events.EventType :as EventType]
+   ))
+
+(defn percentage [total x] (/ (* 100.0 x) total))
+
+(defn scroll-percentage []
+  (percentage (- js/document.documentElement.scrollHeight
+                 js/document.documentElement.clientHeight)
+              js/document.documentElement.scrollTop))
 
 (xf/reg-event-db
  :db/init
@@ -17,21 +29,27 @@
                 :code  "https://github.com/vimsical/vimsical"}
      :juergen  {:code  "https://github.com/lumberdev/Juergen"}}
     :open false
+    :scroll 0
     }))
 
-(def db {:partners
-         ["Casper" "Resy" "Choosy" "Patagonia" "Workframe" "Village Studio"]
-         :projects
-         {:vimsical {:video "https://www.youtube.com/watch?v=OtvK24bG_IY&feature=youtu.be"
-                     :code  "https://github.com/vimsical/vimsical"}
-          :juergen  {:code  "https://github.com/lumberdev/Juergen"}}
-         })
+(xf/reg-event-db :set-scroll
+                 (fn [db [_ value]]
+                   (assoc-in db [:scroll] (scroll-percentage))))
+
+(xf/reg-sub :db/scroll   (fn [] (:scroll   (xf/<- [::xf/db]))))
+(xf/reg-sub :db/partners (fn [] (:partners (xf/<- [::xf/db]))))
+
+(defn progress []
+ (let [scroll (<sub [:db/scroll])]
+   [:div.progress
+    [:div.state {:style {:width (str scroll "%")}}]
+    [:div.rail]]))
 
 (defn nav []
   [:header.main
    ;; [:div.logo  [:img {:src "images/Logo.svg"}]]
    [:div.logo  [:span.t1 "Lumber"]]
-   [:div.nav   [:div.state] [:div.rail]]
+   [:div.nav   [progress]]
    [:div.email [:div.a.u
                 [:span.disk-cont [:div.disk]]
                 [:a.a {:href "mailto:hello@lumberdev.nyc"} "Build Something with Us"]]]])
@@ -48,7 +66,7 @@
 
    [:section.box.info.black-bg
     [:header  [:h3.h3 "Clients & Partners"]]
-    [:article [:ul.white (for [p (-> db :partners)] ^{:keys p} [:li.h2 [:a p]])]]
+    [:article [:ul.white (for [p (<sub [:db/partners])] ^{:keys p} [:li.h2 [:a p]])]]
     [:footer  [:div.btn.re.white "Build Something With Us"]]]
 
    [:section.box.info
@@ -139,6 +157,9 @@
   (prn "start")
 
   (defonce init-db (xf/dispatch [:db/init]))
+
+  (events/listen js/window EventType/SCROLL (fn [e] (xf/dispatch [:set-scroll])))
+  ;; (js/window.addEventListener "scroll" (fn [e] (xf/dispatch [:set-scroll])))
 
   (uix.dom/hydrate
    [home]

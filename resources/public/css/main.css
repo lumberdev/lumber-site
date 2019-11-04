@@ -149,20 +149,20 @@ header, footer, section, article, nav {
 /* Font */
 @font-face {
     font-family: "Messina Serif Light";
-    src: url("/fonts/messina-serif-light/MessinaSerifTrialWeb-Light.eot");
-    src: url("/fonts/messina-serif-light/MessinaSerifTrialWeb-Light.woff") format("woff");
+    src: url("../fonts/messina-serif-light/MessinaSerifTrialWeb-Light.eot");
+    src: url("../fonts/messina-serif-light/MessinaSerifTrialWeb-Light.woff") format("woff");
 }
 
 @font-face {
     font-family: "Messina Sans SemiBold";
-    src: url("/fonts/messina-sans-semi-bold/MessinaSansWebTrial-SemiBold.eot");
-    src: url("/fonts/messina-sans-semi-bold/MessinaSansWebTrial-SemiBold.woff") format("woff");
+    src: url("../fonts/messina-sans-semi-bold/MessinaSansWebTrial-SemiBold.eot");
+    src: url("../fonts/messina-sans-semi-bold/MessinaSansWebTrial-SemiBold.woff") format("woff");
 }
 
 @font-face {
     font-family: "Messina Sans Regular";
-    src: url("/fonts/messina-sans-regular/MessinaSansWebTrial-Regular.eot");
-    src: url("/fonts/messina-sans-regular/MessinaSansWebTrial-Regular.woff") format("woff");
+    src: url("../fonts/messina-sans-regular/MessinaSansWebTrial-Regular.eot");
+    src: url("../fonts/messina-sans-regular/MessinaSansWebTrial-Regular.woff") format("woff");
 }
 
 .h1 {
@@ -338,7 +338,7 @@ header.main {
 }
 .nav .state {
     position: relative;
-    width: 15%;
+    /* width: 15%; */
     height: 1px;
     background-color: #121212 ;
     z-index: 1;
@@ -361,7 +361,7 @@ header.main {
 }
 .disk {
     display: block;
-    margin: 3px 0px 0px 0px;
+    margin: 3px;
     width: 12px;
     height: 12px;
     border-radius: 50%;
