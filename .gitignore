@@ -20,6 +20,7 @@ pom.xml.asc
 **/*.eot
 **/*.pdf
 **/cljs-runtime
+**/node_modules
 **/images
 **/fonts
 

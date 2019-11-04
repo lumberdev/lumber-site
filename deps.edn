@@ -16,10 +16,11 @@
 
   uix.core                     {:git/url   "https://github.com/roman01la/uix.git"
                                 :deps/root "core"
-                                :sha       "451dcae46fc5787eb43e94e1a46692ff5b917052"}
+
+                                :sha       "8fd57bd1e971e180ca35d9ba8b230cf81f0054f3"}
   uix.dom                      {:git/url   "https://github.com/roman01la/uix.git"
                                 :deps/root "dom"
-                                :sha       "451dcae46fc5787eb43e94e1a46692ff5b917052"}}
+                                :sha       "8fd57bd1e971e180ca35d9ba8b230cf81f0054f3"}}
 
  :aliases
 
