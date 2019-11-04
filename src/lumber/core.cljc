@@ -30,17 +30,18 @@
      :juergen  {:code  "https://github.com/lumberdev/Juergen"}}
     :open false
     :scroll 0
+    :embed ""
     }))
 
 (xf/reg-event-db :set-scroll
                  (fn [db [_ value]]
-                   (prn "close")
                    (assoc-in db [:scroll] (scroll-percentage))))
 
 (xf/reg-event-db :open
                  (fn [db [_ value]]
-                   (prn "open")
-                   (assoc-in db [:open] true)))
+                   (-> db
+                       (assoc-in [:embed] value)
+                       (assoc-in [:open] true))))
 
 (xf/reg-event-db :close
                  (fn [db [_ value]]
@@ -49,6 +50,7 @@
 (xf/reg-sub :db/scroll   (fn [] (:scroll   (xf/<- [::xf/db]))))
 (xf/reg-sub :db/partners (fn [] (:partners (xf/<- [::xf/db]))))
 (xf/reg-sub :db/open     (fn [] (:open     (xf/<- [::xf/db]))))
+(xf/reg-sub :db/embed    (fn [] (:embed     (xf/<- [::xf/db]))))
 
 (defn progress []
  (let [scroll (<sub [:db/scroll])]
@@ -66,7 +68,8 @@
                 [:a.a {:href "mailto:hello@lumberdev.nyc"} "Build Something with Us"]]]])
 
 (defn popup []
-  (let [open? (<sub [:db/open])]
+  (let [open? (<sub [:db/open])
+        src   (<sub [:db/embed])]
     [:div.popup {:on-click #(xf/dispatch [:close])
                  :style {:display (if open? "grid" "none")
                          :height (str js/document.documentElement.clientHeight "px")}}
@@ -76,7 +79,7 @@
        [:div.x.r]]
       [:iframe {:width "662"
                 :height "414"
-                :src "https://www.youtube.com/embed/OtvK24bG_IY"
+                :src src
                 :frameborder "0" :allow "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"}]]]))
 
 (defn footer []
@@ -104,9 +107,7 @@
     [:header.name   [:h3.h3 "Vimsical"]]
     [:article.desc  [:h2.h2 "Vimsical"] [:p.t1 "Version control for digital education"]]
     [:article.image [:img {:src "/images/Vimsical.jpg"}]]
-    [:footer        [:a.a.u {:on-click #(xf/dispatch [:open])
-                             ;; :href "https://www.youtube.com/watch?v=OtvK24bG_IY&feature=youtu.be" :target "_blank"
-                             }
+    [:footer        [:a.a.u {:on-click #(xf/dispatch [:open "https://www.youtube.com/embed/OtvK24bG_IY"])}
                      [:div.video [:span.play] "Play Video"]]
                      [:div.pipe]
                      [:a.a.u.link {:href "https://github.com/vimsical/vimsical" :target "_blank"}
