@@ -34,10 +34,21 @@
 
 (xf/reg-event-db :set-scroll
                  (fn [db [_ value]]
+                   (prn "close")
                    (assoc-in db [:scroll] (scroll-percentage))))
+
+(xf/reg-event-db :open
+                 (fn [db [_ value]]
+                   (prn "open")
+                   (assoc-in db [:open] true)))
+
+(xf/reg-event-db :close
+                 (fn [db [_ value]]
+                   (assoc-in db [:open] false)))
 
 (xf/reg-sub :db/scroll   (fn [] (:scroll   (xf/<- [::xf/db]))))
 (xf/reg-sub :db/partners (fn [] (:partners (xf/<- [::xf/db]))))
+(xf/reg-sub :db/open     (fn [] (:open     (xf/<- [::xf/db]))))
 
 (defn progress []
  (let [scroll (<sub [:db/scroll])]
@@ -53,6 +64,20 @@
    [:div.email [:div.a.u
                 [:span.disk-cont [:div.disk]]
                 [:a.a {:href "mailto:hello@lumberdev.nyc"} "Build Something with Us"]]]])
+
+(defn popup []
+  (let [open? (<sub [:db/open])]
+    [:div.popup {:on-click #(xf/dispatch [:close])
+                 :style {:display (if open? "grid" "none")
+                         :height (str js/document.documentElement.clientHeight "px")}}
+     [:article
+      [:div.btn-x {:on-click #(xf/dispatch [:close])}
+       [:div.x.l]
+       [:div.x.r]]
+      [:iframe {:width "662"
+                :height "414"
+                :src "https://www.youtube.com/embed/OtvK24bG_IY"
+                :frameborder "0" :allow "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"}]]]))
 
 (defn footer []
   [:footer.main.t1 [:div.left "Made in New York & Sofia"] [:div.center ""] [:div.right "All Rights Reserved"]])
@@ -79,7 +104,9 @@
     [:header.name   [:h3.h3 "Vimsical"]]
     [:article.desc  [:h2.h2 "Vimsical"] [:p.t1 "Version control for digital education"]]
     [:article.image [:img {:src "/images/Vimsical.jpg"}]]
-    [:footer        [:a.a.u {:href "https://www.youtube.com/watch?v=OtvK24bG_IY&feature=youtu.be" :target "_blank"}
+    [:footer        [:a.a.u {:on-click #(xf/dispatch [:open])
+                             ;; :href "https://www.youtube.com/watch?v=OtvK24bG_IY&feature=youtu.be" :target "_blank"
+                             }
                      [:div.video [:span.play] "Play Video"]]
                      [:div.pipe]
                      [:a.a.u.link {:href "https://github.com/vimsical/vimsical" :target "_blank"}
@@ -114,13 +141,6 @@
      [:a.btn.re.black {:href "https://github.com/lumberdev/duct" :target "_blank"}
       [:div "Go to Site"]]]]
 
-   [:section.box.quote
-    [:article [:h2.h2 "The Future of Work is Remote"]]
-    [:svg
-     (for [p (dots/rand-pos-seq 7 300 300)]
-       [:circle {:cx (:x p)  :cy (:y p)  :r 20 :fill "#ffcc08"}])
-     ]]
-
    [:section.box.value
     [:article.black-bg [:h2.h2.white "Full-Time and Part-Time Development"]]]
 
@@ -130,15 +150,20 @@
    [:section.box.value
     [:article.black-bg [:h2.h2.white "Specialized Engineers"]]]
 
-   ;; [:section.box.value
-   ;;  [:article.black-bg [:h2.h2.white "Dedicated Teams"]]]
+   [:section.box.value
+    [:article.black-bg [:h2.h2.white "Dedicated Teams"]]]
 
+   [:section.box.quote
+    [:article [:h2.h2 "The Future of Work is Remote"]]
+    [:svg
+     (for [p (dots/rand-pos-seq 7 300 300)] ;; FIX: read from element width
+       [:circle {:cx (:x p)  :cy (:y p)  :r 20 :fill "#ffcc08"}])]]
 
-   ;; [:div.dots
-    ;; [:div
-    ;;  (for [p (flatten dot-matrix)]
-    ;;    [:div {:style (str "top: 0;" "left: 0;" "width: 30px;" "background:" "#000;")}])
-    ;;  ]
+   [:div.dots.white-bg
+    [:div
+     (for [p (range 0 25)]
+       [:div.dot.black-bg])]]
+
     ;; [:svg
     ;;  (for [p (flatten dot-matrix)]
     ;;    [:circle {:cx (:x p) :cy (:y p)  :r 30 :fill "#000"}])
@@ -147,11 +172,13 @@
    ])
 
 (defn home []
-  [:div.cont
-   [nav]
-   [grid]
-   [footer]
-   [ui/popup]])
+  [:div
+   [:div.cont
+    [nav]
+    [grid]
+    [footer]]
+   [popup]]
+  )
 
 (defn start []
   (prn "start")
