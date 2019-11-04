@@ -70,6 +70,7 @@ header, footer, section, article, nav {
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
+    padding-top: 99px;
 }
 
 /* CLEARFIX */
@@ -298,9 +299,7 @@ header, footer, section, article, nav {
 }
 
 /* Nav */
-.nav {
-}
-
+.nav {}
 
 /* Layout  */
 .grid {
@@ -314,11 +313,17 @@ header, footer, section, article, nav {
 /* Nav */
 header.main {
     display: grid;
+    position: fixed;
+    top: 0;
     grid-template-columns: 100px auto 210px;
     justify-items: center;
     align-items: center;
     text-align: center;
+    width: 1200px;
     height: 100px;
+    background-color: #fff;
+    border-bottom: 1px solid #000;
+    z-index: 10;
 }
 .logo span {
     font-size: 30px;
