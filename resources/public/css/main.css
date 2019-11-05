@@ -65,13 +65,6 @@ body {
 header, footer, section, article, nav {
     display: block;
 }
-.cont {
-    position: relative;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding-top: 99px;
-}
 
 /* CLEARFIX */
 .cf:before, .cf:after {
@@ -190,23 +183,6 @@ header, footer, section, article, nav {
     line-height: 22px;
 }
 
-@media all and (max-width: 980px) {
-    .h1 {
-        font-size: 34px;
-        letter-spacing: -3.4;
-        line-height: 36px;
-    }
-    .h2 {
-        font-size: 24px;
-        letter-spacing: -2.3;
-        line-height: 28px;
-    }
-    .t1 {
-        font-size: 14px;
-        line-height: 22px;
-    }
-}
-
 /* Buttons */
 .btn {
     display: inline-block;
@@ -298,10 +274,12 @@ header, footer, section, article, nav {
     border-radius: 50%;
 }
 
-/* Nav */
-.nav {}
-
 /* Layout  */
+.cont {
+    position: relative;
+    margin: 0 40px;
+    padding-top: 99px;
+}
 .grid {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -310,40 +288,46 @@ header, footer, section, article, nav {
     border: 1px solid #000;
 }
 
-/* Nav */
+/* Header */
 header.main {
     display: grid;
     position: fixed;
     top: 0;
+    right: 40px;
+    left: 40px;
     grid-template-columns: 100px auto 210px;
     justify-items: center;
     align-items: center;
     text-align: center;
-    width: 1200px;
     height: 100px;
     background-color: #fff;
+    border-right: 1px solid #fff;
+    border-left: 1px solid #fff;
     border-bottom: 1px solid #000;
     z-index: 10;
 }
+
 .logo span {
     font-size: 30px;
     font-size: 26px;
     font-weight: bold;
 }
 
+/* Nav */
 .nav {
     position: relative;
     width: 100%;
     padding: 0 40px;
 }
-.nav .state {
+
+/* Progress */
+.progress .state {
     position: relative;
-    /* width: 15%; */
     height: 1px;
     background-color: #121212 ;
     z-index: 1;
 }
-.nav .rail {
+.progress .rail {
     position: relative;
     top: -1px;
     width: 100%;
@@ -352,6 +336,7 @@ header.main {
     z-index: 0;
 }
 
+/* Disk */
 .disk-cont {
     display: inline-block;
     vertical-align: middle;
@@ -369,6 +354,7 @@ header.main {
     -webkit-transition: all 0.1s ease-in-out 0s;
     transition: all 0.1s ease-in-out 0s;
 }
+
 .email {
     position: relative;
 }
@@ -382,7 +368,7 @@ header.main {
     transition: all 0.1s ease-in-out 0s;
 }
 
-
+/* Footer */
 footer.main {
     display: grid;
     grid-template-columns: 200px auto 150px;
@@ -392,18 +378,24 @@ footer.main {
     height: 100px;
 }
 
-
 /* Box */
 .box {
     position: relative;
+    text-align: center;
+    padding-top: 100%;
+    background-color: #fff;
+}
+.ar {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
     display: grid;
     grid-template-rows: 40px auto 40px;
     justify-items: center;
     align-items: center;
-    text-align: center;
     padding: 26px 40px 40px 40px;
-    min-height: 400px;
-    background-color: #fff;
 }
 .box.black-bg {
     color: #fff;
@@ -517,11 +509,13 @@ footer.main {
     dispaly: block;
 }
 
-.box.quote {
+.quote {
     position: relative;
-    grid-template-rows: 100%;
     color: #fff;
     background-color: #000;
+}
+.quote .ar {
+    grid-template-rows: 100%;
 }
 .quote article {
     position: relative;
@@ -538,6 +532,14 @@ footer.main {
     z-index: 0;
 }
 
+.dots .ar {
+    padding-top: 40px;
+}
+.dot-grid {
+    width: 100%;
+    height: 100%;
+}
+
 .value {}
 .feature {}
 .clock {}
@@ -545,7 +547,7 @@ footer.main {
 
 /* Dot Modules */
 .dots {
-    padding: 40px;
+    /* padding: 40px; */
 }
 .dots article {}
 .dot {
@@ -561,6 +563,7 @@ footer.main {
     justify-items: center;
     align-items: center;
     width: 100%;
+    height: 100%;
     top: 0;
     right: 0;
     background-color: rgba(0,0,0, 0.7);
@@ -668,39 +671,177 @@ footer.main {
 }
 
 
+@media all and (min-width: 1600px) {
+    .cont {
+        margin: 0 100px;
+    }
+    header.main {
+        right: 100px;
+        left: 100px;
+    }
+}
 
-.polka-dots {
-    position: relative;
+@media all and (min-width: 1800px) {
+    /* Fonts Full HD */
+    .h1 {
+        font-size: 42px;
+        line-height: 46px;
+    }
+    .h2 {
+        font-size: 36px;
+        line-height: 38px;
+    }
+    .h3 {
+        font-size: 16px;
+        line-height: 34px;
+    }
+    .t1 {
+        font-size: 20px;
+        line-height: 26px;
+    }
+
+    .info ul li::before {
+        top: 14px;
+    }
+
+    .btn {
+        height: 50px;
+        padding: 0 50px;
+        font-size: 16px;
+        line-height: 50px;
+    }
+    .a {
+        font-size: 16px;
+    }
+    .re {
+        border-top-left-radius: 30px;
+        border-top-right-radius: 30px;
+        border-bottom-left-radius: 30px;
+        border-bottom-right-radius: 30px;
+    }
+    header.main {
+        grid-template-columns: 95px auto 270px;
+    }
+    .ar {
+        padding: 46px 60px 60px 60px;
+    }
+    .dots .ar {
+        padding-top: 60px;
+    }
 }
-.polka-dots .dot:nth-child(1) {
-    top: -50px;
-    right: 80px;
+
+@media all and (max-width: 1250px) {
+    /* Fonts Mobile */
+    .h1 {
+        font-size: 34px;
+        letter-spacing: -3.4;
+        line-height: 36px;
+    }
+    .h2 {
+        font-size: 24px;
+        letter-spacing: -2.3;
+        line-height: 28px;
+    }
+    .t1 {
+        font-size: 14px;
+        line-height: 22px;
+    }
+
+    .info ul li::before {
+        top: 7px;
+    }
 }
-.polka-dots .dot:nth-child(2) {
-    top: 0px;
-    left: -40px;
+@media all and (max-width: 1250px) {
+    /* IPAD     Landscape 1024 */
+    /* IPAD Pro Portrait  1024 */
+    /* Laptops  (Old)     1250 */
+    .cont {
+        margin: 0 20px;
+        padding-top: 69px;
+    }
+    header.main {
+        right: 20px;
+        left: 20px;
+        height: 70px;
+    }
+    .grid {
+        /* border-right: 1px solid #000; */
+    }
+    .info article, .work article {
+        margin: 30px auto;
+    }
+    .btn {
+        padding: 0 25px;
+    }
 }
-.polka-dots .dot:nth-child(3) {
-    top: 108px;
-    left: 145px;
+@media all and (max-width: 980px) {
+    .grid {
+        grid-template-columns: 50% 50%;
+        border-right: 2px solid #000;
+    }
+    header.main {
+    }
 }
-.polka-dots .dot:nth-child(4) {
-    top: 148px;
-    right: -40px;
+@media all and (max-width: 768px) {
+    /* IPAD Portrait 768 */
 }
-.polka-dots .dot:nth-child(5) {
-    top: 200px;
-    left: -50px;
+
+@media all and (max-width: 680px) {
+    .nav {
+        padding: 0;
+    }
+    .progress {
+        display: none;
+    }
+    .grid {
+        grid-template-columns: 100%;
+        border-right: 1px solid #000;
+    }
+    .btn-x {
+        right: 46%;
+        top: -50px;
+    }
 }
-.polka-dots .dot:nth-child(6) {
-    top: 230px;
-    left: 50px;
+@media all and (max-width: 414px) {
+    /* IPHONE X */
+    .box {
+        /* padding-top: 100%; */
+    }
+    header.main {
+        grid-template-columns: 100px auto 180px;
+    }
+    .email .disk-cont {
+        display: none;
+    }
+    .info article, .work article {
+        margin: 30px 0;
+    }
+    footer.main {
+        grid-template-columns: 100%;
+        grid-template-rows: 40px 0 40px;
+    }
+    footer.main .left {
+        margin-top: 30px;
+    }
 }
-.polka-dots .dot:nth-child(7) {
-    top: 310px;
-    right: -10px;
+@media all and (max-width: 360px) {
+    /* Galaxy S (Older)*/
+    .ar {
+        padding: 6px 20px 20px 20px;
+    }
+    .dots .ar {
+        padding: 20px 20px 20px 20px;
+    }
 }
-.polka-dots .dot:nth-child(8) {
-    top: 369px;
-    left: 40%;
+@media all and (max-width: 350px) {
+    /* IPhone 5 */
+    /* Low-end Android */
+    .cont {
+        margin: 0 10px;
+        padding-top: 69px;
+    }
+    header.main {
+        right: 10px;
+        left: 10px;
+    }
 }
