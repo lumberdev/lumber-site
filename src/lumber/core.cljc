@@ -93,6 +93,23 @@
                 :src src
                 :frameborder "0" :allow "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"}]]]))
 
+(defn time->angles [hours mins secs]
+  {:hours (+ (* 30 hours) (/ mins 2))
+   :mins (* 6 mins)
+   :secs (* 6 secs)})
+
+(defn clock [utc]
+  (let [date   (new js/Date)
+        hours  (+ (.getUTCHours date) utc)
+        mins   (.getUTCMinutes date)
+        secs   (.getUTCMinutes date)
+        angles (time->angles hours mins secs)]
+    [:div.clock-cont
+     [:div.clock-bg.white-bg
+      [:div.hour.yellow-bg.re {:style {:top "19%" :left "50%" :transform (str "rotateZ(" (:hours angles) "deg)")}}]
+      [:div.min.yellow-bg.re  {:style {:top "4%"  :left "50%" :transform (str "rotateZ(" (:mins angles) "deg)")}}]
+      [:div.sec.gray-bg       {:style {:top "11%" :left "51%" :transform (str "rotateZ(" (:secs angles) "deg)")}}]]]))
+
 (defn footer []
   [:footer.main.t1 [:div.left "Made in New York & Sofia"] [:div.center ""] [:div.right "All Rights Reserved"]])
 
@@ -183,6 +200,18 @@
      [:svg
       (for [p (dots/rand-pos-seq 7 300 300)] ;; FIX: read from element width
         [:circle {:cx (:x p)  :cy (:y p)  :r 20 :fill "#ffcc08"}])]]]
+
+   [:section.box.clock
+    [:div.ar.yellow-bg
+     [:header [:h3.h3 "Location"]]
+     [:article [:h2.h2 "Sofia"] [:p.t1 "Bulgaria"]]
+     [clock 2]]]
+
+   [:section.box.clock
+    [:div.ar.yellow-bg
+     [:header [:h3.h3 "Location"]]
+     [:article [:h2.h2 "New York"] [:p.t1 "United States"]]
+     [clock -5]]]
 
    [:section.box.dots.white-bg
     [:div.ar

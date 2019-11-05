@@ -91,6 +91,9 @@ header, footer, section, article, nav {
 .white {
     color: #fff;
 }
+.gray {
+    color: #d1d1d1;
+}
 .yellow-bg {
     background-color: #FFCC08;
 }
@@ -99,6 +102,9 @@ header, footer, section, article, nav {
 }
 .white-bg {
     background-color: #fff;
+}
+.gray-bg {
+    background-color: #d1d1d1;
 }
 .purple-gr {
     background: rgb(190,212,255);
@@ -498,10 +504,8 @@ footer.main {
     display: grid;
     justify-items: center;
     align-items: center;
-    top: 40px;
-    right: 40px;
-    bottom: 40px;
-    left: 40px;
+    width: 70%;
+    height: 70%;
     padding: 20px 20px;
     border-radius: 50%;
 }
@@ -598,7 +602,6 @@ footer.main {
     transform: rotate(-45deg)
 }
 
-
 /* Play */
 .play {
     display: inline-block;
@@ -654,8 +657,6 @@ footer.main {
     color: #fff;
 }
 
-
-
 /* Borders */
 .bt {
     border-top: 1px solid #000;
@@ -668,6 +669,57 @@ footer.main {
 }
 .bl {
     border-left: 1px solid #000;
+}
+
+/* Clock */
+.clock article {
+    position: relative;
+    z-index: 2;
+}
+.clock-cont {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    display: grid;
+    align-items: center;
+    justify-items: center;
+    z-index: 1;
+}
+.clock-bg {
+    position: relative;
+    width: 70%;
+    height: 70%;
+    background: #fff url('../images/clock-lines.svg') center center no-repeat;
+    background-size: 93% 93%;
+    border-radius: 50%;
+    box-shadow: 0px 11px 22px 0px rgba(0,0,0, 0.15);
+}
+@keyframes rotate {
+    100% {
+        transform: rotateZ(360deg);
+    }
+}
+.hour {
+    position: absolute;
+    width: 7px;
+    height: 32%;
+    transform-origin: 50% 100%;
+    animation: rotate 43200s infinite steps(60);
+}
+.min {
+    position: absolute;
+    width: 7px;
+    animation: rotate 3600s infinite steps(60);
+    height: 47%;
+    transform-origin: 50% 100%;
+}
+.sec {
+    position: absolute;
+    width: 1px;
+    height: 40%;
+    background-color: ;
+    transform-origin: 50% 100%;
+    animation: rotate 60s infinite steps(60);
 }
 
 
