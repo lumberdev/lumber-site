@@ -370,8 +370,8 @@ header.main {
     height: 18px;
     margin: 0px 0px 0px 0px;
     background-color: #FFCC08;
-    -webkit-transition: all 0.1s ease-in-out 0s;
-    transition: all 0.1s ease-in-out 0s;
+    -webkit-transition: all 0.1s ease-in-out 0.1s;
+    transition: all 0.1s ease-in-out 0.1s;
 }
 
 /* Footer */
@@ -694,32 +694,34 @@ footer.main {
     border-radius: 50%;
     box-shadow: 0px 11px 22px 0px rgba(0,0,0, 0.15);
 }
-@keyframes rotate {
-    100% {
-        transform: rotateZ(360deg);
-    }
-}
 .hour {
     position: absolute;
+    top: 19%;
+    left: 50%;
     width: 7px;
     height: 32%;
     transform-origin: 50% 100%;
-    animation: rotate 43200s infinite steps(60);
 }
 .min {
     position: absolute;
+    top: 6%;
+    left: 50%;
     width: 7px;
-    animation: rotate 3600s infinite steps(60);
-    height: 47%;
+    height: 44%;
     transform-origin: 50% 100%;
 }
 .sec {
     position: absolute;
+    top: 11%;
+    left: 51%;
     width: 1px;
     height: 40%;
-    background-color: ;
     transform-origin: 50% 100%;
-    animation: rotate 60s infinite steps(60);
+    z-index: 10;
+}
+.boxd {
+    width: 100px;
+    height: 100px;
 }
 
 
