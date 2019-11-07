@@ -290,6 +290,7 @@ header, footer, section, article, nav {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
     grid-gap: 1px;
+    max-width: 100%;
     background-color: #000;
     border: 1px solid #000;
 }
@@ -582,7 +583,7 @@ footer.main {
     width: 40px;
     height: 40px;
     top: -40px;
-    right: -40px;
+    /* right: -40px; */
     cursor: pointer;
 }
 .x {
@@ -616,36 +617,31 @@ footer.main {
 /* Arrow */
 .arrow {
     position: relative;
-    top: -4px;
+    top: -1px;
     display: inline-block;
     vertical-align: middle;
-    width: 36px;
-    height: 2px;
+    width: 13px;
+    height: 1px;
     background-color: #000;
     transform: rotate(-45deg);
 }
 .arrow::before {
     content: "";
-    width: 6px;
-    height: 2px;
-}
-.arrow::before {
-    content: "";
     position: absolute;
-    top: -4px;
+    top: -1px;
     right: 0px;
-    width: 10px;
-    height: 2px;
+    width: 4px;
+    height: 1px;
     background-color: #000;
     transform: rotate(45deg);
 }
 .arrow::after {
     content: "";
     position: absolute;
-    top: 4px;
+    top: 1px;
     right: 0px;
-    width: 10px;
-    height: 2px;
+    width: 4px;
+    height: 1px;
     background-color: #000;
     transform: rotate(-45deg);
 }
@@ -826,6 +822,14 @@ footer.main {
     }
     .btn {
         padding: 0 25px;
+    }
+    .a, .u, .btn {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
 }
 @media all and (max-width: 980px) {

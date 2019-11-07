@@ -3,14 +3,31 @@
    [uix.dom.alpha :as uix.dom]
    [uix.core.alpha :as uix]
    [xframe.core.alpha :as xf :refer [<sub]]
-   #?(:cljs [cljs-bean.core :as bean])
 
-   [lumber.ui :as ui]
    [lumber.dots :as dots]
+
+   ["react-anime" :default anime]
+
+   #?(:cljs [cljs-bean.core :as bean])
+   ;; [lumber.ui :as ui]
 
    [goog.events :as events]
    [goog.events.EventType :as EventType]
    ))
+
+(defn boxd
+  "Test Box to try out animations"
+  []
+  [:div.boxd-cont
+   [:> anime {
+              :translateX (fn [t i l] 100)
+              ;; :rotate #js [300 (+ 300 360)]
+              :duration 1000 :easing "linear"
+              ;; :complete
+              ;; :loop true
+              }
+    [:div.boxd.yellow-bg {:style {:width 30 :height 30 :transform-origin "50% 100%"}}]]
+   ])
 
 (defn percentage [total x] (/ (* 100.0 x) total))
 
@@ -68,9 +85,11 @@
                 [:a.a {:href "mailto:hello@lumberdev.nyc"} "Build Something with Us"]]]])
 
 
-(defn video-size [screen-width ratio margin]
+(defn video-size [screen-width screen-height ratio margin]
   (cond (> screen-width 1200)
         {:width 662 :height 414}
+        (> screen-width screen-height)
+        {:width screen-height :height (/ screen-height ratio)}
         :else {:width (- screen-width (* 2 margin))
                :height (/ (- screen-width (* 2 margin)) ratio)}))
 
@@ -80,12 +99,14 @@
         screen-height js/document.documentElement.clientHeight
         screen-width  js/document.documentElement.clientWidth
         ratio         (/ 662 414)
-        size          (video-size screen-width ratio 20)]
+        size          (video-size screen-width screen-height ratio 20)
+        close-right   (if (< screen-width 800) (- (/ (:width size) 2) 20) -40)]
     [:div.popup {:on-click #(xf/dispatch [:close])
                  :style {:display (if open? "grid" "none")
                          :height (str  "px")}}
      [:article
-      [:div.btn-x {:on-click #(xf/dispatch [:close])}
+      [:div.btn-x {:on-click #(xf/dispatch [:close])
+                   :style {:right close-right}}
        [:div.x.l]
        [:div.x.r]]
       [:iframe {:width (str (:width size))
@@ -98,7 +119,19 @@
    :mins (* 6 mins)
    :secs (* 6 secs)})
 
-(defn clock [utc]
+(defn clock-arrow
+  "Takes:
+  - start angle int?,
+  - duration time in seconds int?,
+  - css classes string?"
+  [start duration cls]
+  [:> anime {:rotate #js [start (+ start 360)] :duration duration :easing "linear" :loop true}
+   [:div.clock-arrow {:class cls}]])
+
+(defn clock
+  "Takes a utc timezone int?
+  Example for Sofia utc+2: [clock 2]"
+  [utc]
   (let [date   (new js/Date)
         hours  (+ (.getUTCHours date) utc)
         mins   (.getUTCMinutes date)
@@ -106,9 +139,10 @@
         angles (time->angles hours mins secs)]
     [:div.clock-cont
      [:div.clock-bg.white-bg
-      [:div.hour.yellow-bg.re {:style {:top "19%" :left "50%" :transform (str "rotateZ(" (:hours angles) "deg)")}}]
-      [:div.min.yellow-bg.re  {:style {:top "4%"  :left "50%" :transform (str "rotateZ(" (:mins angles) "deg)")}}]
-      [:div.sec.gray-bg       {:style {:top "11%" :left "51%" :transform (str "rotateZ(" (:secs angles) "deg)")}}]]]))
+      [clock-arrow (:hours angles) (* 12 60 60 1000) "hour yellow-bg re"] ;; 43200s
+      [clock-arrow (:mins angles)  (* 60 60 1000)    "min yellow-bg re"]  ;; 3600s
+      [clock-arrow (:secs angles)  (* 60 1000)       "sec gray-bg re"]    ;; 60s
+      ]]))
 
 (defn footer []
   [:footer.main.t1 [:div.left "Made in New York & Sofia"] [:div.center ""] [:div.right "All Rights Reserved"]])
@@ -130,12 +164,12 @@
      [:header.title  [:h3.h3 "Open Source"]]
      [:header.name   [:h3.h3 "Vimsical"]]
      [:article.desc  [:h2.h2 "Vimsical"] [:p.t1 "Version control for digital education"]]
-     [:article.image [:img {:src "/images/Vimsical.jpg"}]]
+     [:article.image [:img {:src "./images/Vimsical.jpg"}]]
      [:footer        [:a.a.u {:on-click #(xf/dispatch [:open "https://www.youtube.com/embed/OtvK24bG_IY"])}
                       [:div.video [:span.play] "Play Video"]]
       [:div.pipe]
       [:a.a.u.link {:href "https://github.com/vimsical/vimsical" :target "_blank"}
-       [:div "See Source" [:span "\u2197"]]]]]]
+       [:div "See Source" [:span.arrow]]]]]]
 
    [:section.box.info.black-bg
     [:div.ar
@@ -156,7 +190,7 @@
      [:footer  [:a.a.u {:href "https://github.com/vimsical/vimsical" :target "_blank"} [:div.video "Learn More"]]
       [:div.pipe]
       [:a.a.u.link {:href "https://github.com/vimsical/vimsical" :target "_blank"}
-       [:div "See Source" [:span "\u2197"]]]]]]
+       [:div "See Source" [:span.arrow]]]]]]
 
    [:section.box.work.purple-gr-h
     [:div.ar
@@ -177,7 +211,7 @@
      [:header.title  [:h3.h3 "In-House Project"]]
      [:header.name   [:h3.h3 "Duct"]]
      [:article.desc  [:h2.h2 "Duct"] [:p.t1 "IFTTT for developers"]]
-     [:article.image [:img {:src "/images/Duct.jpg"}]]
+     [:article.image [:img {:src "./images/Duct.jpg"}]]
      [:footer
       [:a.btn.re.black {:href "https://github.com/lumberdev/duct" :target "_blank"}
        [:div "Go to Site"]]]]]
@@ -231,6 +265,7 @@
    [:div.cont
     [nav]
     [grid]
+    ;; [boxd]
     [footer]]
    [popup]]
   )
@@ -240,8 +275,8 @@
 
   (defonce init-db (xf/dispatch [:db/init]))
 
-  (events/listen js/window EventType/SCROLL (fn [e] (xf/dispatch [:set-scroll])))
-  ;; (js/window.addEventListener "scroll" (fn [e] (xf/dispatch [:set-scroll])))
+  ;; (events/listen js/window EventType/SCROLL (fn [e] (xf/dispatch [:set-scroll])))
+  (js/window.addEventListener "scroll" (fn [e] (xf/dispatch [:set-scroll])))
 
   (uix.dom/hydrate
    [home]

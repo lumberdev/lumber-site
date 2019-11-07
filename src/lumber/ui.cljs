@@ -1,8 +1,5 @@
 (ns lumber.ui)
 
-(defn popup []
-  [:div#popup {:style {:display "none"}} [:div.cont [:div "Hello"]]])
-
 ;; Example:
 ;; (defn pop-up [{:keys [on-close]}]
 ;;   [:div {:style {:position :absolute
