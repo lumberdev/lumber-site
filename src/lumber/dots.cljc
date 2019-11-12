@@ -97,11 +97,11 @@
 (defn rand-r [min max]
   (+ (* (rand) (- max min)) min))
 
-(defn floating-dots [n offset]
+(defn floating-dots [n offsets]
   [:svg
    (for [i (range 1 (inc n))]
      (let [w 100
-           offset offset
+           offset (rand-nth offsets)
            r 5
            size 4.5
            x-min (- (+ 0 size) offset)
@@ -112,7 +112,7 @@
            y (rand-r y-min y-max)
            xs (repeatedly 100 (fn [] {:value (str (rand-r x-min x-max) "%")
                                       :duration (rand-r 1000 2000)}))
-           ys (repeatedly 100 (fn [] {:value (str (rand-r x-min x-max) "%")
+           ys (repeatedly 100 (fn [] {:value (str (rand-r y-min y-max) "%")
                                       :duration (rand-r 1000 2000)}))]
        [:> anime
         {:cx (clj->js xs)
@@ -121,8 +121,69 @@
          :direction "alternate"
          :easing "easeInOutSine"}
         [:circle {:cx x :cy y :r (str r "%") :fill "#ffcc08"}]])
-     )]
-  )
+     )])
+
+(defn rand-edge [min-x max-x min-y max-y n]
+  (let [edges [{:x min-x :y (rand-r min-y max-y)}
+               {:x (rand-r min-y max-y) :y min-y}
+               {:x max-x :y (rand-r min-y max-y)}
+               {:x (rand-r min-y max-y) :y max-y}]
+        orders [[0 1 2 3]
+                [1 2 3 0]
+                [2 3 0 1]
+                [3 0 1 2]]
+        start (rand-nth edges)
+        order (rand-nth orders)
+        idxs  (take n (cycle order))
+        pos   (mapv (partial nth edges) idxs)]
+    pos))
+
+;; (def eds [{:x min-x :y (rand-r min-y max-y)}
+;;   {:x (rand-r min-y max-y) :y min-y}
+;;   {:x max-x :y (rand-r min-y max-y)}
+;;   {:x (rand-r min-y max-y) :y max-y}])
+;; (def idxs (take 8 (cycle (rand-nth [[0 1 2 3]
+;;                            [1 2 3 0]
+;;                            [2 3 0 1]
+;;                            [3 0 1 2]]))))
+
+(defn bumping-dots [n]
+  [:svg
+   (for [i (range 1 (inc n))]
+     (let [w 100
+           offset 0
+           r 5
+           size 4.5
+           x-min (- (+ 0 size) offset)
+           x-max (- (+ w offset) size)
+           y-min (- (+ 0 size) offset)
+           y-max (- (+ w offset) size)
+           x (rand-r x-min x-max)
+           y (rand-r y-min y-max)
+           re (rand-edge x-min x-max y-min y-max 100)
+           durations (repeatedly 100 #(rand-r 1000 1500))
+           xs (mapv (fn [p d] {:value (str (:x p) "%")
+                               :duration d}) re durations)
+           ys (mapv (fn [p d] {:value (str (:y p) "%")
+                               :duration d}) re durations)
+           ]
+       ;; [:> (.-circle motion)
+       ;;  {:cx x
+       ;;   :cy y
+       ;;   :r (str r "%")
+       ;;   :fill "#ffcc08"
+       ;;   :animate #js {:cx [0.0 50.0 100.0]}
+       ;;   :transition #js {:duration 1 :times [0 0.2 1]}
+       ;;   }]
+       [:> anime
+        {:cx (clj->js xs)
+         :cy (clj->js ys)
+         :loop true
+         :direction "alternate"
+         :easing "linear"}
+        [:circle {:cx x :cy y :r (str r "%") :fill "#ffcc08"}]]
+       )
+     )])
 
 (defn pos [x y] {:x x :y y})
 

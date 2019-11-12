@@ -226,7 +226,26 @@
    [:section.box.quote
     [:div.ar
      [:article [:h2.h2 "The Future of Work is Remote"]]
-     [dots/floating-dots 7 (rand-nth [0 0 0 30])]]]
+     [dots/floating-dots 7 [0 0 0 0]]]]
+
+   [:section.box.dots.white-bg
+    [:div.ar [dots/grid-dots]]]
+
+   [:section.box.quote
+    [:div.ar
+     [:article [:h2.h2 "The Future of Work is Remote"]]
+     [dots/floating-dots 7 [0 30 100]]]]
+
+   [:section.box.dots.white-bg
+    [:div.ar [dots/grid-dots]]]
+
+   [:section.box.quote
+    [:div.ar
+     [:article [:h2.h2 "The Future of Work is Remote"]]
+     [dots/bumping-dots 7 (rand-nth [0 0 0 30])]]]
+
+   [:section.box.dots.white-bg
+    [:div.ar [dots/grid-dots]]]
 
    [:section.box.clock
     [:div.ar.yellow-bg
@@ -242,15 +261,6 @@
 
    ;; [:section.box.dots.white-bg
    ;;  [:div.ar [dots/eye-dots [1 2]]]]
-
-   [:section.box.dots.white-bg
-    [:div.ar [dots/grid-dots]]]
-
-   [:section.box.dots.white-bg
-    [:div.ar [dots/grid-dots]]]
-
-   [:section.box.dots.white-bg
-    [:div.ar [dots/grid-dots]]]
 
    ])
 
