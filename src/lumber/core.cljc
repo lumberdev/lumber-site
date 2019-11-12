@@ -15,26 +15,15 @@
    [goog.events.EventType :as EventType]
    ))
 
-(defn boxd
-  "Test Box to try out animations"
-  []
-  [:div.boxd-cont
-   [:> anime {
-              :translateX (fn [t i l] 100)
-              ;; :rotate #js [300 (+ 300 360)]
-              :duration 1000 :easing "linear"
-              ;; :complete
-              ;; :loop true
-              }
-    [:div.boxd.yellow-bg {:style {:width 30 :height 30 :transform-origin "50% 100%"}}]]
-   ])
-
 (defn percentage [total x] (/ (* 100.0 x) total))
 
 (defn scroll-percentage []
   (percentage (- js/document.documentElement.scrollHeight
                  js/document.documentElement.clientHeight)
               js/document.documentElement.scrollTop))
+
+(defn read-box []
+  (.-offsetWidth (js/document.querySelector  ".box")))
 
 (xf/reg-event-db
  :db/init
@@ -48,6 +37,7 @@
     :open false
     :scroll 0
     :embed ""
+    :box 400
     }))
 
 (xf/reg-event-db :set-scroll
@@ -64,10 +54,15 @@
                  (fn [db [_ value]]
                    (assoc-in db [:open] false)))
 
+(xf/reg-event-db :db/box
+                 (fn [db [_ value]]
+                   (assoc-in db [:box] (read-box))))
+
 (xf/reg-sub :db/scroll   (fn [] (:scroll   (xf/<- [::xf/db]))))
 (xf/reg-sub :db/partners (fn [] (:partners (xf/<- [::xf/db]))))
 (xf/reg-sub :db/open     (fn [] (:open     (xf/<- [::xf/db]))))
-(xf/reg-sub :db/embed    (fn [] (:embed     (xf/<- [::xf/db]))))
+(xf/reg-sub :db/embed    (fn [] (:embed    (xf/<- [::xf/db]))))
+(xf/reg-sub :db/box      (fn [] (:box      (xf/<- [::xf/db]))))
 
 (defn progress []
  (let [scroll (<sub [:db/scroll])]
@@ -231,9 +226,7 @@
    [:section.box.quote
     [:div.ar
      [:article [:h2.h2 "The Future of Work is Remote"]]
-     [:svg
-      (for [p (dots/rand-pos-seq 7 300 300)] ;; FIX: read from element width
-        [:circle {:cx (:x p)  :cy (:y p)  :r 20 :fill "#ffcc08"}])]]]
+     [dots/floating-dots 7 (rand-nth [0 0 0 30])]]]
 
    [:section.box.clock
     [:div.ar.yellow-bg
@@ -247,17 +240,18 @@
      [:article [:h2.h2 "New York"] [:p.t1 "United States"]]
      [clock -5]]]
 
-   [:section.box.dots.white-bg
-    [:div.ar
-     [:div.dot-grid
-      (for [p (range 0 25)]
-        [:div.dot.black-bg])]]]
+   ;; [:section.box.dots.white-bg
+   ;;  [:div.ar [dots/eye-dots [1 2]]]]
 
-    ;; [:svg
-    ;;  (for [p (flatten dot-matrix)]
-    ;;    [:circle {:cx (:x p) :cy (:y p)  :r 30 :fill "#000"}])
-    ;;  ]
-    ;; ]
+   [:section.box.dots.white-bg
+    [:div.ar [dots/grid-dots]]]
+
+   [:section.box.dots.white-bg
+    [:div.ar [dots/grid-dots]]]
+
+   [:section.box.dots.white-bg
+    [:div.ar [dots/grid-dots]]]
+
    ])
 
 (defn home []
@@ -265,7 +259,6 @@
    [:div.cont
     [nav]
     [grid]
-    ;; [boxd]
     [footer]]
    [popup]]
   )
@@ -277,6 +270,8 @@
 
   ;; (events/listen js/window EventType/SCROLL (fn [e] (xf/dispatch [:set-scroll])))
   (js/window.addEventListener "scroll" (fn [e] (xf/dispatch [:set-scroll])))
+
+  (js/setTimeout (fn [] (prn "ready!") (xf/dispatch [:db/box])) 0)
 
   (uix.dom/hydrate
    [home]

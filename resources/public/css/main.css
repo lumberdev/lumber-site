@@ -538,30 +538,40 @@ footer.main {
 }
 
 .dots .ar {
+    grid-template-rows: 100%;
     padding-top: 40px;
 }
-.dot-grid {
-    width: 100%;
-    height: 100%;
-}
-
-.value {}
-.feature {}
-.clock {}
-
-
-/* Dot Modules */
-.dots {
-    /* padding: 40px; */
-}
-.dots article {}
 .dot {
-    float: left;
-    width: 20%;
-    padding-top: 20%;
+    position: relative;
+    background-color: #000;
     border-radius: 50%;
 }
+.dot-cont {
+    float: left;
+    position: relative;
+    width: 20%;
+}
 
+.eye {
+    position: absolute;
+    top: 35%;
+    left: 6%;
+    width: 86%;
+    height: 30%;
+    background-color: #fff;
+    border-radius: 50%;
+    z-index: 1;
+}
+.eyeball {
+    position: absolute;
+    width: 28%;
+    height: 28%;
+    background-color: #000;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+/* Popup */
 .popup {
     position: fixed;
     display: none;

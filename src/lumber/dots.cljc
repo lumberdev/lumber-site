@@ -1,4 +1,128 @@
-(ns lumber.dots)
+(ns lumber.dots
+  (:require
+   [uix.dom.alpha :as uix.dom]
+   [uix.core.alpha :as uix]
+   ["react-anime" :default anime]
+   ["framer-motion" :refer (motion useMotionValue)]
+   ))
+
+(defn grid-hover [i]
+  (let [left-edge  #{0 5 10 15 20}
+        right-edge #{4 9 14 19 24}]
+    (cond (contains? left-edge i)
+          [(- i 5) (- i 4)
+              i    (inc i)
+           (+ i 5) (+ i 6)]
+          (contains? right-edge i)
+          [(- i 6) (- i 5)
+           (dec i)    i
+           (+ i 4) (+ i 5)]
+          :else
+          [(- i 6) (- i 5) (- i 4)
+           (dec i)    i    (inc i)
+           (+ i 4) (+ i 5) (+ i 6)]
+          )))
+
+(defn update-hover-state [state i scale]
+  (merge @state (reduce (fn [acc i] (assoc acc i scale)) {} (grid-hover i))))
+
+(defn grid-dots []
+  (let [s (uix/state {})]
+    [:div.cf {:style {:width "100%"}}
+     (for [i (range 0 25)]
+       [:> (.-div motion)
+        {:class "dot-cont"
+         :onHoverStart
+         (fn [_ _] (reset! s (update-hover-state s i 0.65)))
+         :onHoverEnd
+         (fn [_ _] (reset! s (update-hover-state s i 1)))
+         :whileHover #(swap! s assoc i 0.3)}
+        [:> (.-div motion)
+         {:class "dot"
+          :style {:width "100%" :height "100%" :padding-bottom "100%"}
+          :animate #js {:scale (get @s i)}
+          :transition #js {:ease "linear" :duration 0.1}
+          }]]
+       )]))
+
+(defn bounding-rect [e]
+  (let [r (-> e .-target .getBoundingClientRect)]
+    {:left (.-left r) :top (.-top r)}))
+
+(defn client-pos [e]
+  {:x (-> e .-clientX) :y (-> e .-clientY)})
+
+(defn screen-pos [e]
+  {:x (-> e .-screenX) :y (-> e .-screenY)})
+
+(defn relative-pos [rect global]
+  {:x (- (:x global) (:left rect))
+   :y (- (:y global) (:top rect))})
+
+(defn eye-dots [pos]
+  (let [rect (uix/ref {})
+        client (uix/ref {})
+        relative (uix/ref {})
+        xm (uix/ref 0)
+        ym (uix/ref 0)
+        xe (uix/state 60)
+        ye (uix/state 35)]
+    [:> (.-div motion)
+     {:class "cf"
+      :onHoverStart (fn [e]
+                      (reset! rect (bounding-rect e))
+                      (prn "rect:" @rect))
+      :onMouseOver (fn [e]
+                     (do (reset! client (client-pos e))
+                         (reset! relative (relative-pos @rect @client))))
+      :style {:width "100%"}}
+     (for [i (range 0 25)]
+       (do [:> (.-div motion)
+            {:animate #js {}
+             :class "dot" :style {:float "left"
+                     :width "20%"
+                     :padding-bottom "20%"}}
+            (when (contains? pos i)
+              [:div
+               [:> (.-div motion)
+                    {:animate #js {}
+                     :class "eye"}]
+               [:> (.-div motion)
+                {:animate #js {}
+                 :class "eyeball"
+                 :style {:top "36%" :left (str @ye "%")}
+                 }]])
+            ]))]))
+
+(defn rand-r [min max]
+  (+ (* (rand) (- max min)) min))
+
+(defn floating-dots [n offset]
+  [:svg
+   (for [i (range 1 (inc n))]
+     (let [w 100
+           offset offset
+           r 5
+           size 4.5
+           x-min (- (+ 0 size) offset)
+           x-max (- (+ w offset) size)
+           y-min (- (+ 0 size) offset)
+           y-max (- (+ w offset) size)
+           x (rand-r x-min x-max)
+           y (rand-r y-min y-max)
+           xs (repeatedly 100 (fn [] {:value (str (rand-r x-min x-max) "%")
+                                      :duration (rand-r 1000 2000)}))
+           ys (repeatedly 100 (fn [] {:value (str (rand-r x-min x-max) "%")
+                                      :duration (rand-r 1000 2000)}))]
+       [:> anime
+        {:cx (clj->js xs)
+         :cy (clj->js ys)
+         :loop true
+         :direction "alternate"
+         :easing "easeInOutSine"}
+        [:circle {:cx x :cy y :r (str r "%") :fill "#ffcc08"}]])
+     )]
+  )
 
 (defn pos [x y] {:x x :y y})
 
@@ -8,70 +132,34 @@
 (defn rand-pos-seq [n w h]
   (repeatedly n #(rand-pos w h)))
 
-(defn rand-r [min max]
-  (+ (* (rand) (- max min)) min))
-
 ;; (deftest test-accumulate
 ;;   (is (= [1 (+ 1 2) (+ 1 2 3) (+ 1 2 3 4)] (accumulate [1 2 3 4])))
 ;;   (is (= [1 (+ 1 2)] (accumulate [1 2])))
 ;;   (is (= [1] (accumulate [1])))
 ;;   (is (= [] (accumulate []))))
-
 (defn accumulate [xs]
   (reduce
    (fn [acc n] (conj acc (reduce + 0 (take n xs))))
    []
    (range 1 (inc (count xs)))))
 
-(defn random-force-seq [n min max]
+(defn random-force-seq [min max n]
   (last (take 3 (iterate accumulate (repeatedly n #(rand-r min max))))))
 
-(map (fn [x] (/ x 10.0)) (random-force-seq 30 -30 30))
+(defn filter< [n xs] (filter #(> n %) xs))
+(defn filter> [n xs] (filter #(< n %) xs))
+(defn filter-range [min max xs] (filter< max (filter> min xs)))
 
-(map Math/sin (random-force-seq 10 0 1))
+(defn rand-force [min max fmin fmax n]
+  (take n
+        (filter-range min max
+                      (map (fn [x] (/ x (* 2 n)))
+                           (random-force-seq fmin fmax (* 2 n))))))
 
+(defn rand-step [s x]
+  (let [p (rand-int 10)]
+    (if (> p 5) (+ x s) (- x s))))
 
-
-;; (rand-(rand-nth ['- '+]))
-
-;; ((juxt + *) 1 2 3 4)
-;; ((juxt inc dec identity) 1)
-;; ((juxt inc dec identity) 1)
-
-;; (defn matrix-pos-seq [n w h]
-;;   (take n (iterate ())))
-
-;; (defn matrix-pos [n i prev]
-;;   (cond (zero? n) ))
-
-;; (def dot-matrix
-;;   [[{:x 40 :y 40}  {:x 120 :y 40}  {:x 200 :y 40}]
-;;    [{:x 40 :y 120} {:x 120 :y 120} {:x 200 :y 120}]
-;;    [{:x 40 :y 200} {:x 120 :y 200} {:x 200 :y 200}]])
-
-;; (def dirs [[1 1] [1 -1] [-1 1] [-1 -1]])
-;; (def w 320)
-;; (def h 300)
-;; (def x (rand-int w))
-;; (def y (rand-int h))
-
-;; (defn edge? [p]
-;;   (let [x (:x p)
-;;         y (:y p)]
-;;     (cond (<= x 30) true
-;;           (<= y 30) true
-;;           (>= x 290) true
-;;           (>= y 270) true
-;;           :else false)))
-
-;; (defn next-position [d p]
-;;   {:x (+ (:x p) (first d)) :y (+ (:y p) (second d)) :d d})
-
-;; (def d (rand-nth dirs))
-
-;; (defn move [d p]
-;;   (let [np (next-position d p)]
-;;     (cond (edge? np) (move (rand-nth dirs) p)
-;;           :else np)))
-
-;; (take 100 (iterate (partial move d) {:x 250 :y 240}))
+(defn rand-s-seq
+  [seed step n]
+  (take n (iterate (partial rand-step step) seed)))
