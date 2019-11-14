@@ -223,13 +223,28 @@
     [:div.ar
      [:article.black-bg [:h2.h2.white "Dedicated Teams"]]]]
 
+   [:section.box.clock
+    [:div.ar.yellow-bg
+     [:header [:h3.h3 "Location"]]
+     [:article [:h2.h2 "Sofia"] [:p.t1 "Bulgaria"]]
+     [clock 2]]]
+
+   [:section.box.dots.white-bg
+    [:div.ar [dots/flipping-dots]]]
+
+   [:section.box.clock
+    [:div.ar.yellow-bg
+     [:header [:h3.h3 "Location"]]
+     [:article [:h2.h2 "New York"] [:p.t1 "United States"]]
+     [clock -5]]]
+
    [:section.box.quote
     [:div.ar
      [:article [:h2.h2 "The Future of Work is Remote"]]
      [dots/floating-dots 7 [0 0 0 0]]]]
 
    [:section.box.dots.white-bg
-    [:div.ar [dots/grid-dots]]]
+    [:div.ar [dots/raining-dots]]]
 
    [:section.box.quote
     [:div.ar
@@ -246,18 +261,6 @@
 
    [:section.box.dots.white-bg
     [:div.ar [dots/grid-dots]]]
-
-   [:section.box.clock
-    [:div.ar.yellow-bg
-     [:header [:h3.h3 "Location"]]
-     [:article [:h2.h2 "Sofia"] [:p.t1 "Bulgaria"]]
-     [clock 2]]]
-
-   [:section.box.clock
-    [:div.ar.yellow-bg
-     [:header [:h3.h3 "Location"]]
-     [:article [:h2.h2 "New York"] [:p.t1 "United States"]]
-     [clock -5]]]
 
    ;; [:section.box.dots.white-bg
    ;;  [:div.ar [dots/eye-dots [1 2]]]]

@@ -6,6 +6,10 @@
    ["framer-motion" :refer (motion useMotionValue)]
    ))
 
+(def black "#000")
+(def yellow "#FFCC08")
+(defn sec [n] (str n "s"))
+
 (defn grid-hover [i]
   (let [left-edge  #{0 5 10 15 20}
         right-edge #{4 9 14 19 24}]
@@ -33,17 +37,86 @@
        [:> (.-div motion)
         {:class "dot-cont"
          :onHoverStart
-         (fn [_ _] (reset! s (update-hover-state s i 0.65)))
+           (fn [_ _] (reset! s (update-hover-state s i 0.65)))
          :onHoverEnd
-         (fn [_ _] (reset! s (update-hover-state s i 1)))
-         :whileHover #(swap! s assoc i 0.3)}
+           (fn [_ _] (reset! s (update-hover-state s i 1)))
+         :whileHover
+           #(swap! s assoc i 0.3)}
         [:> (.-div motion)
-         {:class "dot"
+         {:class "dot black-bg"
           :style {:width "100%" :height "100%" :padding-bottom "100%"}
           :animate #js {:scale (get @s i)}
           :transition #js {:ease "linear" :duration 0.1}
-          }]]
-       )]))
+          }]])]))
+
+(defn flipping-dots
+  ([] (flipping-dots 0.3 "ease-in-out" 0.2))
+  ([duration easing delay]
+   (let [state          (uix/state {:hover false :done true})
+         total-duration (* 1000 (+ (* delay 5) duration))
+         index->delay   [5 4 3 4 5
+                         4 2 1 2 4
+                         3 1 0 1 3
+                         4 2 1 2 4
+                         5 4 3 4 5]]
+     [:> (.-div motion)
+      {:class "flipping-dots cf"
+       :onHoverStart
+         (fn [] (do (reset! state {:hover true :done false})
+                    (js/setTimeout #(swap! state assoc :done true) total-duration)))
+       :onHoverEnd
+         (fn [] (do (swap! state assoc :hover false)))}
+      (for [i index->delay]
+        [:div
+         {:class (str "flipper "
+                      (if (and (:done @state)
+                               (not (:hover @state)))
+                        "show-back"
+                        "show-front"))
+          :style {:transition-timing-function easing
+                  :transition-duration        (sec duration)
+                  :transition-delay           (sec (* i delay))}}
+         [:div.dot.front.black-bg]
+         [:div.dot.back.yellow-bg]]
+        )])))
+
+(defn raining-dots
+  ([] (raining-dots 0.25 0.3))
+  ([delay duration]
+   (let [s (uix/state {0 {:hover false :done true}
+                       1 {:hover false :done true}
+                       2 {:hover false :done true}
+                       3 {:hover false :done true}
+                       4 {:hover false :done true}})
+         col-duration (* (+ (* 4 delay) (* 5 duration)) 1000)
+         variants #js
+         {:init #js {}
+          :rain #js {:background-color #js [black yellow black]}}]
+     [:div.cf {:style {:width "100%"}}
+      (for [col [0 1 2 3 4]]
+        [:> (.-div motion)
+         {:class "dot-cont"
+          :onHoverStart
+          (fn [_ _] (do (swap! s assoc-in [col] {:hover true :done false})
+                        (js/setTimeout #(swap! s assoc-in [col :done] true) col-duration)))
+          :onHoverEnd
+          (fn [_ _] (swap! s assoc-in [col :hover] false))}
+         (for [i [0 1 2 3 4]]
+           [:> (.-div motion)
+            {:class "dot black-bg"
+             :style {:width "100%" :height "100%" :padding-bottom "100%"}
+             :transition #js {:delay (* i delay)
+                              :duration duration
+                              :times #js [0 0.99 1]}
+             :animate (let [done?  (get-in @s [col :done])
+                            hover? (get-in @s [col :hover])]
+                        (if (and done? (not hover?))
+                          "init"
+                          "rain"
+                          ))
+             :variants variants
+             }])]
+        )])))
 
 (defn bounding-rect [e]
   (let [r (-> e .-target .getBoundingClientRect)]

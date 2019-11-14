@@ -343,25 +343,6 @@ header.main {
     z-index: 0;
 }
 
-/* Disk */
-.disk-cont {
-    display: inline-block;
-    vertical-align: middle;
-    margin: 0px 17px 2px 0px;
-    width: 18px;
-    height: 18px;
-}
-.disk {
-    display: block;
-    margin: 3px;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    background-color: #000;
-    -webkit-transition: all 0.1s ease-in-out 0s;
-    transition: all 0.1s ease-in-out 0s;
-}
-
 .email {
     position: relative;
 }
@@ -541,17 +522,80 @@ footer.main {
     grid-template-rows: 100%;
     padding-top: 40px;
 }
-.dot {
-    position: relative;
-    background-color: #000;
-    border-radius: 50%;
-}
+
+
+
+
 .dot-cont {
     float: left;
     position: relative;
     width: 20%;
 }
+.dot-col {
+    /* width: 20%; */
+}
+.dot {
+    position: relative;
+    border-radius: 50%;
+}
 
+
+
+/* Flipping Dots */
+.flipping-dots {
+    width: 100%;
+}
+.flipper {
+    float: left;
+    position: relative;
+    width: 20%;
+    height: 20%;
+    padding-top: 20%;
+    transform-style: preserve-3d;
+    -webkit-transform-style: preserve-3d;
+    -moz-transform-style: preserve-3d;
+}
+.dot.front {
+    transform: rotateY(0deg);
+    -webkit-transform: rotateY(0deg);
+    -moz-transform: rotateY(0deg);
+    z-index: 2;
+}
+.dot.back {
+    transform: rotateY(180deg);
+    -webkit-transform: rotateY(180deg);
+    -moz-transform: rotateY(180deg);
+}
+
+.dot.front, .dot.back {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    color: #fff;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    border-radius: 50%;
+}
+
+.flipper.show-front {
+    transition: all linear 1s;
+    -webkit-transform: rotate3d(1, 1, 0, -180deg);
+    -moz-transform: rotate3d(1, 1, 0, -180deg);
+    transform: rotate3d(1, 1, 0, -180deg);
+}
+.flipper.show-back {
+    transition: all linear 1s;
+    transform: rotate3d(1, 1, 0, 0deg);
+    -webkit-transform: rotate3d(1, 1, 0, 0deg);
+    -moz-transform: rotate3d(1, 1, 0, 0deg);
+}
+
+
+
+/* Following Eyes */
 .eye {
     position: absolute;
     top: 35%;
@@ -571,6 +615,8 @@ footer.main {
     z-index: 2;
 }
 
+
+
 /* Popup */
 .popup {
     position: fixed;
@@ -588,6 +634,8 @@ footer.main {
 .popup article {
     position: relative;
 }
+
+/* Btn X */
 .btn-x {
     position: absolute;
     width: 40px;
@@ -613,7 +661,30 @@ footer.main {
     transform: rotate(-45deg)
 }
 
-/* Play */
+
+
+/* Glyph Disk */
+.disk-cont {
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0px 17px 2px 0px;
+    width: 18px;
+    height: 18px;
+}
+.disk {
+    display: block;
+    margin: 3px;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: #000;
+    -webkit-transition: all 0.1s ease-in-out 0s;
+    transition: all 0.1s ease-in-out 0s;
+}
+
+
+
+/* Glyph Play */
 .play {
     display: inline-block;
     width: 0;
@@ -624,7 +695,9 @@ footer.main {
     border-left: 8px solid #000;
 }
 
-/* Arrow */
+
+
+/* Glyph Arrow */
 .arrow {
     position: relative;
     top: -1px;
@@ -663,6 +736,8 @@ footer.main {
     color: #fff;
 }
 
+
+
 /* Borders */
 .bt {
     border-top: 1px solid #000;
@@ -676,6 +751,8 @@ footer.main {
 .bl {
     border-left: 1px solid #000;
 }
+
+
 
 /* Clock */
 .clock article {
@@ -725,10 +802,7 @@ footer.main {
     transform-origin: 50% 100%;
     z-index: 10;
 }
-.boxd {
-    width: 100px;
-    height: 100px;
-}
+
 
 
 @media all and (min-width: 1600px) {
