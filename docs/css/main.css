@@ -313,6 +313,24 @@ header.main {
     border-bottom: 1px solid #000;
     z-index: 10;
 }
+header.main::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -3px;
+    height: 99px;
+    width: 4px;
+    background-color: #fff;
+}
+header.main::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: -3px;
+    height: 99px;
+    width: 4px;
+    background-color: #fff;
+}
 
 .logo span {
     font-size: 30px;
@@ -389,6 +407,12 @@ footer.main {
     color: #fff;
     background-color: #000;
 }
+.box article {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+}
+
 .info {}
 .info header {}
 .info article {
@@ -435,11 +459,7 @@ footer.main {
     bottom: 0;
     left: 0;
 }
-
 .work article {
-    display: grid;
-    justify-items: center;
-    align-items: center;
     margin: 60px 0;
 }
 .work footer .a {
@@ -480,12 +500,8 @@ footer.main {
     display: none;
 }
 
-.value {}
 .value article {
     position: absolute;
-    display: grid;
-    justify-items: center;
-    align-items: center;
     width: 70%;
     height: 70%;
     padding: 20px 20px;
@@ -775,6 +791,8 @@ footer.main {
     background: #fff url('../images/clock-lines.svg') center center no-repeat;
     background-size: 93% 93%;
     border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
     box-shadow: 0px 11px 22px 0px rgba(0,0,0, 0.15);
 }
 .hour {
@@ -784,14 +802,20 @@ footer.main {
     width: 7px;
     height: 32%;
     transform-origin: 50% 100%;
+    -moz-transform-origin: 50% 100%;
+    -webkit-transform-origin: 50% 100%;
+    /* transform: rotate(0deg); */
 }
 .min {
     position: absolute;
-    top: 6%;
+    top: 7%;
     left: 50%;
     width: 7px;
     height: 44%;
     transform-origin: 50% 100%;
+    -moz-transform-origin: 50% 100%;
+    -webkit-transform-origin: 50% 100%;
+    /* transform: rotate(0deg); */
 }
 .sec {
     position: absolute;
@@ -800,9 +824,20 @@ footer.main {
     width: 1px;
     height: 40%;
     transform-origin: 50% 100%;
+    -moz-transform-origin: 50% 100%;
+    -webkit-transform-origin: 50% 100%;
     z-index: 10;
 }
-
+.arrows-intersection {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    -moz-border-radius: 50%;
+    -webkit-border-radius: 50%;
+}
 
 
 @media all and (min-width: 1600px) {
@@ -862,6 +897,9 @@ footer.main {
     .dots .ar {
         padding-top: 60px;
     }
+    footer.main {
+        grid-template-columns: 240px auto 190px;
+    }
 }
 
 @media all and (max-width: 1250px) {
@@ -898,8 +936,20 @@ footer.main {
         left: 20px;
         height: 70px;
     }
+    header.main::before {
+        height: 69px;
+    }
+    header.main::after {
+        height: 69px;
+    }
     .grid {
         /* border-right: 1px solid #000; */
+    }
+    .ar {
+        padding: 6px 20px 20px 20px;
+    }
+    .dots .ar {
+        padding-top: 20px;
     }
     .info article, .work article {
         margin: 30px auto;
@@ -921,11 +971,15 @@ footer.main {
         grid-template-columns: 50% 50%;
         border-right: 2px solid #000;
     }
-    header.main {
+    .ar {
+        padding: 26px 40px 40px 40px;
     }
 }
 @media all and (max-width: 768px) {
     /* IPAD Portrait 768 */
+    .ar {
+        padding: 6px 20px 20px 20px;
+    }
 }
 
 @media all and (max-width: 680px) {
@@ -986,4 +1040,11 @@ footer.main {
         right: 10px;
         left: 10px;
     }
+header.main::before {
+    height: 9px;
+}
+header.main::after {
+    height: 9px;
+}
+
 }
