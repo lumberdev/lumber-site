@@ -4,21 +4,26 @@
    [uix.core.alpha :as uix]
    [xframe.core.alpha :as xf :refer [<sub]]
 
-   ["react-anime" :default anime]
-   ["framer-motion" :refer (motion useMotionValue)]
+   ["framer-motion" :refer (motion useMotionValue useViewportScroll)]
    ))
 
 ;;;;
 ;; Progress
 ;;;;
+(defn percentage [total x] (/ (* 100.0 x) total))
+
+(defn scroll []
+  (percentage (- js/document.documentElement.scrollHeight
+                 js/document.documentElement.clientHeight)
+              js/document.documentElement.scrollTop))
 
 (defn progress []
- (let [scroll (<sub [:db/scroll])]
+  (let [scroll (<sub [:db/scroll])]
    [:div.progress
-    [:div.state {:style {:width (str scroll "%")}}]
+    ;; [:div.state {:style {:width (str (percentage 100 scroll) "%")}}]
+    [:> (.-div motion) {:class "state"
+                        :style {:width (str scroll "%")}}]
     [:div.rail]]))
-
-
 
 ;;;;
 ;; Popup
@@ -50,7 +55,7 @@
       [:iframe {:width (str (:width size))
                 :height (str (:height size))
                 :src src
-                :frameborder "0" :allow "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"}]]]))
+                :frame-border "0" :allow "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"}]]]))
 
 
 

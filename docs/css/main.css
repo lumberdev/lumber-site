@@ -48,7 +48,10 @@ img {
 /* DEFAULTS */
 body {
     position: relative;
+    width: 100%;
+    height: 100%;
     line-height: 1.4em;
+    background-color: #fff;
 }
 .wrapper {
     position: relative;
@@ -468,10 +471,10 @@ footer.main {
 }
 .work .name {
     display: none;
-    opacity: 0;
+    /* opacity: 0; */
 }
 .work .image {
-    display: none;
+    /* display: none; */
     opacity: 0;
     position: absolute;
     top: 30px;
@@ -485,14 +488,14 @@ footer.main {
     box-shadow: 0px 0px 3px 2px rgba(0, 0, 0, .15);
 }
 .work:hover .image {
-    display: block;
+    /* display: block; */
     opacity: 1;
-    -webkit-transition: all 0.4s ease-in-out 0s;
-    transition: all 0.4s ease-in-out 0s;
+    -webkit-transition: all 0.4s ease-in-out 0.1s;
+    transition: all 0.4s ease-in-out 0.1s;
 }
 .work:hover .name {
     display: block;
-    opacity: 1;
+    /* opacity: 1; */
     -webkit-transition: all 0.4s ease-in-out 0s;
     transition: all 0.4s ease-in-out 0s;
 }

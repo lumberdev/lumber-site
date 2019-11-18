@@ -5,6 +5,7 @@
    [xframe.core.alpha :as xf :refer [<sub]]
 
    [lumber.home :as home]
+   [lumber.ui :as ui]
 
    #?(:cljs [cljs-bean.core :as bean])
    ))
@@ -23,16 +24,9 @@
     :embed ""
     }))
 
-(defn percentage [total x] (/ (* 100.0 x) total))
-
-(defn scroll-percentage []
-  (percentage (- js/document.documentElement.scrollHeight
-                 js/document.documentElement.clientHeight)
-              js/document.documentElement.scrollTop))
-
 (xf/reg-event-db :set-scroll
                  (fn [db [_ value]]
-                   (assoc-in db [:scroll] (scroll-percentage))))
+                   (assoc-in db [:scroll] (ui/scroll))))
 
 (xf/reg-event-db :open
                  (fn [db [_ value]]
@@ -55,7 +49,6 @@
   (defonce init-db (xf/dispatch [:db/init]))
 
   (js/window.addEventListener "scroll" (fn [e] (xf/dispatch [:set-scroll])))
-  (js/setTimeout (fn [] (prn "ready!")) 0)
 
   (uix.dom/hydrate
    [home/home]
