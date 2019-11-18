@@ -11,6 +11,9 @@
 (defn sec [n] (str n "s"))
 (defn per [n] (str n "%"))
 
+;;;;
+;; Grid Hover Dots
+;;;;
 (defn grid-hover [i]
   (let [left-edge  #{0 5 10 15 20}
         right-edge #{4 9 14 19 24}]
@@ -50,6 +53,11 @@
           :transition #js {:ease "linear" :duration 0.1}
           }]])]))
 
+
+
+;;;;
+;; Flip on Hover Dots
+;;;;
 (defn flipping-dots
   ([] (flipping-dots 0.3 "ease-in-out" 0.2))
   ([duration easing delay]
@@ -81,6 +89,11 @@
          [:div.dot.back.yellow-bg]]
         )])))
 
+
+
+;;;;
+;; Rain on Col Hover Dots
+;;;;
 (defn raining-dots
   ([] (raining-dots 0.25 0.3))
   ([delay duration]
@@ -120,6 +133,11 @@
              }])]
         )])))
 
+
+
+;;;;
+;; Glow Mouse on Hover Dots
+;;;;
 (defn glow-dots []
   (let [s (uix/state {})]
     [:div.cf {:style {:width "100%"}}
@@ -139,6 +157,11 @@
           :transition #js {:ease "linear" :duration 0.1}
           }]])]))
 
+
+
+;;;;
+;; Follow Mouse on Hover Dots
+;;;;
 (defn bounding-rect [e]
   (let [r (-> e .-target .getBoundingClientRect)]
     {:left (.-left r) :top (.-top r)}))
@@ -188,6 +211,11 @@
                  }]])
             ]))]))
 
+
+
+;;;;
+;; Floating Dots
+;;;;
 (defn rand-r [min max]
   (+ (* (rand) (- max min)) min))
 
@@ -360,11 +388,6 @@
 (defn rand-pos-seq [n w h]
   (repeatedly n #(rand-pos w h)))
 
-;; (deftest test-accumulate
-;;   (is (= [1 (+ 1 2) (+ 1 2 3) (+ 1 2 3 4)] (accumulate [1 2 3 4])))
-;;   (is (= [1 (+ 1 2)] (accumulate [1 2])))
-;;   (is (= [1] (accumulate [1])))
-;;   (is (= [] (accumulate []))))
 (defn accumulate [xs]
   (reduce
    (fn [acc n] (conj acc (reduce + 0 (take n xs))))
@@ -383,11 +406,3 @@
         (filter-range min max
                       (map (fn [x] (/ x (* 2 n)))
                            (random-force-seq fmin fmax (* 2 n))))))
-
-(defn rand-step [s x]
-  (let [p (rand-int 10)]
-    (if (> p 5) (+ x s) (- x s))))
-
-(defn rand-s-seq
-  [seed step n]
-  (take n (iterate (partial rand-step step) seed)))

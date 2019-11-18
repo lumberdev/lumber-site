@@ -1,36 +1,94 @@
-(ns lumber.ui)
+(ns lumber.ui
+  (:require
+   [uix.dom.alpha :as uix.dom]
+   [uix.core.alpha :as uix]
+   [xframe.core.alpha :as xf :refer [<sub]]
 
-;; Example:
-;; (defn pop-up [{:keys [on-close]}]
-;;   [:div {:style {:position :absolute
-;;                  :bottom 64
-;;                  :left 64
-;;                  :width 320
-;;                  :height 200
-;;                  :display :flex
-;;                  :justify-content :center
-;;                  :align-items :center
-;;                  :background "#d4e1ec"
-;;                  :box-shadow "0 2px 16px rgba(0, 0, 0, 0.05)"}}
-;;    [:button {:on-click on-close} "Close"]])
+   ["react-anime" :default anime]
+   ["framer-motion" :refer (motion useMotionValue)]
+   ))
 
-;; (defn recipe []
-;;    (let [open?* (-> db :open?)]
-;;     [:div
-;;      [:div#popup-layer]
-;;      [:button.btn.re {:on-click #(reset! open?* true)} "Open popup"]
-;;      #?(:cljs
-;;         (when @open?*
-;;           (uix.dom/create-portal [pop-up {:on-close #(reset! open?* false)}]
-;;                              (.querySelector js/document "#popup-layer"))))]))
+;;;;
+;; Progress
+;;;;
 
-;; Example:
-;; (defn button [{:keys [on-click]} text]
-;;   [:button.btn {:on-click on-click} text])
-;; (defn app []
-;;   (let [state* (uix/state 0)]
-;;     [:<>
-;;      [button {:on-click #(swap! state* dec)} "-"]
-;;      [:span @state*]
-;;      [button {:on-click #(swap! state* inc)} "+"]]))
-;; [app]
+(defn progress []
+ (let [scroll (<sub [:db/scroll])]
+   [:div.progress
+    [:div.state {:style {:width (str scroll "%")}}]
+    [:div.rail]]))
+
+
+
+;;;;
+;; Popup
+;;;;
+(defn video-size [screen-width screen-height ratio margin]
+  (cond (> screen-width 1200)
+        {:width 662 :height 414}
+        (> screen-width screen-height)
+        {:width screen-height :height (/ screen-height ratio)}
+        :else {:width (- screen-width (* 2 margin))
+               :height (/ (- screen-width (* 2 margin)) ratio)}))
+
+(defn popup []
+  (let [open?         (<sub [:db/open])
+        src           (<sub [:db/embed])
+        screen-height js/document.documentElement.clientHeight
+        screen-width  js/document.documentElement.clientWidth
+        ratio         (/ 662 414)
+        size          (video-size screen-width screen-height ratio 20)
+        close-right   (if (< screen-width 800) (- (/ (:width size) 2) 20) -40)]
+    [:div.popup {:on-click #(xf/dispatch [:close])
+                 :style {:display (if open? "grid" "none")
+                         :height (str  "px")}}
+     [:article
+      [:div.btn-x {:on-click #(xf/dispatch [:close])
+                   :style {:right close-right}}
+       [:div.x.l]
+       [:div.x.r]]
+      [:iframe {:width (str (:width size))
+                :height (str (:height size))
+                :src src
+                :frameborder "0" :allow "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"}]]]))
+
+
+
+;;;;
+;; Clock
+;;;;
+(defn time->angles [hours mins secs]
+  {:hours (+ (* 30 hours) (/ mins 2))
+   :mins (* 6 mins)
+   :secs (* 6 secs)})
+
+(defn clock-arrow
+  "Takes:
+  - start angle int?,
+  - duration time in seconds int?,
+  - css classes string?"
+  [start duration cls]
+  [:> (.-div motion)
+             {:class (str "clock-arrow " cls)
+              :animate #js {:rotate #js [start (+ start 360)]}
+              :transition #js {
+                           :duration duration
+                           :ease "linear"
+                           :loop (clj->js 'Infinity)}}])
+
+(defn clock
+  "Takes a utc timezone int?
+  Example for Sofia utc+2: [clock 2]"
+  [utc]
+  (let [date   (new js/Date)
+        hours  (+ (.getUTCHours date) utc)
+        mins   (.getUTCMinutes date)
+        secs   (.getUTCMinutes date)
+        angles (uix/state (time->angles hours mins secs))]
+    [:div.clock-cont
+     [:div.clock-bg.white-bg
+      [:div.arrows-intersection.yellow-bg]
+      [clock-arrow (:hours @angles) (* 12 60 60 1) "hour yellow-bg re"] ;; 43200s
+      [clock-arrow (:mins  @angles) (* 60 60 1)    "min yellow-bg re"]  ;; 3600s
+      [clock-arrow (:secs  @angles) (* 60 1)       "sec gray-bg re"]    ;; 60s
+      ]]))
