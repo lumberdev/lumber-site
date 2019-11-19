@@ -1,6 +1,6 @@
 {:deps true
  :source-paths ["src"]
- :dev-http {8080 "resources/public/"}
+ :dev-http {8080 {:root "resources/public/"}}
  :builds
  {:app {:target :browser
         :output-dir "resources/public/js"
@@ -9,6 +9,6 @@
 
         :devtools {:repl-pprint true
                    :before-load lumber.core/stop
-                   :after-load lumber.core/start
+                   :after-load  lumber.core/start
                    }}}}
 
