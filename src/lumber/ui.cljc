@@ -3,7 +3,6 @@
    [uix.dom.alpha :as uix.dom]
    [uix.core.alpha :as uix]
    [xframe.core.alpha :as xf :refer [<sub]]
-
    #?(:cljs ["framer-motion" :refer (motion useMotionValue useViewportScroll)])
    ))
 
@@ -15,7 +14,7 @@
 (defn scroll []
   #?(:cljs (percentage (- js/document.documentElement.scrollHeight
                           js/document.documentElement.clientHeight)
-                       js/document.documentElement.scrollTop)))
+                       js/document.scrollingElement.scrollTop)))
 
 (defn progress []
   #?(:cljs (let [scroll (<sub [:db/scroll])]
@@ -56,8 +55,8 @@
                          :src src
                          :frame-border "0"
                          :fs "1"
-                         :allowfullscreen "true"
-                         :allow "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture; allowfullscreen"}]]])))
+                         :allow-full-screen (clj->js true)
+                         :allow "accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture;"}]]])))
 
 
 
@@ -86,10 +85,10 @@
   "Takes a utc timezone int?
   Example for Sofia utc+2: [clock 2]"
   [utc]
-  #?(:cljs (let [date(new js/Date)
-                 hours  (+ (.getUTCHours date) utc)
-                 mins   (.getUTCMinutes date)
-                 secs   (.getUTCMinutes date)
+  #?(:cljs (let [date (new js/Date)
+                 hours  (+ (.getUTCHours ^js date) utc)
+                 mins   (.getUTCMinutes ^js date)
+                 secs   (.getUTCMinutes ^js date)
                  angles (uix/state (time->angles hours mins secs))]
              [:div.clock-cont
               [:div.clock-bg.white-bg

@@ -42,7 +42,7 @@
   #?(:cljs(let [s (uix/state {})
                 p (uix/state 0)]
             [:div.cf {:style {:width "100%"}}
-             (for [i (range 0 25)]
+             (for [i (range 0 25)] ^{:key i}
                [:> (.-div motion)
                 {:class "dot-cont"
                  :onHoverStart
@@ -56,7 +56,7 @@
                  }
                 [:> (.-div motion)
                  {:class "dot black-bg"
-                  :style {:width "100%" :height "100%" :padding-bottom "100%"}
+                  :style {:width "100%" :padding-bottom "100%"}
                   :animate #js {:scale (get @s i)}
                   :transition #js {:ease "linear" :duration 0.15}
                   }]])])))
@@ -90,7 +90,7 @@
                          (reset! state {:hover true :done false})
                          (js/setTimeout #(reset! state {:hover false :done true}) total-duration)))
                 }
-               (for [i index->delay]
+               (for [i index->delay] ;;^{:key i}
                  [:div
                   {:class (str "flipper "
                                (if (and (:done @state)
@@ -120,9 +120,9 @@
                   col-duration  (* (+ delay (* 5 duration)) 1000)
                   variants #js
                   {:init #js {}
-                   :rain #js {:background-color #js [black yellow black]}}]
+                   :rain #js {:backgroundColor #js [black yellow black]}}]
               [:div.cf {:style {:width "100%"}}
-               (for [col [0 1 2 3 4]]
+               (for [col [0 1 2 3 4]] ^{:key col}
                  [:> (.-div motion)
                   {:class "dot-cont"
                    :onHoverStart
@@ -136,10 +136,10 @@
                    (fn [_ _] (do (swap! s assoc-in [col] {:hover true :done false})
                                  (js/setTimeout #(swap! s assoc-in [col] {:done true :hover false}) col-duration)))
                    }
-                  (for [i [0 1 2 3 4]]
+                  (for [i [0 1 2 3 4]] ^{:key i}
                     [:> (.-div motion)
                      {:class "dot black-bg"
-                      :style {:width "100%" :height "100%" :padding-bottom "100%"}
+                      :style {:width "100%" :padding-bottom "100%"}
                       :transition #js {:delay (* i delay)
                                        :duration duration
                                        :times #js [0 0.99 1]
@@ -162,7 +162,7 @@
 (defn glow-dots []
   #?(:cljs (let [s (uix/state {})]
              [:div.cf {:style {:width "100%"}}
-              (for [i (range 0 25)]
+              (for [i (range 0 25)] ^{:key i}
                 [:> (.-div motion)
                  {:class "dot-cont"
                   :onHoverStart
@@ -173,7 +173,7 @@
                   }
                  [:> (.-div motion)
                   {:class "dot black-bg"
-                   :style {:width "100%" :height "100%" :padding-bottom "100%"}
+                   :style {:width "100%" :padding-bottom "100%"}
                    :animate #js {:scale (get @s i)}
                    :transition #js {:ease "linear" :duration 0.1}
                    }]])])))
@@ -214,7 +214,7 @@
                               (do (reset! client (client-pos e))
                                   (reset! relative (relative-pos @rect @client))))
                :style {:width "100%"}}
-              (for [i (range 0 25)]
+              (for [i (range 0 25)] ^{:key i}
                 (do [:> (.-div motion)
                      {:animate #js {}
                       :class "dot" :style {:float "left"
@@ -242,7 +242,7 @@
 
 (defn floating-dots [n offsets]
   #?(:cljs [:svg
-            (for [i (range 1 (inc n))]
+            (for [i (range 1 (inc n))] ^{:key i}
               (let [w 100
                     offset (rand-nth offsets)
                     r 5
@@ -282,36 +282,6 @@
         pos   (mapv (partial nth edges) idxs)]
     pos))
 
-;; (defn bumping-dots [n]
-;;   [:svg
-;;    (for [i (range 1 (inc n))]
-;;      (let [w 100
-;;            offset 0
-;;            r 5
-;;            size 4.5
-;;            x-min (- (+ 0 size) offset)
-;;            x-max (- (+ w offset) size)
-;;            y-min (- (+ 0 size) offset)
-;;            y-max (- (+ w offset) size)
-;;            x (rand-r x-min x-max)
-;;            y (rand-r y-min y-max)
-;;            re (rand-edge x-min x-max y-min y-max 100)
-;;            durations (repeatedly 100 #(rand-r 1000 1500))
-;;            xs (mapv (fn [p d] {:value (str (:x p) "%")
-;;                                :duration d}) re durations)
-;;            ys (mapv (fn [p d] {:value (str (:y p) "%")
-;;                                :duration d}) re durations)
-;;            ]
-;;        [:> anime
-;;         {:cx (clj->js xs)
-;;          :cy (clj->js ys)
-;;          :loop true
-;;          :direction "alternate"
-;;          :easing "linear"}
-;;         [:circle {:cx x :cy y :r (str r "%") :fill "#ffcc08"}]]
-;;        )
-;;      )])
-
 (defn bumping-dots [n]
   #?(:cljs [:svg
             (for [i (range 1 (inc n))]
@@ -325,41 +295,21 @@
                     y-max (- (+ w offset) size)
                     x (rand-r x-min x-max)
                     y (rand-r y-min y-max)
-                    ;; re (rand-edge x-min x-max y-min y-max 100)
-                    re (rand-edge 4.8 95.2 4.8 95.2 100)
+                    re (rand-edge x-min x-max y-min y-max 100)
                     durations (repeatedly 100 #(rand-r 1000 1500))
-                    xs (mapv (fn [p] (str (:x p) "%")) re)
-                    ys (mapv (fn [p] (str (:y p) "%")) re)
+                    xs (mapv (fn [p d] {:value (str (:x p) "%")
+                                        :duration d}) re durations)
+                    ys (mapv (fn [p d] {:value (str (:y p) "%")
+                                        :duration d}) re durations)
                     ]
-                [:> (.-circle motion)
-                 {:cx x
-                  :cy y
-                  :r (str r "%")
-                  :fill "#ffcc08"
-                  :style {:z-index 1}
-                  :animate #js {
-                                :cx (clj->js xs)
-                                :cy (clj->js ys)
-
-                                ;; :cx (per 50)
-                                ;; :cy (per 50)
-                                }
-                  :transition #js {
-                                   ;; :type "spring"
-                                   ;; :damping 1
-                                   ;; :mass 50
-                                   :type "inertia"
-                                   ;; :modifyTarget (fn [target] target)
-                                   :bounceStiffness 100  ;; 500
-                                   :bounceDamping 8      ;; 10
-                                   :power 0.8            ;; 0.8
-                                   ;; :timeConstant 700     ;; 700
-                                   ;; :restDelta 0.01       ;; 0.01
-                                   :min (per 4.7)
-                                   :max (per 95.3)
-                                   ;; :duration (clj->js durations)
-                                   :duration 200
-                                   }}])
+                [:> anime
+                 {:cx (clj->js xs)
+                  :cy (clj->js ys)
+                  :loop true
+                  :direction "alternate"
+                  :easing "linear"}
+                 [:circle {:cx x :cy y :r (str r "%") :fill "#ffcc08"}]]
+                )
               )]))
 
 (defn pos [x y] {:x x :y y})

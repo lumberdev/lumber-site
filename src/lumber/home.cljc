@@ -29,7 +29,7 @@
     [:div.ar
      [:header  [:h3.h3 "Who we are"]]
      [:article [:h2.h2 "We are a development firm that works with a global network with developers."]]
-     [:footer  [:div.btn.re.black "Email Us"]]]]
+     [:footer  [:a.btn.re.black {:href "mailto:hello@lumberdev.nyc"} "Email Us"]]]]
 
    [:section.box.value
     [:div.ar
@@ -79,8 +79,8 @@
    [:section.box.info.black-bg
     [:div.ar
      [:header  [:h3.h3 "Clients & Partners"]]
-     [:article [:ul.white (for [p (<sub [:db/partners])] ^{:keys p} [:li.h2 [:a p]])]]
-     [:footer  [:div.btn.re.white "Build Something With Us"]]]]
+     [:article [:ul.white (for [p (<sub [:db/partners])] ^{:key p} [:li.h2 [:a p]])]]
+     [:footer  [:a.btn.re.white {:href "mailto:hello@lumberdev.nyc"} "Build Something With Us"]]]]
 
    [:section.box.work.peach-gr-h
     [:div.ar
@@ -108,7 +108,7 @@
     [:div.ar
      [:header  [:h3.h3 "Need Extra Hands"]]
      [:article [:h2.h2 "Grow your team with our global talent network of developers"]]
-     [:footer  [:div.btn.re.black "Build Something with Us"]]]]
+     [:footer  [:a.btn.re.black {:href "mailto:hello@lumberdev.nyc"} "Build Something with Us"]]]]
 
    [:section.box.value
     [:div.ar

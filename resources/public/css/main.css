@@ -170,19 +170,19 @@ header, footer, section, article, nav {
 .h1 {
     font-family: "Messina Serif Light", serif;
     font-size: 42px;
-    letter-spacing: -0.4;
+    /* letter-spacing: -0.4; */
     line-height: 46px;
 }
 .h2 {
     font-family: "Messina Serif Light", serif;
     font-size: 32px;
-    letter-spacing: -0.3;
+    /* letter-spacing: -0.3; */
     line-height: 34px;
 }
 .h3 {
     font-family: "Messina Sans SemiBold", sans-serif;
     font-size: 12px;
-    letter-spacing: 1.4;
+    /* letter-spacing: 1.4; */
     line-height: 30px;
     text-transform: uppercase;
 }
@@ -200,7 +200,7 @@ header, footer, section, article, nav {
     font-family: "Messina Sans SemiBold", sans-serif;
     font-size: 12px;
     line-height: 36px;
-    letter-spacing: 1.5;
+    /* letter-spacing: 1.5; */
     text-transform: uppercase;
     border: 1px solid #d1d1d1;
     -webkit-transition: all 0.2s ease-in-out 0s;
@@ -224,7 +224,7 @@ header, footer, section, article, nav {
     font-family: "Messina Sans SemiBold", serif;
     /* font-family: "Messina Sans SemiBold", sans-serif; */
     font-size: 12px;
-    letter-spacing: 1.5;
+    /* letter-spacing: 1.5; */
     text-transform: uppercase;
     color: #121212;
     text-decoration: none;
@@ -909,12 +909,12 @@ footer.main {
     /* Fonts Mobile */
     .h1 {
         font-size: 34px;
-        letter-spacing: -3.4;
+        /* letter-spacing: -3.4; */
         line-height: 36px;
     }
     .h2 {
         font-size: 24px;
-        letter-spacing: -2.3;
+        /* letter-spacing: -2.3; */
         line-height: 28px;
     }
     .t1 {

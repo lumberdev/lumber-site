@@ -1,26 +1,23 @@
 (ns shadow
   (:require [shadow.cljs.devtools.api :as shadow.api]
             [shadow.cljs.devtools.server :as shadow.server]
+            [lumber.serve :refer [server]]
             [mount.core :as mount :refer [defstate]]))
 
-;; (defstate shadow-web
-;;   :start (do (shadow.server/start!)
-;;              (shadow.api/watch :app))
-;;   :stop (shadow.api/stop-worker :app))
+(defstate shadow-web
+  :start (do (shadow.server/start!)
+             (shadow.api/watch :app))
+  :stop (shadow.api/stop-worker :app))
 
-;; (defstate shadow-os
-;;   :start (do (shadow.server/start!)
-;;              (shadow.api/watch :os))
-;;   :stop (shadow.api/stop-worker :os))
+(comment
+  (mount/start)
+  (mount/start #'lumber.serve/server)
 
-;; (comment
-;;   (mount/start)
-;;   (mount/start #'shadow-os)
-;;   (mount/stop)
+  (mount/stop)
+  (mount/start #'lumber.serve/server)
 
-;;   (shadow.api/repl :app)
-;;   (shadow.api/repl :os)
-;;   :cljs/quit
+  (shadow.api/repl :app)
+  :cljs/quit
 
-;;   (shadow.server/stop!)
-;;   )
+  (shadow.server/stop!)
+  )

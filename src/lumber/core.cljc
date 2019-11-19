@@ -7,6 +7,9 @@
    [lumber.home :as home]
    [lumber.ui :as ui]
 
+   #?(:cljs [goog.events :as events])
+   #?(:cljs [goog.events.EventType :as EventType])
+
    #?(:cljs [cljs-bean.core :as bean])
    ))
 
@@ -48,11 +51,14 @@
 
   (defonce init-db (xf/dispatch [:db/init]))
 
-  (js/window.addEventListener "scroll" (fn [e] (xf/dispatch [:set-scroll])))
+  (events/listen js/window EventType/SCROLL (fn [e] (xf/dispatch [:set-scroll])))
+  ;; (js/window.addEventListener "scroll" (fn [e] (xf/dispatch [:set-scroll])))
 
   (uix.dom/hydrate
    [home/home]
-   (.getElementById js/document "app")))
+   (.getElementById js/document "app"))
+
+  )
 
 (defn ^:export init []
 ;; init is called ONCE when the page loads

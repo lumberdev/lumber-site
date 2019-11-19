@@ -1,11 +1,15 @@
 {:deps true
  :source-paths ["src"]
- :dev-http {8080 {:root "resources/public/"}}
+ :dev-http {8080 {:root "resources/public/"
+                  :handler lumber.serve/dev-handler}}
  :builds
  {:app {:target :browser
         :output-dir "resources/public/js"
         :asset-path "/js"
         :modules {:main {:entries [lumber.core]}}
+        :release {:compiler-options
+                  {:optimizations :advanced
+                   :infer-externs :auto}}
 
         :devtools {:repl-pprint true
                    :before-load lumber.core/stop
