@@ -12,9 +12,6 @@ RUN apt-get update \
     && apt-get install -y nodejs \
     && apt-get install -y npm \
     && npm config set unsafe-perm true \
-
-    #installs the latest yarn version
-    #&& npm i -g yarn \
     && npm install \
     && npm install -g shadow-cljs \
     && shadow-cljs release app \
