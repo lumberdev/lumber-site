@@ -23,5 +23,8 @@ pom.xml.asc
 **/node_modules
 **/images
 **/fonts
-
+.idea
+resources/public/js
+*.iml
+.shadow-cljs/
 

@@ -1,4 +1,5 @@
-{:paths ["src" "resources"]
+{:paths
+ ["src" "resources"]
  :deps
  {org.clojure/clojure          {:mvn/version "1.10.0"}
 
@@ -28,11 +29,11 @@
 
  :aliases
 
- {:dev {:extra-paths ["dev"]}
-  :dev/cljs {:extra-deps  {
-                           thheller/shadow-cljs {:mvn/version "2.8.40"}
-                           binaryage/devtools   {:mvn/version "0.9.10"}
-                           }}
-  :depster  {:extra-deps  {seancorfield/depstar {:mvn/version "0.3.1"}}}
+ {:dev      {:extra-paths ["dev"]}
+  :dev/cljs {:extra-deps {
+                          thheller/shadow-cljs {:mvn/version "2.8.40"}
+                          binaryage/devtools   {:mvn/version "0.9.10"}
+                          }}
+  :depster  {:extra-deps {seancorfield/depstar {:mvn/version "0.3.1"}}}
+  }
  }
-}

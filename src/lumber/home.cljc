@@ -28,7 +28,7 @@
    [:section.box.info
     [:div.ar
      [:header  [:h3.h3 "Who we are"]]
-     [:article [:h2.h2 "We are a development firm that works with a global network with developers."]]
+     [:article [:h2.h2 "We are a development firm with a global network of developers."]]
      [:footer  [:a.btn.re.black {:href "mailto:hello@lumberdev.nyc"} "Email Us"]]]]
 
    [:section.box.value
@@ -39,7 +39,7 @@
     [:div.ar
      [:header.title  [:h3.h3 "Open Source"]]
      [:header.name   [:h3.h3 "Vimsical"]]
-     [:article.desc  [:h2.h2 "Vimsical"] [:p.t1 "Version control for digital education"]]
+     [:article.desc  [:h2.h2 "Vimsical"] [:p.t1 "Version control as a learning tool"]]
      [:article.image [:img {:src "./images/Vimsical.jpg"}]]
      [:footer        [:a.a.u {:on-click #(xf/dispatch [:open "https://www.youtube.com/embed/OtvK24bG_IY"])}
                       [:div.video [:span.play] "Play Video"]]
