@@ -207,19 +207,15 @@
                  ye (uix/state 35)]
              [:> (.-div motion)
               {:class "cf"
-               :onHoverStart (fn [e]
-                               (reset! rect (bounding-rect e))
-                               (prn "rect:" @rect))
-               :onMouseOver (fn [e]
-                              (do (reset! client (client-pos e))
-                                  (reset! relative (relative-pos @rect @client))))
+               ;; :onMouseMove (fn [e] (prn "page: "(.-pageX e) (.-pageY e)
+               ;;                           "client:" (.-clientX e) (.-clientY e)
+               ;;                           "screen:" (.-screenX e) (.-screenY e)))
                :style {:width "100%"}}
               (for [i (range 0 25)] ^{:key i}
                 (do [:> (.-div motion)
                      {:animate #js {}
-                      :class "dot" :style {:float "left"
-                                           :width "20%"
-                                           :padding-bottom "20%"}}
+                      :class "dot black-bg"
+                      :style {:float "left" :width "20%" :padding-bottom "20%"}}
                      (when (contains? pos i)
                        [:div
                         [:> (.-div motion)

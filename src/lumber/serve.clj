@@ -10,8 +10,6 @@
    [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
    [ring.middleware.content-type :refer [wrap-content-type]]
    [ring.middleware.not-modified :refer [wrap-not-modified]]
-
-   ;; [lumber.home :as home]
    ))
 
 (defn html []
@@ -84,7 +82,7 @@
 (def handler (default-middleware routes))
 
 (defstate server
-  :start (http/start-server handler {:port 3400})
+  :start (http/start-server handler {:port 80})
   :stop  (.close server))
 
 (defn -main []

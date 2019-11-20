@@ -1,6 +1,6 @@
 {:deps true
  :source-paths ["src"]
- :dev-http {8080 {:root "resources/public/"
+ :dev-http {3000 {:root "resources/public/"
                   :handler lumber.serve/dev-handler}}
  :builds
  {:app {:target :browser

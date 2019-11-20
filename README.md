@@ -1,38 +1,28 @@
-# site
-
-FIXME: description
+# Lumber Website
 
 ## Installation
 
-Download from http://example.com/FIXME.
+    $ npm install
+    
+or 
+    
+    $ yarn install
 
 ## Usage
 
-FIXME: explanation
+Run the development setup (localhost:3000/):
 
-Run the project directly:
+    $ shadow-cljs watch app
+    
+Build for production:
 
-    $ clj -m lumber.site
+    $ shadow-cljs release app
 
-Run the project's tests (they'll fail until you edit them):
+Run the project production server:
 
-    $ clj -A:test:runner
-
-## Options
-
-FIXME: listing of options this app accepts.
-
-## Examples
-
-...
+    $ clj -m lumber.serve
 
 ### Bugs
-
-...
-
-### Any Other Sections
-### That You Think
-### Might be Useful
 
 ## License
 

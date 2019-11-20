@@ -73,7 +73,7 @@
      [:article.desc  [:h2.h2 "Duct"] [:p.t1 "IFTTT for developers"]]
      [:article.image [:img {:src "./images/Duct.jpg"}]]
      [:footer
-      [:a.btn.re.black {:href "https://github.com/lumberdev/duct" :target "_blank"}
+      [:a.btn.re.black {:href "https://duct.cloud/" :target "_blank"}
        [:div "Go to Site"]]]]]
 
    [:section.box.info.black-bg
@@ -99,7 +99,7 @@
     [:div.ar
      [:header  [:h3.h3 "In-House Project"]]
      [:article [:h2.h2 "Juergen"] [:p.t1 "A self-shooting camera app in React Native"]]
-     [:footer  [:a.btn.re.black {:href "https://github.com/lumberdev/Juergen" :target "_blank"} "Go to site"]]]]
+     [:footer  [:a.btn.re.black {:href "https://github.com/lumberdev/Juergen" :target "_blank"} "See Source"]]]]
 
    [:section.box.dots.white-bg
     [:div.ar [dots/raining-dots]]]
@@ -116,8 +116,8 @@
 
    [:section.box.work.purple-gr-h
     [:div.ar
-     [:header  [:h3.h3 "AuthO-clojure"]]
-     [:article [:h2.h2 "authO-clojure"] [:p.t1 "Clojure client library for the [Auth0] platform"]]
+     [:header  [:h3.h3 "Auth0-clojure"]]
+     [:article [:h2.h2 "auth0-clojure"] [:p.t1 "Clojure client library for the [Auth0] platform"]]
      [:footer  [:a.a.u {:href "" :target "_blank"} [:div.video ""]]
       [:a.btn.re.black {:href "https://github.com/lumberdev/auth0-clojure" :target "_blank"}
        [:div "See Source"]]]]]
