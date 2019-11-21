@@ -1,7 +1,7 @@
 {
   "name": "lumber",
   "description": "description",
-  "version": "0.01-alpha",
+  "version": "0.0.1-alpha",
   "scripts": {
     "deps": "yarn install",
     "watch": "shadow-cljs -A:dev/cljs watch app;",
