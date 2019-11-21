@@ -86,9 +86,9 @@
     [:div.ar
      [:header  [:h3.h3 "Open Source"]]
      [:article [:h2.h2 "Zeal"] [:p.t1 "Clipboard manager meets programming environment"]]
-     [:footer  [:a.a.u {:href "https://github.com/vimsical/vimsical" :target "_blank"} [:div.video "Learn More"]]
+     [:footer  [:a.a.u {:href "https://github.com/den1k/zeal/" :target "_blank"} [:div.video "Learn More"]]
       [:div.pipe]
-      [:a.a.u.link {:href "https://github.com/vimsical/vimsical" :target "_blank"}
+      [:a.a.u.link {:href "https://www.notion.so/vimsical/ZEAL-d2c72fa9c7f2497c9657134573e5317f" :target "_blank"}
        [:div "See Source" [:span.arrow]]]]]]
 
    [:section.box.value
@@ -116,7 +116,7 @@
 
    [:section.box.work.purple-gr-h
     [:div.ar
-     [:header  [:h3.h3 "Auth0-clojure"]]
+     [:header  [:h3.h3 "OPEN SOURCE"]]
      [:article [:h2.h2 "auth0-clojure"] [:p.t1 "Clojure client library for the [Auth0] platform"]]
      [:footer  [:a.a.u {:href "" :target "_blank"} [:div.video ""]]
       [:a.btn.re.black {:href "https://github.com/lumberdev/auth0-clojure" :target "_blank"}
@@ -140,7 +140,7 @@
     [:div.ar
      [:header  [:h3.h3 "Say Hello"]]
      [:article [:p.h2 "Send Us Electronic Mail"]]
-     [:footer  [:div.btn.re.black "hello@lumberdev.nyc"]]]]
+     [:footer  [:a.btn.re.black {:href "mailto:hello@lumberdev.nyc"} "hello@lumberdev.nyc"]]]]
 
    ;; [:section.box.dots.white-bg
    ;;  [:div.ar [dots/glow-dots]]]
