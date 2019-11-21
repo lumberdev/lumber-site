@@ -151,7 +151,7 @@
    ;;   [dots/bumping-dots 7 (rand-nth [0 0 0 30])]]]
 
    ;; [:section.box.dots.white-bg
-   ;;  [:div.ar [dots/eye-dots [1 2]]]]
+   ;;  [:div.ar [dots/eye-dots [17 18]]]]
 
    ])
 

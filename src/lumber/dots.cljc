@@ -185,7 +185,7 @@
 ;;;;
 (defn bounding-rect [e]
   (let [r (-> e .-target .getBoundingClientRect)]
-    {:left (.-left r) :top (.-top r)}))
+    {:left (.-left r) :top (.-top r) :width (.-width r) :height (.-height r)}))
 
 (defn client-pos [e]
   {:x (-> e .-clientX) :y (-> e .-clientY)})
@@ -197,34 +197,48 @@
   {:x (- (:x global) (:left rect))
    :y (- (:y global) (:top rect))})
 
+(defn transform-range [s0-min s0-max s1-min s1-max s0-value]
+  (let [s0 (- s0-max s0-min)
+        s1 (- s1-max s0-min)]
+    (+ s1-min (/ (* s1 (- s0-value s0-min)) s0))))
+
 (defn eye-dots [pos]
   #?(:cljs (let [rect (uix/ref {})
                  client (uix/ref {})
-                 relative (uix/ref {})
+                 relative (uix/state {})
                  xm (uix/ref 0)
                  ym (uix/ref 0)
                  xe (uix/state 60)
-                 ye (uix/state 35)]
+                 ye (uix/state 37)]
              [:> (.-div motion)
               {:class "cf"
-               ;; :onMouseMove (fn [e] (prn "page: "(.-pageX e) (.-pageY e)
-               ;;                           "client:" (.-clientX e) (.-clientY e)
-               ;;                           "screen:" (.-screenX e) (.-screenY e)))
+               :onHoverStart (fn [e] (reset! rect (bounding-rect e)))
+               :onHoverEnd (fn [e] (reset! relative {:x (/ (:width @rect) 2)
+                                                     :y (/ (:width @rect) 2)}))
+               :onMouseMove (fn [e] (reset! relative (relative-pos @rect (client-pos e))))
                :style {:width "100%"}}
               (for [i (range 0 25)] ^{:key i}
                 (do [:> (.-div motion)
                      {:animate #js {}
                       :class "dot black-bg"
-                      :style {:float "left" :width "20%" :padding-bottom "20%"}}
-                     (when (contains? pos i)
+                      :style {:float "left" :width "20%" :padding-bottom "20%" :pointer-events "none"}}
+                     (when (contains? (into #{} pos) i)
                        [:div
                         [:> (.-div motion)
-                         {:animate #js {}
-                          :class "eye"}]
+                         {:class "eye"}
+                         [:> (.-div motion)
+                          {:class "pupil"
+                           :animate #js {:height #js ["0%" "100%" "0%"]}
+                           :transition #js {:duration 0.5 :repeatDelay 5 :loop 100}
+                           }]
+                         ]
                         [:> (.-div motion)
                          {:animate #js {}
                           :class "eyeball"
-                          :style {:top "36%" :left (str @ye "%")}
+                          :style {:top
+                                  (str (transform-range 0 (:height @rect) 25 22 (:y @relative)) "%")
+                                  :left
+                                  (str (transform-range 0 (:width @rect) 12 45 (:x @relative)) "%")}
                           }]])
                      ]))])))
 

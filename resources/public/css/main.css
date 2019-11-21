@@ -621,14 +621,24 @@ footer.main {
     left: 6%;
     width: 86%;
     height: 30%;
-    background-color: #fff;
-    border-radius: 50%;
+    background-image: url(../images/eye-bgr.svg);
     z-index: 1;
+}
+.pupil {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 10px;
+    background-color: #000;
 }
 .eyeball {
     position: absolute;
-    width: 28%;
-    height: 28%;
+    width: 24%;
+    height: 24%;
+    top: 37%;
+    left: 40%;
     background-color: #000;
     border-radius: 50%;
     z-index: 2;
