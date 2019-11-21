@@ -16,6 +16,12 @@
    [compojure.route]
    ))
 
+(defn raw-html
+  ([s] (raw-html :div nil s))
+  ([tag s] (raw-html tag nil s))
+  ([tag attrs s]
+   [tag (assoc attrs :dangerouslySetInnerHTML {:__html s})]))
+
 (defn html []
   [:html
    [:head
@@ -41,6 +47,12 @@
     [:meta {:name "msapplication-TileColor" :content "#ffffff"}]
     [:meta {:name "msapplication-TileImage" :content "/icons/ms-icon-144x144.png"}]
     [:meta {:name "theme-color" :content "#ffffff"}]
+    [:script {:src "https://www.googletagmanager.com/gtag/js?id=UA-125582926-1" :async "true"}]
+    [:script {:dangerouslySetInnerHTML
+              {:__html "window.dataLayer = window.dataLayer || [];
+                        function gtag () { dataLayer.push(arguments); }
+                        gtag('js', new Date());
+                        gtag('config', 'UA-125582926-1');"}}]
     ]
 
    [:body

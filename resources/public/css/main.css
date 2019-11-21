@@ -1010,6 +1010,22 @@ footer.main {
         right: 46%;
         top: -50px;
     }
+    .work.green-gr-h::before {
+        opacity: 1;
+    }
+    .work.blue-gr-h::before {
+        opacity: 1;
+    }
+    .work.purple-gr-h::before {
+        opacity: 1;
+    }
+    /* Uncomment to have active btns on work boxes on mobile */
+    /* .work .btn { */
+        /* color: #121212; */
+        /* background-color: #fff; */
+        /* border: 1px solid #fff; */
+        /* box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, .15); */
+    /* } */
 }
 @media all and (max-width: 414px) {
     /* IPHONE X */
