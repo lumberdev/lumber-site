@@ -10,6 +10,10 @@
    [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
    [ring.middleware.content-type :refer [wrap-content-type]]
    [ring.middleware.not-modified :refer [wrap-not-modified]]
+
+   [compojure.core :refer :all]
+   [compojure.handler]
+   [compojure.route]
    ))
 
 (defn html []
@@ -60,29 +64,43 @@
    :headers {"content-type" "text/html"}
    :body    (uix.dom/render-to-string [html])})
 
-(def resource-handler
+;; without router
+(def app-resource-handler
   (-> (constantly {:status 200})
       (wrap-resource "public")
       (wrap-content-type)
       (wrap-not-modified)))
 
-(defn default-middleware [handler]
+(defn app-default-middleware [handler]
   (-> handler
       (wrap-params)
-      (wrap-defaults site-defaults)))
+      (wrap-defaults (assoc site-defaults :static {:resources "public"}))))
 
-(defn routes [{:as req :keys [uri]}]
+(defn app-routes [{:as req :keys [uri]}]
   (case uri
     "/" (index req)
-    resource-handler
-    #_{:status 404
+    {:status 404
      :headers {"content-type" "text/plain"}
      :body "404"}))
 
-(def handler (default-middleware routes))
+(def app-handler (app-default-middleware app-routes))
+
+
+
+;; with compojure
+(defroutes app*
+  (GET  "/" request index)
+  (compojure.route/not-found "404 - Sorry, there's nothing here."))
+
+(def app (-> (compojure.handler/site app*)
+             (wrap-params)
+             (wrap-defaults (assoc site-defaults :static {:resources "public"}))))
+
+
 
 (defstate server
-  :start (http/start-server handler {:port 80})
+  ;; :start (http/start-server app-handler {:port 80})
+  :start (http/start-server #'app {:port 80})
   :stop  (.close server))
 
 (defn -main []

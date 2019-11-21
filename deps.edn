@@ -25,7 +25,8 @@
   aleph                        {:mvn/version "0.4.6"}
   ring/ring-core               {:mvn/version "1.7.1"}
   ring/ring-defaults           {:mvn/version "0.3.2"}
-  ;; compojure                    {:mvn/version "1.6.1"}
+  compojure                    {:mvn/version "1.6.1"}
+
   }
 
  :aliases
