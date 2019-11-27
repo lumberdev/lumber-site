@@ -64,7 +64,7 @@
 
    ;; eyes
    [:section.box.dots.white-bg
-    [:div.ar [dots/flipping-dots]]]
+    [:div.ar [dots/eye-dots [17 18]]]]
 
    [:section.box.work.purple-gr-h
     [:div.ar
@@ -102,7 +102,7 @@
      [:footer  [:a.btn.re.black {:href "https://github.com/lumberdev/Juergen" :target "_blank"} "See Source"]]]]
 
    [:section.box.dots.white-bg
-    [:div.ar [dots/raining-dots]]]
+    [:div.ar [dots/flipping-dots]]]
 
    [:section.box.info
     [:div.ar
@@ -131,10 +131,11 @@
    [:section.box.dots.white-bg
     [:div.ar [dots/raining-dots]]]
 
+
    [:section.box.quote
     [:div.ar
      [:article [:h2.h2 "The Future of Work is Remote"]]
-     [dots/floating-dots 7 [0 0 0 0]]]]
+     [dots/bumping-dots 7]]]
 
    [:section.box.info
     [:div.ar
@@ -144,14 +145,6 @@
 
    ;; [:section.box.dots.white-bg
    ;;  [:div.ar [dots/glow-dots]]]
-
-   ;; [:section.box.quote
-   ;;  [:div.ar
-   ;;   [:article [:h2.h2 "The Future of Work is Remote"]]
-   ;;   [dots/bumping-dots 7 (rand-nth [0 0 0 30])]]]
-
-   ;; [:section.box.dots.white-bg
-   ;;  [:div.ar [dots/eye-dots [17 18]]]]
 
    ])
 

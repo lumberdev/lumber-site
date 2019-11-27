@@ -40,15 +40,22 @@
 
 (defn grid-dots []
   #?(:cljs(let [s (uix/state {})
-                p (uix/state 0)]
+                p (uix/state 0)
+                done (uix/state {})
+                duration 0.25]
             [:div.cf {:style {:width "100%"}}
              (for [i (range 0 25)] ^{:key i}
                [:> (.-div motion)
                 {:class "dot-cont"
                  :onHoverStart
-                 (fn [] (do (reset! s (update-hover-state s i 0.65 0.3))))
+                 (fn [] (do
+                          ;; (swap! done assoc i false)
+                          (reset! s (update-hover-state s i 0.65 0.3))
+                          ;; (js/setTimeout #(swap! done assoc i true) (* 1000 duration))
+                          ))
                  :onHoverEnd
-                 (fn [] (reset! s (update-hover-state s i 1 1)))
+                 (fn [] (do
+                          (reset! s (update-hover-state s i 1 1))))
                  :onTapStart
                  (fn [] (do (reset! s (update-hover-state s @p 1 1))
                             (reset! s (update-hover-state s i 0.65 0.3))
@@ -58,7 +65,7 @@
                  {:class "dot black-bg"
                   :style {:width "100%" :padding-bottom "100%"}
                   :animate #js {:scale (get @s i)}
-                  :transition #js {:ease "linear" :duration 0.15}
+                  :transition #js {:ease "easeOut" :duration duration}
                   }]])])))
 
 
@@ -209,7 +216,7 @@
                  xm (uix/ref 0)
                  ym (uix/ref 0)
                  xe (uix/state 60)
-                 ye (uix/state 37)]
+                 ye (uix/state 38)]
              [:> (.-div motion)
               {:class "cf"
                :onHoverStart (fn [e] (reset! rect (bounding-rect e)))
@@ -319,6 +326,40 @@
                   :direction "alternate"
                   :easing "linear"}
                  [:circle {:cx x :cy y :r (str r "%") :fill "#ffcc08"}]]
+                )
+              )]))
+
+(defn spring-dots [n]
+  #?(:cljs [:svg
+            (for [i (range 1 (inc n))]
+              (let [w 100
+                    offset 0
+                    r 5
+                    size 4.5
+                    x-min (- (+ 0 size) offset)
+                    x-max (- (+ w offset) size)
+                    y-min (- (+ 0 size) offset)
+                    y-max (- (+ w offset) size)
+                    x (rand-r x-min x-max)
+                    y (rand-r y-min y-max)
+                    re (rand-edge x-min x-max y-min y-max 100)
+                    durations (repeatedly 100 #(rand-r 1000 1500))
+                    xs (mapv (fn [p d] {:value (str (:x p) "%")
+                                        :duration d}) re durations)
+                    ys (mapv (fn [p d] {:value (str (:y p) "%")
+                                        :duration d}) re durations)
+                    ]
+                [:> (.-circle motion)
+                 {:cx x :cy y :r (str r "%") :fill "#ffcc08"
+                  :animate #js {
+                                ;; :cx (clj->js (mapv :value xs))
+                                ;; :cy (clj->js (mapv :value ys))
+                                :cx (clj->js [5 20 95])
+                                :cy (clj->js [5 120 40])
+                                }
+                  :transition #js {:type "spring"}
+                  }
+                 ]
                 )
               )]))
 
