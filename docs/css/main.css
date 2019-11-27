@@ -222,7 +222,6 @@ header, footer, section, article, nav {
 /* Links */
 .a {
     font-family: "Messina Sans SemiBold", serif;
-    /* font-family: "Messina Sans SemiBold", sans-serif; */
     font-size: 12px;
     /* letter-spacing: 1.5; */
     text-transform: uppercase;
@@ -334,9 +333,28 @@ header.main::after {
     width: 4px;
     background-color: #fff;
 }
+header.main.compact {
+    height: 40px;
+}
+header.main.compact::before, header.main.compact::after {
+    height: 39px;
+}
+header.main.compact .logo span {
+    font-size: 20px;
+}
+header.main.compact .email .a {
+    font-size: 10px;
+}
+header.main.compact .email .disk {
+    margin: 5px;
+    width: 10px;
+    height: 10px;
+}
+.cont.compact {
+    padding-top: 39px;
+}
 
 .logo span {
-    font-size: 30px;
     font-size: 26px;
     font-weight: bold;
 }
@@ -619,9 +637,12 @@ footer.main {
     position: absolute;
     top: 35%;
     left: 6%;
-    width: 86%;
+    right: 6%;
+    width: auto; /* 86%; */
     height: 30%;
     background-image: url(../images/eye-bgr.svg);
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
     z-index: 1;
 }
 .pupil {
@@ -632,6 +653,20 @@ footer.main {
     width: 100%;
     height: 10px;
     background-color: #000;
+    z-index: 2;
+}
+.pupil::before {
+    content: "";
+    /* position: absolute; */
+    /* top: 0; */
+    /* bottom: 0; */
+    /* left: 0; */
+    /* right: 0; */
+    /* width: 100%; */
+    /* height: 30px; */
+    /* background-color: #fff; */
+    /* border-radius: 50%; */
+    /* z-index: -3; */
 }
 .eyeball {
     position: absolute;
@@ -919,27 +954,22 @@ footer.main {
     /* Fonts Mobile */
     .h1 {
         font-size: 34px;
-        /* letter-spacing: -3.4; */
         line-height: 36px;
     }
     .h2 {
         font-size: 24px;
-        /* letter-spacing: -2.3; */
         line-height: 28px;
     }
     .t1 {
         font-size: 14px;
         line-height: 22px;
     }
-
     .info ul li::before {
         top: 7px;
     }
 }
+
 @media all and (max-width: 1250px) {
-    /* IPAD     Landscape 1024 */
-    /* IPAD Pro Portrait  1024 */
-    /* Laptops  (Old)     1250 */
     .cont {
         margin: 0 20px;
         padding-top: 69px;
@@ -954,9 +984,6 @@ footer.main {
     }
     header.main::after {
         height: 69px;
-    }
-    .grid {
-        /* border-right: 1px solid #000; */
     }
     .ar {
         padding: 6px 20px 20px 20px;
@@ -987,15 +1014,39 @@ footer.main {
     .ar {
         padding: 26px 40px 40px 40px;
     }
+    /* Uncomment to have active btns on work boxes on mobile */
+    /* .work .btn { */
+    /* color: #121212; */
+    /* background-color: #fff; */
+    /* border: 1px solid #fff; */
+    /* box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, .15); */
+    /* } */
 }
 @media all and (max-width: 768px) {
-    /* IPAD Portrait 768 */
     .ar {
         padding: 6px 20px 20px 20px;
     }
+    .info article, .work article {
+        margin: 10px auto;
+    }
+    .pipe {
+        margin: 0 10px;
+    }
 }
 
-@media all and (max-width: 680px) {
+@media all and (min-width: 415px) and (max-width: 560px) {
+    .cont {
+        margin: 0 12%;
+        padding-top: 69px;
+    }
+    header.main {
+        right: 12%;
+        left: 12%;
+        height: 70px;
+    }
+}
+
+@media all and (max-width: 560px) {
     .nav {
         padding: 0;
     }
@@ -1010,22 +1061,6 @@ footer.main {
         right: 46%;
         top: -50px;
     }
-    .work.green-gr-h::before {
-        opacity: 1;
-    }
-    .work.blue-gr-h::before {
-        opacity: 1;
-    }
-    .work.purple-gr-h::before {
-        opacity: 1;
-    }
-    /* Uncomment to have active btns on work boxes on mobile */
-    /* .work .btn { */
-        /* color: #121212; */
-        /* background-color: #fff; */
-        /* border: 1px solid #fff; */
-        /* box-shadow: 0px 0px 2px 1px rgba(0, 0, 0, .15); */
-    /* } */
 }
 @media all and (max-width: 414px) {
     /* IPHONE X */
@@ -1069,11 +1104,108 @@ footer.main {
         right: 10px;
         left: 10px;
     }
-header.main::before {
-    height: 9px;
-}
-header.main::after {
-    height: 9px;
+    header.main::before {
+        height: 9px;
+    }
+    header.main::after {
+        height: 9px;
+    }
 }
 
+/* Mobile Device Specific Queries */
+
+/* Portrait and Landscape Tablets */
+
+@media only screen
+and (min-device-width: 768px)
+and (max-device-width: 1024px)
+and (-webkit-min-device-pixel-ratio: 1) {
+    /* iPad 1, 2, Mini, Air */
+
+    .work.green-gr-h::before,
+    .work.peach-gr-h::before,
+    .work.purple-gr-h::before {
+        opacity: 1;
+    }
+}
+
+@media only screen
+and (min-device-width: 768px)
+and (max-device-width: 1024px)
+and (-webkit-min-device-pixel-ratio: 2) {
+    /* iPad Pro 3, 4, Pro 9.7 inch */
+
+    .work.green-gr-h::before,
+    .work.peach-gr-h::before,
+    .work.purple-gr-h::before {
+        opacity: 1;
+    }
+}
+
+@media only screen
+and (min-device-width: 834px)
+and (max-device-width: 1112px)
+and (-webkit-min-device-pixel-ratio: 2) {
+    /* iPad Pro 10.5 inch */
+
+    .work.green-gr-h::before,
+    .work.peach-gr-h::before,
+    .work.purple-gr-h::before {
+        opacity: 1;
+    }
+}
+@media only screen
+and (min-device-width: 1024px)
+and (max-device-width: 1366px)
+and (-webkit-min-device-pixel-ratio: 2) {
+    /* iPad Pro 12.9 inch */
+
+    .work.green-gr-h::before,
+    .work.peach-gr-h::before,
+    .work.purple-gr-h::before {
+        opacity: 1;
+    }
+}
+
+/* Portrait and Landscape Phones */
+@media only screen
+and (min-device-width: 320px)
+and (max-device-width: 869px) {
+
+    .work.green-gr-h::before,
+    .work.peach-gr-h::before,
+    .work.purple-gr-h::before {
+        opacity: 1;
+    }
+}
+
+/* Landscape Phones */
+@media only screen
+and (min-device-width: 360px)
+and (max-device-width: 869px)
+and (orientation: landscape) {
+    /* iPhone 5, 6, 6S, 7, 8 */
+    /* iPhone 6+, 7+, 8+ */
+    /* iPhone X */
+    /* Galaxy S6-10 */
+    header.main {
+        height: 40px;
+    }
+    header.main::before, header.main::after {
+        height: 39px;
+    }
+    header.main .logo span {
+        font-size: 20px;
+    }
+    header.main .email .a {
+        font-size: 10px;
+    }
+    header.main .email .disk {
+        margin: 5px;
+        width: 10px;
+        height: 10px;
+    }
+    .cont {
+        padding-top: 39px;
+    }
 }
