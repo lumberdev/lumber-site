@@ -53,8 +53,8 @@
 
    [:section.box.quote
     [:div.ar
-     [:article [:h2.h2 "The Future of Work is Remote"]]
-     [dots/floating-dots 7 [0 30 100]]]]
+     [:article [:h2.q1 [:div "The future"] [:div "of work is"] [:div "remote"]]]
+     [dots/bumping-dots 7]]]
 
    [:section.box.clock
     [:div.ar.yellow-bg
@@ -131,11 +131,10 @@
    [:section.box.dots.white-bg
     [:div.ar [dots/raining-dots]]]
 
-
    [:section.box.quote
     [:div.ar
-     [:article [:h2.h2 "The Future of Work is Remote"]]
-     [dots/bumping-dots 7]]]
+     [:article [:h2.q2 [:div "It's your project."] [:div "We just get it done."]]]
+     [dots/floating-dots 7 [0 30 0 100]]]]
 
    [:section.box.info
     [:div.ar

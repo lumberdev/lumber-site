@@ -3,6 +3,7 @@
    [uix.dom.alpha :as uix.dom]
    [uix.core.alpha :as uix]
    #?(:cljs ["react-anime" :default anime])
+   ;; #?(:cljs ["react-spring" :refer (useSpring animated config)])
    #?(:cljs ["framer-motion" :refer (motion useMotionValue)])
    ))
 
@@ -299,6 +300,65 @@
         pos   (mapv (partial nth edges) idxs)]
     pos))
 
+
+(defn make-dot [position velocity]
+  {:position position
+   :velocity velocity
+   :mass 1
+   :radius 5
+   :restitution -0.7})
+
+(defn frontal-area [dot]
+  (/ (* Math/PI (:radius dot) (:radius dot)) 10000))
+
+(defn drag-force [dot d]
+  (let [Cd 0.47
+        rho 1.22
+        A (frontal-area dot)
+        Vd (-> dot :velocity d)]
+    (if (zero? Vd) 0
+        (* -0.5 Cd A rho (* 2 Vd) (/ Vd (Math/abs Vd)))
+        )))
+
+(defn accel
+  ([dot d] (accel dot d 0))
+  ([dot d ag]
+   (+ ag (/ (drag-force dot d) (:mass dot)))))
+
+(defn position [o]
+  (let [frame-rate (/ 1.0 40)
+        ax (accel o :x)
+        ay (accel o :y 9.81)
+        vx (+ (-> o :velocity :x) (* ax frame-rate))
+        vy (+ (-> o :velocity :y) (* ay frame-rate))
+        px (+ (-> o :position :x) (* vx frame-rate 100))
+        py (+ (-> o :position :y) (* vy frame-rate 100))]
+    (make-dot {:x px :y py} {:x vx :y vy})))
+
+(defn collision [width height dot]
+  (let [px (-> dot :position :x)
+        py (-> dot :position :y)
+        vx (-> dot :velocity :x)
+        vy (-> dot :velocity :y)
+        r  (:radius dot)
+        restitution (:restitution dot)]
+      (cond (> py (- height r))
+            (collision width height (make-dot {:x px :y (- height r)}
+                                              {:x vx :y (* vy restitution)}))
+            (< py 0)
+            (collision width height (make-dot {:x px :y r}
+                                              {:x vx :y (* vy restitution)}))
+            (> px (- width r))
+            (collision width height (make-dot {:x (- width r) :y py}
+                                              {:x (* vx restitution) :y vy}))
+            (< px r)
+            (collision width height (make-dot {:x r :y py}
+                                              {:x (* vx restitution) :y vy}))
+         :else dot)))
+
+(def move (comp position (partial collision 100 100)))
+;; (take 10 (iterate move (make-dot {:x 10 :y 10} {:x 17 :y -3})))
+
 (defn bumping-dots [n]
   #?(:cljs [:svg
             (for [i (range 1 (inc n))]
@@ -313,53 +373,21 @@
                     x (rand-r x-min x-max)
                     y (rand-r y-min y-max)
                     re (rand-edge x-min x-max y-min y-max 100)
-                    durations (repeatedly 100 #(rand-r 1000 1500))
-                    xs (mapv (fn [p d] {:value (str (:x p) "%")
-                                        :duration d}) re durations)
-                    ys (mapv (fn [p d] {:value (str (:y p) "%")
-                                        :duration d}) re durations)
+                    durations (repeat 1000 (/ 1000 10))
+                    p (into [] (take 1000 (iterate move
+                                                 (make-dot {:x x :y y}
+                                                           {:x (rand-r -1 1)
+                                                            :y (rand-r -20 20)}))))
+                    xs (mapv (fn [p d] {:value (str (-> p :position :x) "%")
+                                        :duration d}) p durations)
+                    ys (mapv (fn [p d] {:value (str (-> p :position :y) "%")
+                                        :duration d}) p durations)
                     ]
                 [:> anime
                  {:cx (clj->js xs)
                   :cy (clj->js ys)
-                  :loop true
-                  :direction "alternate"
                   :easing "linear"}
                  [:circle {:cx x :cy y :r (str r "%") :fill "#ffcc08"}]]
-                )
-              )]))
-
-(defn spring-dots [n]
-  #?(:cljs [:svg
-            (for [i (range 1 (inc n))]
-              (let [w 100
-                    offset 0
-                    r 5
-                    size 4.5
-                    x-min (- (+ 0 size) offset)
-                    x-max (- (+ w offset) size)
-                    y-min (- (+ 0 size) offset)
-                    y-max (- (+ w offset) size)
-                    x (rand-r x-min x-max)
-                    y (rand-r y-min y-max)
-                    re (rand-edge x-min x-max y-min y-max 100)
-                    durations (repeatedly 100 #(rand-r 1000 1500))
-                    xs (mapv (fn [p d] {:value (str (:x p) "%")
-                                        :duration d}) re durations)
-                    ys (mapv (fn [p d] {:value (str (:y p) "%")
-                                        :duration d}) re durations)
-                    ]
-                [:> (.-circle motion)
-                 {:cx x :cy y :r (str r "%") :fill "#ffcc08"
-                  :animate #js {
-                                ;; :cx (clj->js (mapv :value xs))
-                                ;; :cy (clj->js (mapv :value ys))
-                                :cx (clj->js [5 20 95])
-                                :cy (clj->js [5 120 40])
-                                }
-                  :transition #js {:type "spring"}
-                  }
-                 ]
                 )
               )]))
 
