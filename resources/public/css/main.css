@@ -170,19 +170,16 @@ header, footer, section, article, nav {
 .h1 {
     font-family: "Messina Serif Light", serif;
     font-size: 42px;
-    /* letter-spacing: -0.4; */
     line-height: 46px;
 }
 .h2 {
     font-family: "Messina Serif Light", serif;
     font-size: 32px;
-    /* letter-spacing: -0.3; */
     line-height: 34px;
 }
 .h3 {
     font-family: "Messina Sans SemiBold", sans-serif;
     font-size: 12px;
-    /* letter-spacing: 1.4; */
     line-height: 30px;
     text-transform: uppercase;
 }
@@ -190,6 +187,21 @@ header, footer, section, article, nav {
     font-family: "Messina Sans Regular", sans-serif;
     font-size: 16px;
     line-height: 22px;
+}
+.q1 {
+    font-family: "Messina Serif Light", serif;
+    font-size: 46px;
+    line-height: 50px;
+}
+.q2 {
+    font-family: "Messina Serif Light", serif;
+    font-size: 38px;
+    line-height: 42px;
+}
+.q3 {
+    font-family: "Messina Serif Light", serif;
+    font-size: 26px;
+    line-height: 30px;
 }
 
 /* Buttons */
@@ -418,20 +430,41 @@ footer.main {
     right: 0;
     bottom: 0;
     left: 0;
-    display: grid;
-    grid-template-rows: 40px auto 40px;
-    justify-items: center;
-    align-items: center;
     padding: 26px 40px 40px 40px;
+
+    /* with grid layout (no support) */
+    /* display: grid; */
+    /* grid-template-rows: 40px auto 40px; */
+    /* -webkit-grid-template-rows: 40px auto 40px; */
+    /* grid-template-columns: 100%; */
+    /* justify-items: center; */
+    /* align-items: center; */
+
+    /* with flexbox (temp) */
+    display: -webkit-flexbox;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    justify-content: center;
 }
 .box.black-bg {
     color: #fff;
     background-color: #000;
 }
 .box article {
-    display: grid;
-    justify-items: center;
-    align-items: center;
+}
+
+.box header {
+    position: absolute;
+    top: 20px;
+}
+.box footer {
+    position: absolute;
+    bottom: 20px;
 }
 
 .info {}
@@ -527,6 +560,17 @@ footer.main {
     height: 70%;
     padding: 20px 20px;
     border-radius: 50%;
+
+    /* with flexbox (temp) */
+    display: -webkit-flexbox;
+    display: -ms-flexbox;
+    display: -webkit-flex;
+    display: flex;
+    -webkit-flex-align: center;
+    -ms-flex-align: center;
+    -webkit-align-items: center;
+    align-items: center;
+    justify-content: center;
 }
 .value h2 {
     dispaly: block;
@@ -542,7 +586,7 @@ footer.main {
 }
 .quote article {
     position: relative;
-    width: 50%;
+    width: 100%;
     z-index: 0;
 }
 .quote svg {
@@ -921,6 +965,22 @@ footer.main {
         top: 14px;
     }
 
+    .q1 {
+        font-family: "Messina Serif Light", serif;
+        font-size: 46px;
+        line-height: 50px;
+    }
+    .q2 {
+        font-family: "Messina Serif Light", serif;
+        font-size: 38px;
+        line-height: 42px;
+    }
+    .q3 {
+        font-family: "Messina Serif Light", serif;
+        font-size: 26px;
+        line-height: 30px;
+    }
+
     .btn {
         height: 50px;
         padding: 0 50px;
@@ -966,6 +1026,22 @@ footer.main {
     }
     .info ul li::before {
         top: 7px;
+    }
+
+    .q1 {
+        font-family: "Messina Serif Light", serif;
+        font-size: 34px;
+        line-height: 38px;
+    }
+    .q2 {
+        font-family: "Messina Serif Light", serif;
+        font-size: 30px;
+        line-height: 34px;
+    }
+    .q3 {
+        font-family: "Messina Serif Light", serif;
+        font-size: 22px;
+        line-height: 26px;
     }
 }
 
