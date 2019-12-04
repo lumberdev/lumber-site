@@ -51,9 +51,6 @@
 
   (defonce init-db (xf/dispatch [:db/init]))
 
-  (events/listen js/window EventType/SCROLL (fn [e] (xf/dispatch [:set-scroll])))
-  ;; (js/window.addEventListener "scroll" (fn [e] (xf/dispatch [:set-scroll])))
-
   (uix.dom/hydrate
    [home/home]
    (.getElementById js/document "app"))

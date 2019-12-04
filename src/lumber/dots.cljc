@@ -2,15 +2,19 @@
   (:require
    [uix.dom.alpha :as uix.dom]
    [uix.core.alpha :as uix]
+   [xframe.core.alpha :as xf :refer [<sub]]
+
    #?(:cljs ["react-anime" :default anime])
-   ;; #?(:cljs ["react-spring" :refer (useSpring animated config)])
-   #?(:cljs ["framer-motion" :refer (motion useMotionValue)])
+   #?(:cljs ["framer-motion" :refer (motion transform useMotionValue useViewportScroll useSpring  useCycle useAnimation)])
    ))
 
 (def black "#000")
 (def yellow "#FFCC08")
 (defn sec [n] (str n "s"))
 (defn per [n] (str n "%"))
+
+(defn rand-r [min max]
+  (+ (* (rand) (- max min)) min))
 
 ;;;;
 ;; Grid Hover Dots
@@ -236,8 +240,15 @@
                          {:class "eye"}
                          [:> (.-div motion)
                           {:class "pupil"
-                           :animate #js {:height #js ["0%" "100%" "0%"]}
-                           :transition #js {:duration 0.5 :repeatDelay 5 :loop 100}
+                           :animate (clj->js {:height ["0%" "100%" "0%"]})
+                           :transition (clj->js
+                                        (into [] (take 100 (cycle ["0%" "100%"])))
+                                        ;; (into [] (repeatedly 200 #(rand-r 1 5)))
+                                        {
+                                         :duration 0.5
+                                         :repeatDelay 5
+                                         :loop 'Infinity
+                                         })
                            }]
                          ]
                         [:> (.-div motion)
@@ -255,8 +266,6 @@
 ;;;;
 ;; Floating Dots
 ;;;;
-(defn rand-r [min max]
-  (+ (* (rand) (- max min)) min))
 
 (defn floating-dots [n offsets]
   #?(:cljs [:svg
@@ -299,7 +308,6 @@
         idxs  (take n (cycle order))
         pos   (mapv (partial nth edges) idxs)]
     pos))
-
 
 (defn make-dot [position velocity]
   {:position position
@@ -357,39 +365,79 @@
          :else dot)))
 
 (def move (comp position (partial collision 100 100)))
-;; (take 10 (iterate move (make-dot {:x 10 :y 10} {:x 17 :y -3})))
+;; (take 10 (iterate move (make-dot {:x 10 :y -100} {:x 17 :y -3})))
 
-(defn bumping-dots [n]
-  #?(:cljs [:svg
-            (for [i (range 1 (inc n))]
-              (let [w 100
-                    offset 0
-                    r 5
-                    size 4.5
-                    x-min (- (+ 0 size) offset)
-                    x-max (- (+ w offset) size)
-                    y-min (- (+ 0 size) offset)
-                    y-max (- (+ w offset) size)
-                    x (rand-r x-min x-max)
-                    y (rand-r y-min y-max)
-                    re (rand-edge x-min x-max y-min y-max 100)
-                    durations (repeat 1000 (/ 1000 10))
-                    p (into [] (take 1000 (iterate move
-                                                 (make-dot {:x x :y y}
-                                                           {:x (rand-r -1 1)
-                                                            :y (rand-r -20 20)}))))
-                    xs (mapv (fn [p d] {:value (str (-> p :position :x) "%")
-                                        :duration d}) p durations)
-                    ys (mapv (fn [p d] {:value (str (-> p :position :y) "%")
-                                        :duration d}) p durations)
-                    ]
-                [:> anime
-                 {:cx (clj->js xs)
-                  :cy (clj->js ys)
-                  :easing "linear"}
-                 [:circle {:cx x :cy y :r (str r "%") :fill "#ffcc08"}]]
-                )
-              )]))
+(defn gravity-dots [n]
+  #?(:cljs (let [
+                 w 100
+                 offset 0
+                 r 4.8
+                 size 4.5
+                 x-min (- (+ 0 size) offset)
+                 x-max (- (+ w offset) size)
+                 y-min (- (+ 0 size) offset)
+                 y-max (- (+ w offset) size)
+
+                 scroll (useViewportScroll)
+                 scrollY (.-scrollY scroll)
+
+                 dots (uix/state {
+                                  1 (make-dot {:x (rand-r x-min x-max) :y y-max}
+                                              {:x 1 :y 1})
+                                  2 (make-dot {:x (rand-r x-min x-max) :y y-max}
+                                              {:x 1 :y 1})
+                                  3 (make-dot {:x (rand-r x-min x-max) :y y-max}
+                                              {:x 1 :y 1})
+                                  4 (make-dot {:x (rand-r x-min x-max) :y y-max}
+                                              {:x 1 :y 1})
+                                  5 (make-dot {:x (rand-r x-min x-max) :y y-max}
+                                              {:x 1 :y 1})
+                                  6 (make-dot {:x (rand-r x-min x-max) :y y-max}
+                                              {:x 1 :y 1})
+                                  7 (make-dot {:x (rand-r x-min x-max) :y y-max}
+                                              {:x 1 :y 1})
+                                  })
+                 done (uix/ref true)
+                 ]
+             [:svg
+              (for [i (range 1 (inc n))]
+                (let [
+                      x (get-in @dots [i :position :x] )
+                      y (get-in @dots [i :position :y] )
+
+                      p (into [] (take 140 (iterate move
+                                                    (make-dot {:x x :y y}
+                                                              {:x (rand-r -1 1)
+                                                               :y (rand-r 5 10)}))))
+                      xs (mapv (fn [p] {:value (str (-> p :position :x) "%")
+                                        :duration 10}) p)
+                      ys (mapv (fn [p] {:value (str (-> p :position :y) "%")
+                                        :duration 10}) p)
+                      variants (clj->js
+                                {
+                                 :up   {:cy (mapv #(:value %) ys) :cx (mapv #(:value %) xs)}
+                                 :down {:cy (mapv #(:value %) ys) :cx (mapv #(:value %) xs)}
+                                 })
+                      controls (useAnimation)
+                      start (.start controls "up")
+                      ]
+                  [:> (.-circle motion)
+                   {
+                    :r (str r "%")
+                    :fill "#ffcc08"
+                    :initial (clj->js
+                              {:cx (str x "%") :cy (str 5 "%")})
+                    :animate controls
+                    :onAnimationStart (fn [] (reset! done false))
+                    :onAnimationComplete (fn []
+                                           (prn "is done")
+                                           )
+                    :variants variants
+                    :transition (clj->js
+                                 {:duration 12})
+                    }]
+                  )
+                )])))
 
 (defn pos [x y] {:x x :y y})
 

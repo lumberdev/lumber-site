@@ -139,11 +139,7 @@
    [:section.box.info
     [:div.ar
      [:header  [:h3.h3 "Say Hello"]]
-     [:article [:p.h1
-                [:div "Send Us"]
-                [:div.thunder "electronic"
-                 ]
-                [:div "mail"]]]
+     [:article [:p.h1 [:div "Send us"] [:div.thunder "electronic"] [:div "mail"]]]
      [:footer  [:a.btn.re.black {:href "mailto:hello@lumberdev.nyc"} "hello@lumberdev.nyc"]]]]
 
    ;; [:section.box.dots.white-bg

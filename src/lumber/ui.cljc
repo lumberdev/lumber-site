@@ -6,9 +6,6 @@
    #?(:cljs ["framer-motion" :refer (motion useMotionValue useViewportScroll)])
    ))
 
-;;;;
-;; Progress
-;;;;
 (defn percentage [total x] (/ (* 100.0 x) total))
 
 (defn scroll []
@@ -16,11 +13,16 @@
                           js/document.documentElement.clientHeight)
                        js/document.scrollingElement.scrollTop)))
 
+;;;;
+;; Progress
+;;;;
+
 (defn progress []
-  #?(:cljs (let [scroll (<sub [:db/scroll])]
+  #?(:cljs (let [scroll (useViewportScroll)
+                 scrollY (.-scrollYProgress scroll)]
              [:div.progress
               [:> (.-div motion)
-               {:class "state" :style {:width (str scroll "%")}}]
+               {:class "state" :style {:scaleX scrollY :transform-origin "left top"}}]
               [:div.rail]])))
 
 ;;;;
