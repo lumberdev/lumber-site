@@ -30,7 +30,21 @@ Run the project production server:
 
     $ clj -m lumber.serve
 
-### Bugs
+## Deployment
+
+Install the latest version of Now CLI:
+
+    npm i -g now
+
+To create a test deployment
+
+    now --docker
+
+If the deployment works properly point lumberdev.nyc to it
+
+    now alias set https://lumber-site-<code-here>.now.sh/ lumberdev.nyc
+
+where you'll get the code from the previous step.
 
 ## License
 
