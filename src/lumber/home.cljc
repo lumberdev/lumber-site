@@ -54,7 +54,7 @@
    [:section.box.quote
     [:div.ar
      [:article [:h2.q1 [:div "The future"] [:div "of work is"] [:div "remote"]]]
-     [dots/bumping-dots 7]]]
+     [dots/gravity-dots 7]]]
 
    [:section.box.clock
     [:div.ar.yellow-bg
@@ -70,7 +70,7 @@
     [:div.ar
      [:header.title  [:h3.h3 "In-House Project"]]
      [:header.name   [:h3.h3 "Duct"]]
-     [:article.desc  [:h2.h2 "Duct"] [:p.t1 "IFTTT for developers"]]
+     [:article.desc  [:h2.h2 "Duct"] [:p.t1.light-bulp "IFTTT for developers"]]
      [:article.image [:img {:src "/images/Duct.jpg"}]]
      [:footer
       [:a.btn.re.black {:href "https://duct.cloud/" :target "_blank"}
@@ -139,7 +139,11 @@
    [:section.box.info
     [:div.ar
      [:header  [:h3.h3 "Say Hello"]]
-     [:article [:p.h2 "Send Us Electronic Mail"]]
+     [:article [:p.h1
+                [:div "Send Us"]
+                [:div.thunder "electronic"
+                 ]
+                [:div "mail"]]]
      [:footer  [:a.btn.re.black {:href "mailto:hello@lumberdev.nyc"} "hello@lumberdev.nyc"]]]]
 
    ;; [:section.box.dots.white-bg
