@@ -11,8 +11,8 @@
 
 (defn nav []
   [:header.main
-   ;; [:div.logo  [:img {:src "images/Logo.svg"}]]
-   [:div.logo  [:span.t1 "Lumber"]]
+   [:div.logo  [:img {:src "images/Lumber.svg" :alt "Lumber"}]]
+   ;; [:div.logo  [:span.l "Lumber"]]
    [:div.nav   [ui/progress]]
    [:div.email [:div.a.u
                 [:span.disk-cont [:div.disk]]

@@ -203,6 +203,10 @@ header, footer, section, article, nav {
     font-size: 26px;
     line-height: 30px;
 }
+.l {
+    font-family: "Messina Sans SemiBold", sans-serif;
+    font-size: 28px;
+}
 
 /* Buttons */
 .btn {
@@ -366,16 +370,14 @@ header.main.compact .email .disk {
     padding-top: 39px;
 }
 
-.logo span {
-    font-size: 26px;
-    font-weight: bold;
-}
-
 /* Nav */
 .nav {
     position: relative;
     width: 100%;
     padding: 0 40px;
+}
+.logo img {
+    width: 100%;
 }
 
 /* Progress */
