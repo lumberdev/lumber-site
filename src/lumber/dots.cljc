@@ -5,7 +5,10 @@
    [xframe.core.alpha :as xf :refer [<sub]]
 
    #?(:cljs ["react-anime" :default anime])
-   #?(:cljs ["framer-motion" :refer (motion transform useMotionValue useViewportScroll useSpring  useCycle useAnimation)])
+   #?(:cljs ["framer-motion" :refer
+             (motion transform useMotionValue
+              useViewportScroll useSpring
+              useCycle useAnimation)])
    ))
 
 (def black "#000")
@@ -53,11 +56,7 @@
                [:> (.-div motion)
                 {:class "dot-cont"
                  :onHoverStart
-                 (fn [] (do
-                          ;; (swap! done assoc i false)
-                          (reset! s (update-hover-state s i 0.65 0.3))
-                          ;; (js/setTimeout #(swap! done assoc i true) (* 1000 duration))
-                          ))
+                 (fn [] (do (reset! s (update-hover-state s i 0.65 0.3))))
                  :onHoverEnd
                  (fn [] (do
                           (reset! s (update-hover-state s i 1 1))))
@@ -214,20 +213,29 @@
         s1 (- s1-max s0-min)]
     (+ s1-min (/ (* s1 (- s0-value s0-min)) s0))))
 
+(defn use-window-event [event cb]
+  (uix/effect! (fn []
+                     (js/window.addEventListener event cb)
+                     (fn [] (js/window.removeEventListener event cb))
+                     [event cb])))
+
+(defn use-global-mouse-move [cb]
+  (use-window-event "mouse-move" cb))
+
 (defn eye-dots [pos]
-  #?(:cljs (let [rect (uix/ref {})
-                 client (uix/ref {})
-                 relative (uix/state {})
-                 xm (uix/ref 0)
+  #?(:cljs (let [xm (uix/ref 0)
                  ym (uix/ref 0)
                  xe (uix/state 60)
-                 ye (uix/state 38)]
+                 ye (uix/state 38)
+                 client {:w js/window.innerWidth :h js/window.innerHeight}
+                 mouse (<sub [:db/mouse])
+                 ]
              [:> (.-div motion)
               {:class "cf"
-               :onHoverStart (fn [e] (reset! rect (bounding-rect e)))
-               :onHoverEnd (fn [e] (reset! relative {:x (/ (:width @rect) 2)
-                                                     :y (/ (:width @rect) 2)}))
-               :onMouseMove (fn [e] (reset! relative (relative-pos @rect (client-pos e))))
+               ;; :onHoverStart (fn [e] (reset! rect (bounding-rect e)))
+               ;; :onHoverEnd (fn [e] (reset! relative {:x (/ (:width @rect) 2)
+               ;;                                       :y (/ (:width @rect) 2)}))
+               ;; :onMouseMove (fn [e] (reset! relative (relative-pos @rect (client-pos e))))
                :style {:width "100%"}}
               (for [i (range 0 25)] ^{:key i}
                 (do [:> (.-div motion)
@@ -242,22 +250,22 @@
                           {:class "pupil"
                            :animate (clj->js {:height ["0%" "100%" "0%"]})
                            :transition (clj->js
-                                        (into [] (take 100 (cycle ["0%" "100%"])))
-                                        ;; (into [] (repeatedly 200 #(rand-r 1 5)))
-                                        {
-                                         :duration 0.5
+                                        {:duration 0.5
                                          :repeatDelay 5
-                                         :loop 'Infinity
-                                         })
+                                         :loop 'Infinity})
                            }]
                          ]
                         [:> (.-div motion)
                          {:animate #js {}
                           :class "eyeball"
-                          :style {:top
-                                  (str (transform-range 0 (:height @rect) 25 22 (:y @relative)) "%")
-                                  :left
-                                  (str (transform-range 0 (:width @rect) 12 45 (:x @relative)) "%")}
+                          :style {:x (str (transform (.-clientX mouse)
+                                                     (clj->js [0 1000])
+                                                     (clj->js [-100 90])) "%")
+
+                                  :y (str (transform (.-clientY mouse)
+                                                     (clj->js [0 (:h client)])
+                                                     (clj->js [-40 40])) "%")
+                                  }
                           }]])
                      ]))])))
 
@@ -380,30 +388,29 @@
 
                  scroll (useViewportScroll)
                  scrollY (.-scrollY scroll)
+                 log (js/console.log scrollY)
 
-                 dots (uix/state {
-                                  1 (make-dot {:x (rand-r x-min x-max) :y y-max}
-                                              {:x 1 :y 1})
-                                  2 (make-dot {:x (rand-r x-min x-max) :y y-max}
-                                              {:x 1 :y 1})
-                                  3 (make-dot {:x (rand-r x-min x-max) :y y-max}
-                                              {:x 1 :y 1})
-                                  4 (make-dot {:x (rand-r x-min x-max) :y y-max}
-                                              {:x 1 :y 1})
-                                  5 (make-dot {:x (rand-r x-min x-max) :y y-max}
-                                              {:x 1 :y 1})
-                                  6 (make-dot {:x (rand-r x-min x-max) :y y-max}
-                                              {:x 1 :y 1})
-                                  7 (make-dot {:x (rand-r x-min x-max) :y y-max}
-                                              {:x 1 :y 1})
-                                  })
+                 down (uix/state {1 (make-dot {:x (rand-r x-min x-max) :y y-min} {:x 1 :y 1})
+                                  2 (make-dot {:x (rand-r x-min x-max) :y y-min} {:x 1 :y 1})
+                                  3 (make-dot {:x (rand-r x-min x-max) :y y-min} {:x 1 :y 1})
+                                  4 (make-dot {:x (rand-r x-min x-max) :y y-min} {:x 1 :y 1})
+                                  5 (make-dot {:x (rand-r x-min x-max) :y y-min} {:x 1 :y 1})
+                                  6 (make-dot {:x (rand-r x-min x-max) :y y-min} {:x 1 :y 1})
+                                  7 (make-dot {:x (rand-r x-min x-max) :y y-min} {:x 1 :y 1})})
+                 up (uix/state {1 (make-dot {:x (rand-r x-min x-max) :y y-max} {:x 1 :y 1})
+                                  2 (make-dot {:x (rand-r x-min x-max) :y y-max} {:x 1 :y 1})
+                                  3 (make-dot {:x (rand-r x-min x-max) :y y-max} {:x 1 :y 1})
+                                  4 (make-dot {:x (rand-r x-min x-max) :y y-max} {:x 1 :y 1})
+                                  5 (make-dot {:x (rand-r x-min x-max) :y y-max} {:x 1 :y 1})
+                                  6 (make-dot {:x (rand-r x-min x-max) :y y-max} {:x 1 :y 1})
+                                  7 (make-dot {:x (rand-r x-min x-max) :y y-max} {:x 1 :y 1})})
                  done (uix/ref true)
                  ]
              [:svg
               (for [i (range 1 (inc n))]
                 (let [
-                      x (get-in @dots [i :position :x] )
-                      y (get-in @dots [i :position :y] )
+                      x (get-in @down [i :position :x] )
+                      y (get-in @down [i :position :y] )
 
                       p (into [] (take 140 (iterate move
                                                     (make-dot {:x x :y y}
@@ -425,16 +432,12 @@
                    {
                     :r (str r "%")
                     :fill "#ffcc08"
-                    :initial (clj->js
-                              {:cx (str x "%") :cy (str 5 "%")})
+                    :initial (clj->js {:cx (str x "%") :cy (str 5 "%")})
                     :animate controls
-                    :onAnimationStart (fn [] (reset! done false))
-                    :onAnimationComplete (fn []
-                                           (prn "is done")
-                                           )
+                    :onAnimationStart    (fn [] (reset! done false))
+                    :onAnimationComplete (fn [] (reset! done true))
                     :variants variants
-                    :transition (clj->js
-                                 {:duration 12})
+                    :transition (clj->js {:duration 12})
                     }]
                   )
                 )])))

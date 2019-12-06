@@ -24,12 +24,17 @@
      :juergen  {:code  "https://github.com/lumberdev/Juergen"}}
     :open false
     :scroll 0
+    :mouse {:x 0 :y 0}
     :embed ""
     }))
 
 (xf/reg-event-db :set-scroll
                  (fn [db [_ value]]
                    (assoc-in db [:scroll] (ui/scroll))))
+
+(xf/reg-event-db :set-mouse
+                 (fn [db [_ value]]
+                   (assoc-in db [:mouse] value)))
 
 (xf/reg-event-db :open
                  (fn [db [_ value]]
@@ -42,6 +47,7 @@
                    (assoc-in db [:open] false)))
 
 (xf/reg-sub :db/scroll   (fn [] (:scroll   (xf/<- [::xf/db]))))
+(xf/reg-sub :db/mouse    (fn [] (:mouse    (xf/<- [::xf/db]))))
 (xf/reg-sub :db/partners (fn [] (:partners (xf/<- [::xf/db]))))
 (xf/reg-sub :db/open     (fn [] (:open     (xf/<- [::xf/db]))))
 (xf/reg-sub :db/embed    (fn [] (:embed    (xf/<- [::xf/db]))))
@@ -55,6 +61,7 @@
    [home/home]
    (.getElementById js/document "app"))
 
+  (js/window.addEventListener "mousemove" (fn [e] (xf/dispatch [:set-mouse e])))
   )
 
 (defn ^:export init []
