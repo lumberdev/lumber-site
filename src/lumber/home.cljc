@@ -40,7 +40,7 @@
      [:header.title  [:h3.h3 "Open Source"]]
      [:header.name   [:h3.h3 "Vimsical"]]
      [:article.desc  [:h2.h2 "Vimsical"] [:p.t1 "Version control as a learning tool"]]
-     [:article.image [:img {:src "/images/Vimsical.jpg"}]]
+     [:article.image [:img {:src "images/Vimsical.jpg"}]]
      [:footer        [:a.a.u {:on-click #(xf/dispatch [:open "https://www.youtube.com/embed/OtvK24bG_IY"])}
                       [:div.video [:span.play] "Play Video"]]
       [:div.pipe]
@@ -71,7 +71,7 @@
      [:header.title  [:h3.h3 "In-House Project"]]
      [:header.name   [:h3.h3 "Duct"]]
      [:article.desc  [:h2.h2 "Duct"] [:p.t1.light-bulp "IFTTT for developers"]]
-     [:article.image [:img {:src "/images/Duct.jpg"}]]
+     [:article.image [:img {:src "images/Duct.jpg"}]]
      [:footer
       [:a.btn.re.black {:href "https://duct.cloud/" :target "_blank"}
        [:div "Go to Site"]]]]]
@@ -142,9 +142,8 @@
      [:article [:p.h1 [:div "Send us"] [:div.thunder "electronic"] [:div "mail"]]]
      [:footer  [:a.btn.re.black {:href "mailto:hello@lumberdev.nyc"} "hello@lumberdev.nyc"]]]]
 
-   ;; [:section.box.dots.white-bg
-   ;;  [:div.ar [dots/glow-dots]]]
-
+   [:section.box.dots.white-bg.last-box
+    [:div.ar [dots/glow-dots]]]
    ])
 
 (defn footer []

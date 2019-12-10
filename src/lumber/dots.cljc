@@ -4,6 +4,8 @@
    [uix.core.alpha :as uix]
    [xframe.core.alpha :as xf :refer [<sub]]
 
+   #?(:cljs [goog.functions])
+
    #?(:cljs ["react-anime" :default anime])
    #?(:cljs ["framer-motion" :refer
              (motion transform useMotionValue
@@ -11,13 +13,90 @@
               useCycle useAnimation)])
    ))
 
+
 (def black "#000")
 (def yellow "#FFCC08")
 (defn sec [n] (str n "s"))
 (defn per [n] (str n "%"))
 
-(defn rand-r [min max]
+(defn rand-r
+  "Random number in range [min..max]."
+  [min max]
   (+ (* (rand) (- max min)) min))
+
+(defn transform-range
+  "Transfroms value from input togoutput range.
+   R_in = [0 100] R_out = [0 1] v = 50 results in 0.5
+   Example: (transform-range 0 100 0 10 50) ;; -> 0.5"
+  [in-min in-max out-min out-max value]
+  (let [in (- in-max in-min)
+        out (- out-max in-min)]
+    (+ out-min (/ (* out (- value in-min)) in))))
+
+(defn accumulate
+  "Accumulative Sum of xs.
+  Example: (accumlate [1 2 3 4]) -> [1 3 6 10]"
+  [xs]
+  (reduce
+   (fn [acc n] (conj acc (reduce + 0 (take n xs))))
+   []
+   (range 1 (inc (count xs)))))
+
+(defn bounding-rect [e]
+  (let [r (-> e .-target .getBoundingClientRect)]
+    {:left (.-left r) :top (.-top r) :width (.-width r) :height (.-height r)}))
+
+(defn client-pos [e]
+  {:x (-> e .-clientX) :y (-> e .-clientY)})
+
+(defn screen-pos [e]
+  {:x (-> e .-screenX) :y (-> e .-screenY)})
+
+(defn relative-pos [rect global]
+  {:x (- (:x global) (:left rect))
+   :y (- (:y global) (:top rect))})
+
+(defn use-window-event
+  "Window event hook (it cleans after itself).
+  Example: (use-window-event 'mouse' mouse-handler)"
+  [event cb]
+  (uix/effect! (fn []
+                 (js/window.addEventListener event cb)
+                 (fn [] (js/window.removeEventListener event cb))
+                 [event cb])))
+
+(defn use-global-mouse-move [cb]
+  (use-window-event "mouse-move" cb))
+
+;;;;
+;; Glow Mouse on Hover Dots
+;;;;
+(defn glow-dots []
+  #?(:cljs (let [rect (uix/ref   {:width 300 :height 300 :left 40 :top 240})
+                 pos  (uix/state {:x 150 :y 150})
+                 r 0
+                 ]
+             [:div.glow-cont.cf
+              {:onMouseEnter
+               (fn [e] (do (reset! rect (bounding-rect e))))
+               :onMouseMove
+               (fn [e]
+                 (let [mouse (client-pos e)
+                       relative (relative-pos @rect mouse)]
+                   (reset! pos {:x (:x relative) :y (:y relative)})))
+               :style {:width "100%" :height "100%"}}
+              [:div.glow.yellow-gr
+               {:style
+                {:transform (str "translate(" (:x @pos) "px," (:y @pos) "px)")}}
+               [:div.wave.wave-1.yellow-gr]
+               [:div.wave.wave-2.yellow-gr]
+               [:div.wave.wave-3.yellow-gr]
+               ]
+              (for [i (range 0 25)] ^{:key i}
+                [:div.dot-cont
+                 [:div {:class "dot black-bg"}]])])))
+
+
 
 ;;;;
 ;; Grid Hover Dots
@@ -67,7 +146,7 @@
                  }
                 [:> (.-div motion)
                  {:class "dot black-bg"
-                  :style {:width "100%" :padding-bottom "100%"}
+                  ;; :style {:width "100%" :padding-bottom "100%"}
                   :animate #js {:scale (get @s i)}
                   :transition #js {:ease "easeOut" :duration duration}
                   }]])])))
@@ -96,9 +175,7 @@
                 (fn [] (do (swap! state assoc :hover false)))
 
                 :onTapStart
-                (fn [] (do
-                         (prn "tap")
-                         (reset! state {:hover true :done false})
+                (fn [] (do (reset! state {:hover true :done false})
                          (js/setTimeout #(reset! state {:hover false :done true}) total-duration)))
                 }
                (for [i index->delay] ;;^{:key i}
@@ -150,7 +227,6 @@
                   (for [i [0 1 2 3 4]] ^{:key i}
                     [:> (.-div motion)
                      {:class "dot black-bg"
-                      :style {:width "100%" :padding-bottom "100%"}
                       :transition #js {:delay (* i delay)
                                        :duration duration
                                        :times #js [0 0.99 1]
@@ -168,115 +244,77 @@
 
 
 ;;;;
-;; Glow Mouse on Hover Dots
-;;;;
-(defn glow-dots []
-  #?(:cljs (let [s (uix/state {})]
-             [:div.cf {:style {:width "100%"}}
-              (for [i (range 0 25)] ^{:key i}
-                [:> (.-div motion)
-                 {:class "dot-cont"
-                  :onHoverStart
-                  (fn [_ _] (reset! s 0))
-                  :onHoverEnd
-                  (fn [_ _] (reset! s 1))
-                  :whileHover #(reset! s 2)
-                  }
-                 [:> (.-div motion)
-                  {:class "dot black-bg"
-                   :style {:width "100%" :padding-bottom "100%"}
-                   :animate #js {:scale (get @s i)}
-                   :transition #js {:ease "linear" :duration 0.1}
-                   }]])])))
-
-
-
-;;;;
 ;; Follow Mouse on Hover Dots
 ;;;;
-(defn bounding-rect [e]
-  (let [r (-> e .-target .getBoundingClientRect)]
-    {:left (.-left r) :top (.-top r) :width (.-width r) :height (.-height r)}))
+(defn rand-blink []
+  (* 1 (rand-nth (range 3 10))))
 
-(defn client-pos [e]
-  {:x (-> e .-clientX) :y (-> e .-clientY)})
+(defn set-blink [e]
+  (xf/dispatch [:set-blink (rand-blink)]))
 
-(defn screen-pos [e]
-  {:x (-> e .-screenX) :y (-> e .-screenY)})
+(def debounced-set-blink (goog.functions.debounce set-blink 500))
 
-(defn relative-pos [rect global]
-  {:x (- (:x global) (:left rect))
-   :y (- (:y global) (:top rect))})
+(defn lookX [client mouse]
+  (transform-range 0 (:w client) -100 190 (.-clientX mouse)))
 
-(defn transform-range [s0-min s0-max s1-min s1-max s0-value]
-  (let [s0 (- s0-max s0-min)
-        s1 (- s1-max s0-min)]
-    (+ s1-min (/ (* s1 (- s0-value s0-min)) s0))))
-
-(defn use-window-event [event cb]
-  (uix/effect! (fn []
-                     (js/window.addEventListener event cb)
-                     (fn [] (js/window.removeEventListener event cb))
-                     [event cb])))
-
-(defn use-global-mouse-move [cb]
-  (use-window-event "mouse-move" cb))
+(defn lookY [client mouse]
+  (transform-range 0 (:h client) -40 80 (.-clientY mouse)))
 
 (defn eye-dots [pos]
-  #?(:cljs (let [xm (uix/ref 0)
-                 ym (uix/ref 0)
-                 xe (uix/state 60)
-                 ye (uix/state 38)
-                 client {:w js/window.innerWidth :h js/window.innerHeight}
-                 mouse (<sub [:db/mouse])
-                 ]
-             [:> (.-div motion)
-              {:class "cf"
-               ;; :onHoverStart (fn [e] (reset! rect (bounding-rect e)))
-               ;; :onHoverEnd (fn [e] (reset! relative {:x (/ (:width @rect) 2)
-               ;;                                       :y (/ (:width @rect) 2)}))
-               ;; :onMouseMove (fn [e] (reset! relative (relative-pos @rect (client-pos e))))
-               :style {:width "100%"}}
+  #?(:cljs (let [client   {:w js/window.innerWidth :h js/window.innerHeight}
+                 mouse    (<sub [:db/mouse])
+                 blk      (uix/ref true)
+                 x        (lookX client mouse)
+                 y        (lookY client mouse)
+                 variant  (<sub [:db/variant])
+                 variants {:follow
+                           {:style
+                            {:transform (str "translate( " x "%," y "%)")
+                             :transition "transform 0.15s ease-out"}
+                            :onTransitionEnd
+                            (fn [] (xf/dispatch [:set-variant :roll]))
+                            }
+                           :roll
+                           {:style
+                            {:transform (str "translate( " (rand-r -100 90) "%," (rand-r -40 40) "%)")
+                             :transition "transform 0.15s ease-out 5s"
+                             }
+                            :onTransitionEnd
+                            (fn []
+                              (xf/dispatch [:set-variant :follow])
+                              (xf/dispatch [:set-variant :roll]))}}]
+             [:div.eyes-cont.cf
               (for [i (range 0 25)] ^{:key i}
-                (do [:> (.-div motion)
-                     {:animate #js {}
-                      :class "dot black-bg"
-                      :style {:float "left" :width "20%" :padding-bottom "20%" :pointer-events "none"}}
+                (do [:div.dot.black-bg
                      (when (contains? (into #{} pos) i)
                        [:div
-                        [:> (.-div motion)
-                         {:class "eye"}
-                         [:> (.-div motion)
-                          {:class "pupil"
-                           :animate (clj->js {:height ["0%" "100%" "0%"]})
-                           :transition (clj->js
-                                        {:duration 0.5
-                                         :repeatDelay 5
-                                         :loop 'Infinity})
-                           }]
-                         ]
-                        [:> (.-div motion)
-                         {:animate #js {}
-                          :class "eyeball"
-                          :style {:x (str (transform (.-clientX mouse)
-                                                     (clj->js [0 1000])
-                                                     (clj->js [-100 90])) "%")
-
-                                  :y (str (transform (.-clientY mouse)
-                                                     (clj->js [0 (:h client)])
-                                                     (clj->js [-40 40])) "%")
-                                  }
-                          }]])
-                     ]))])))
+                        [:div.eye
+                         [:div {:class (if true "pupil blink" "pupil")}]]
+                        [:div.eyeball (variant variants)]]
+                       )]))])))
 
 
 
 ;;;;
 ;; Floating Dots
 ;;;;
+(defn rand-edge [min-x max-x min-y max-y n]
+  (let [edges [{:x min-x :y (rand-r min-y max-y)}
+               {:x (rand-r min-y max-y) :y min-y}
+               {:x max-x :y (rand-r min-y max-y)}
+               {:x (rand-r min-y max-y) :y max-y}]
+        orders [[0 1 2 3]
+                [1 2 3 0]
+                [2 3 0 1]
+                [3 0 1 2]]
+        start (rand-nth edges)
+        order (rand-nth orders)
+        idxs  (take n (cycle order))
+        pos   (mapv (partial nth edges) idxs)]
+    pos))
 
 (defn floating-dots [n offsets]
-  #?(:cljs [:svg
+  #?(:cljs [:svg {:viewBox "0 0 100 100"}
             (for [i (range 1 (inc n))] ^{:key i}
               (let [w 100
                     offset (rand-nth offsets)
@@ -302,21 +340,9 @@
                 )
               )]))
 
-(defn rand-edge [min-x max-x min-y max-y n]
-  (let [edges [{:x min-x :y (rand-r min-y max-y)}
-               {:x (rand-r min-y max-y) :y min-y}
-               {:x max-x :y (rand-r min-y max-y)}
-               {:x (rand-r min-y max-y) :y max-y}]
-        orders [[0 1 2 3]
-                [1 2 3 0]
-                [2 3 0 1]
-                [3 0 1 2]]
-        start (rand-nth edges)
-        order (rand-nth orders)
-        idxs  (take n (cycle order))
-        pos   (mapv (partial nth edges) idxs)]
-    pos))
-
+;;;;
+;; Gravity
+;;;;
 (defn make-dot [position velocity]
   {:position position
    :velocity velocity
@@ -333,20 +359,20 @@
         A (frontal-area dot)
         Vd (-> dot :velocity d)]
     (if (zero? Vd) 0
-        (* -0.5 Cd A rho (* 2 Vd) (/ Vd (Math/abs Vd)))
-        )))
+        (* -0.5 Cd A rho (* 2 Vd) (/ Vd (Math/abs Vd))))))
 
 (defn accel
   ([dot d] (accel dot d 0))
   ([dot d ag]
    (+ ag (/ (drag-force dot d) (:mass dot)))))
 
+
 (defn position [o]
-  (let [frame-rate (/ 1.0 40)
-        ax (accel o :x)
+  (let [frame-rate (/ 1.0 120)
+        ax (accel o :x 0)
         ay (accel o :y 9.81)
-        vx (+ (-> o :velocity :x) (* ax frame-rate))
-        vy (+ (-> o :velocity :y) (* ay frame-rate))
+        vx (+ (-> o :velocity :x) (* ax frame-rate 1))
+        vy (+ (-> o :velocity :y) (* ay frame-rate 1))
         px (+ (-> o :position :x) (* vx frame-rate 100))
         py (+ (-> o :position :y) (* vy frame-rate 100))]
     (make-dot {:x px :y py} {:x vx :y vy})))
@@ -372,99 +398,63 @@
                                               {:x (* vx restitution) :y vy}))
          :else dot)))
 
+(defn collision? [dot dot2]
+  (let [px  (-> dot :position :x)
+        py  (-> dot :position :y)
+        px2 (-> dot2 :position :x)
+        py2 (-> dot2 :position :y)
+        r   (:radius dot)]
+    (not (or (< (+ py r) py2)
+             (> py (+ py2 r))
+             (< (+ px r) px2)
+             (> px (+ px2 r))))))
+
 (def move (comp position (partial collision 100 100)))
-;; (take 10 (iterate move (make-dot {:x 10 :y -100} {:x 17 :y -3})))
+
+(defn use-raf [cb]
+  (let [id (uix/ref 0)]
+    (uix/effect! (fn []
+                   (reset! id (js/window.requestAnimationFrame cb))
+                  (fn [] (js/window.cancelAnimationFrame id))
+                  [cb]))))
+
+(defn update-velocity [dot velocity]
+  (make-dot (:position dot) velocity))
+
+(defn update-velocities [dots velocities]
+  (mapv (fn [d v] (update-velocity d v)) dots velocities))
+
+(defn rand-update-velocities [size dots]
+  (update-velocities dots (repeatedly size (fn [] {:x 0 :y (rand-r 3 8)}))))
 
 (defn gravity-dots [n]
-  #?(:cljs (let [
-                 w 100
+  #?(:cljs (let [w 100
                  offset 0
                  r 4.8
                  size 4.5
-                 x-min (- (+ 0 size) offset)
-                 x-max (- (+ w offset) size)
-                 y-min (- (+ 0 size) offset)
-                 y-max (- (+ w offset) size)
-
-                 scroll (useViewportScroll)
-                 scrollY (.-scrollY scroll)
-                 log (js/console.log scrollY)
-
-                 down (uix/state {1 (make-dot {:x (rand-r x-min x-max) :y y-min} {:x 1 :y 1})
-                                  2 (make-dot {:x (rand-r x-min x-max) :y y-min} {:x 1 :y 1})
-                                  3 (make-dot {:x (rand-r x-min x-max) :y y-min} {:x 1 :y 1})
-                                  4 (make-dot {:x (rand-r x-min x-max) :y y-min} {:x 1 :y 1})
-                                  5 (make-dot {:x (rand-r x-min x-max) :y y-min} {:x 1 :y 1})
-                                  6 (make-dot {:x (rand-r x-min x-max) :y y-min} {:x 1 :y 1})
-                                  7 (make-dot {:x (rand-r x-min x-max) :y y-min} {:x 1 :y 1})})
-                 up (uix/state {1 (make-dot {:x (rand-r x-min x-max) :y y-max} {:x 1 :y 1})
-                                  2 (make-dot {:x (rand-r x-min x-max) :y y-max} {:x 1 :y 1})
-                                  3 (make-dot {:x (rand-r x-min x-max) :y y-max} {:x 1 :y 1})
-                                  4 (make-dot {:x (rand-r x-min x-max) :y y-max} {:x 1 :y 1})
-                                  5 (make-dot {:x (rand-r x-min x-max) :y y-max} {:x 1 :y 1})
-                                  6 (make-dot {:x (rand-r x-min x-max) :y y-max} {:x 1 :y 1})
-                                  7 (make-dot {:x (rand-r x-min x-max) :y y-max} {:x 1 :y 1})})
-                 done (uix/ref true)
+                 x-min  (- (+ 0 size) offset)
+                 x-max  (- (+ w offset) size)
+                 y-min  (- (+ 0 size) offset)
+                 y-max  (- (+ w offset) size)
+                 scroll (<sub [:db/scroll-dir])
+                 init-dots (repeatedly 7 #(make-dot {:x (rand-r x-min x-max) :y y-min}
+                                                    {:x 0 :y (rand-r 1 10)}))
+                 dots (uix/state init-dots)
+                 raf  (use-raf (fn [] (reset! dots (mapv move @dots))))
                  ]
-             [:svg
-              (for [i (range 1 (inc n))]
-                (let [
-                      x (get-in @down [i :position :x] )
-                      y (get-in @down [i :position :y] )
-
-                      p (into [] (take 140 (iterate move
-                                                    (make-dot {:x x :y y}
-                                                              {:x (rand-r -1 1)
-                                                               :y (rand-r 5 10)}))))
-                      xs (mapv (fn [p] {:value (str (-> p :position :x) "%")
-                                        :duration 10}) p)
-                      ys (mapv (fn [p] {:value (str (-> p :position :y) "%")
-                                        :duration 10}) p)
-                      variants (clj->js
-                                {
-                                 :up   {:cy (mapv #(:value %) ys) :cx (mapv #(:value %) xs)}
-                                 :down {:cy (mapv #(:value %) ys) :cx (mapv #(:value %) xs)}
-                                 })
-                      controls (useAnimation)
-                      start (.start controls "up")
-                      ]
-                  [:> (.-circle motion)
-                   {
+             [:svg {:viewBox "0 0 100 100"
+                    :onTouchEnd
+                    (fn []
+                      (reset! dots
+                              (repeatedly 7
+                                          #(make-dot {:x (rand-r x-min x-max) :y y-min}
+                                                     {:x 0 :y (rand-r 1 10)})))
+                      )}
+              (for [dot @dots]
+                (let [done (uix/ref true)]
+                   [:circle
+                   {:cx (str (-> dot :position :x) "%")
+                    :cy (str (-> dot :position :y) "%")
                     :r (str r "%")
-                    :fill "#ffcc08"
-                    :initial (clj->js {:cx (str x "%") :cy (str 5 "%")})
-                    :animate controls
-                    :onAnimationStart    (fn [] (reset! done false))
-                    :onAnimationComplete (fn [] (reset! done true))
-                    :variants variants
-                    :transition (clj->js {:duration 12})
-                    }]
-                  )
-                )])))
-
-(defn pos [x y] {:x x :y y})
-
-(defn rand-pos [w h]
-  (pos (rand-int w) (rand-int h)))
-
-(defn rand-pos-seq [n w h]
-  (repeatedly n #(rand-pos w h)))
-
-(defn accumulate [xs]
-  (reduce
-   (fn [acc n] (conj acc (reduce + 0 (take n xs))))
-   []
-   (range 1 (inc (count xs)))))
-
-(defn random-force-seq [min max n]
-  (last (take 3 (iterate accumulate (repeatedly n #(rand-r min max))))))
-
-(defn filter< [n xs] (filter #(> n %) xs))
-(defn filter> [n xs] (filter #(< n %) xs))
-(defn filter-range [min max xs] (filter< max (filter> min xs)))
-
-(defn rand-force [min max fmin fmax n]
-  (take n
-        (filter-range min max
-                      (map (fn [x] (/ x (* 2 n)))
-                           (random-force-seq fmin fmax (* 2 n))))))
+                    :fill "#ffcc08"}]
+                  ))])))

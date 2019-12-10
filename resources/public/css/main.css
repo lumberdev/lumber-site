@@ -121,6 +121,15 @@ header, footer, section, article, nav {
     background: rgb(255,245,190);
     background: linear-gradient(135deg, rgba(255,245,190,1) 0%, rgba(254,195,202,1) 100%);
 }
+.yellow-gr {
+    background: rgb(255,204,8);
+    background: radial-gradient(circle,
+                                rgba(255,204,8,0.9) 0%,
+                                rgba(255,204,8, 0.7) 20%,
+                                rgba(255,204,8, 0.4) 40%,
+                                rgba(255,204,8, 0.2) 50%,
+                                rgba(255,204,8, 0) 100%);
+}
 .purple-gr-h::before {
     opacity: 0;
     background: rgb(190,212,255);
@@ -601,28 +610,109 @@ footer.main {
     bottom: 0px;
     left: 0px;
     width: 100%;
-    height: 100%;
+    /* height: 100%; */
     z-index: 0;
+}
+.last-box {
+    display: none;
 }
 
 .dots .ar {
     grid-template-rows: 100%;
     padding-top: 40px;
 }
-
 .dot-cont {
     float: left;
     position: relative;
     width: 20%;
 }
-.dot-col {
-    /* width: 20%; */
-}
 .dot {
     position: relative;
+    width: 100%;
+    padding-bottom: 100%;
     border-radius: 50%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
 }
 
+/* Glowing Dots */
+@keyframes glow {
+    0% {
+        transform: scale(0);
+        opacity: 0.5;
+    }
+    45% {
+        transform: scale(0.8);
+        opacity: 0.2;
+    }
+    90% {
+        transform: scale(1);
+        opacity: 0;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+.glow {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    opacity: 0;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    pointer-events: none;
+    z-index: 3;
+}
+.wave {
+    position: absolute;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    -ms-border-radius: 50%;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+    pointer-events: none;
+}
+.wave-1 {
+    animation: glow 1.5s ease-in infinite;
+    top: 30px;
+    left: 30px;
+    width: 60px;
+    height: 60px;
+}
+.wave-2 {
+    animation: glow 1.5s ease-in 0.5s infinite;
+    top: 15px;
+    left: 15px;
+    width: 90px;
+    height: 90px;
+}
+.wave-3 {
+    animation: glow 1.5s ease-in 1s infinite;
+}
+.glow-cont {
+    width: 100%;
+    height: 100%;
+}
+.glow-cont:hover .glow {
+    opacity: 1;
+    transition: opacity 0.8s ease-in;
+}
+.glow-cont .dot, .glow-cont .dot-cont {
+    pointer-events: none;
+}
 
 
 /* Flipping Dots */
@@ -680,6 +770,15 @@ footer.main {
 
 
 /* Following Eyes */
+.eyes-cont {
+    width: 100%;
+}
+.eyes-cont .dot {
+    float: left;
+    width: 20%;
+    padding-bottom: 20%;
+    pointer-events: "none";
+}
 .eye {
     position: absolute;
     top: 35%;
@@ -691,39 +790,50 @@ footer.main {
     background-repeat: no-repeat;
     background-size: 100% 100%;
     z-index: 1;
+    overflow: hidden
 }
+
+@keyframes blink {
+    0% {
+        transform: translateY(0%);
+    }
+    3% {
+        transform: translateY(100%);
+    }
+    6% {
+        transform: translateY(0%);
+    }
+}
+.blink {
+    animation: blink 12.5s linear infinite;
+}
+
 .pupil {
     position: absolute;
-    top: 0;
+    top: -30px;
     left: 0;
     right: 0;
     width: 100%;
-    height: 10px;
+    height: 30px;
     background-color: #000;
     z-index: 2;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
-.pupil::before {
-    content: "";
-    /* position: absolute; */
-    /* top: 0; */
-    /* bottom: 0; */
-    /* left: 0; */
-    /* right: 0; */
-    /* width: 100%; */
-    /* height: 30px; */
-    /* background-color: #fff; */
-    /* border-radius: 50%; */
-    /* z-index: -3; */
-}
+
 .eyeball {
     position: absolute;
-    width: 24%;
-    height: 24%;
+    width: 14px;
+    height: 14px;
+    /* width: 24%; */
+    /* height: 24%; */
     top: 37%;
-    left: 40%;
+    left: 38%;
     background-color: #000;
     border-radius: 50%;
     z-index: 2;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
 }
 
 
@@ -1052,6 +1162,11 @@ footer.main {
     .dots .ar {
         padding-top: 60px;
     }
+    .glow {
+        top: 0px;
+        left: 0px;
+    }
+
     footer.main {
         grid-template-columns: 240px auto 190px;
     }
@@ -1114,6 +1229,10 @@ footer.main {
     .dots .ar {
         padding-top: 20px;
     }
+    .glow {
+        top: -40px;
+        left: -40px;
+    }
     .info article, .work article {
         margin: 30px auto;
     }
@@ -1137,6 +1256,14 @@ footer.main {
     .ar {
         padding: 26px 40px 40px 40px;
     }
+
+    .glow {
+        top: -40px;
+        left: -20px;
+    }
+    .last-box {
+        display: block;
+    }
     /* Uncomment to have active btns on work boxes on mobile */
     /* .work .btn { */
     /* color: #121212; */
@@ -1148,6 +1275,10 @@ footer.main {
 @media all and (max-width: 768px) {
     .ar {
         padding: 6px 20px 20px 20px;
+    }
+    .glow {
+        top: -40px;
+        left: -40px;
     }
     .info article, .work article {
         margin: 10px auto;
