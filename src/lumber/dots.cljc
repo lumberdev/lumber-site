@@ -18,6 +18,9 @@
 (def yellow "#FFCC08")
 (defn sec [n] (str n "s"))
 (defn per [n] (str n "%"))
+(defn log [x]
+  #?(:cljs (js/console.log x))
+  #?(:clj  (prn x)))
 
 (defn rand-r
   "Random number in range [min..max]."
@@ -41,6 +44,10 @@
    (fn [acc n] (conj acc (reduce + 0 (take n xs))))
    []
    (range 1 (inc (count xs)))))
+
+(defn bounding-rect-elem [elem]
+  (let [r (-> elem .getBoundingClientRect)]
+    {:left (.-left r) :top (.-top r) :width (.-width r) :height (.-height r)}))
 
 (defn bounding-rect [e]
   (let [r (-> e .-target .getBoundingClientRect)]
@@ -72,22 +79,29 @@
 ;; Glow Mouse on Hover Dots
 ;;;;
 (defn glow-dots []
-  #?(:cljs (let [rect (uix/ref   {:width 300 :height 300 :left 40 :top 240})
-                 pos  (uix/state {:x 150 :y 150})
+  #?(:cljs (let [rect     (uix/ref   {:width 300 :height 300 :left 40 :top 240})
+                 pos      (uix/state {:x 150 :y 150})
+                 visible  (uix/state false)
+                 cont     (uix/ref)
+                 set-cont (uix/with-effect (reset! rect (bounding-rect-elem @cont)))
                  r 0
+                 set-position (fn [e]
+                               (let [mouse    (client-pos e)
+                                     relative (relative-pos @rect mouse)]
+                                 (reset! pos {:x (:x relative) :y (:y relative)})))
                  ]
              [:div.glow-cont.cf
-              {:onMouseEnter
-               (fn [e] (do (reset! rect (bounding-rect e))))
-               :onMouseMove
-               (fn [e]
-                 (let [mouse (client-pos e)
-                       relative (relative-pos @rect mouse)]
-                   (reset! pos {:x (:x relative) :y (:y relative)})))
-               :style {:width "100%" :height "100%"}}
+              {:ref cont
+               :onMouseEnter (fn [e]
+                               (do (set-position e)
+                                   (reset! visible (not @visible))))
+               :onMouseLeave (fn [e] (do (reset! visible (not @visible))))
+               :onMouseMove set-position}
               [:div.glow.yellow-gr
                {:style
-                {:transform (str "translate(" (:x @pos) "px," (:y @pos) "px)")}}
+                {:opacity (if @visible 1 0)
+                 :transform (str "translate(" (:x @pos) "px," (:y @pos) "px)")
+                 :transition "opacity 0.8s ease-in"}}
                [:div.wave.wave-1.yellow-gr]
                [:div.wave.wave-2.yellow-gr]
                [:div.wave.wave-3.yellow-gr]
@@ -146,9 +160,11 @@
                  }
                 [:> (.-div motion)
                  {:class "dot black-bg"
-                  ;; :style {:width "100%" :padding-bottom "100%"}
                   :animate #js {:scale (get @s i)}
-                  :transition #js {:ease "easeOut" :duration duration}
+                  ;; :transition #js {:ease "easeOut" :duration duration}
+                  :transition (clj->js
+                               {:ease "easeOut" :duration duration}
+                               )
                   }]])])))
 
 
