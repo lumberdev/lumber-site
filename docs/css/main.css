@@ -494,10 +494,10 @@ footer.main {
 .info ul li::before {
     content: '';
     position: absolute;
-    top: 12px;
-    left: 6px;
-    width: 12px;
-    height: 12px;
+    top: 13px;
+    left: 8px;
+    width: 9px;
+    height: 9px;
     border-radius: 50%;
 }
 .info ul.black li::before {
@@ -647,7 +647,7 @@ footer.main {
         opacity: 0.2;
     }
     90% {
-        transform: scale(1);
+        transform: scale(1.2);
         opacity: 0;
     }
     100% {
@@ -706,14 +706,6 @@ footer.main {
     width: 100%;
     height: 100%;
 }
-.glow-cont:hover .glow {
-    opacity: 1;
-    transition: opacity 0.8s ease-in;
-}
-.glow-cont .dot, .glow-cont .dot-cont {
-    pointer-events: none;
-}
-
 
 /* Flipping Dots */
 .flipping-dots {
@@ -777,7 +769,7 @@ footer.main {
     float: left;
     width: 20%;
     padding-bottom: 20%;
-    pointer-events: "none";
+    /* pointer-events: none; */
 }
 .eye {
     position: absolute;
@@ -823,10 +815,10 @@ footer.main {
 
 .eyeball {
     position: absolute;
-    width: 14px;
-    height: 14px;
-    /* width: 24%; */
-    /* height: 24%; */
+    /* width: 14px; */
+    /* height: 14px; */
+    width: 24%;
+    height: 24%;
     top: 37%;
     left: 38%;
     background-color: #000;
@@ -1187,7 +1179,7 @@ footer.main {
         line-height: 22px;
     }
     .info ul li::before {
-        top: 7px;
+        top: 10px;
     }
 
     .q1 {
@@ -1336,6 +1328,10 @@ footer.main {
     }
     footer.main .left {
         margin-top: 30px;
+    }
+
+    .glow {
+        pointer-events: auto;
     }
 }
 @media all and (max-width: 360px) {

@@ -1,5 +1,7 @@
 (ns lumber.dots
   (:require
+   [clojure.string :as s]
+
    [uix.dom.alpha :as uix.dom]
    [uix.core.alpha :as uix]
    [xframe.core.alpha :as xf :refer [<sub]]
@@ -63,6 +65,12 @@
   {:x (- (:x global) (:left rect))
    :y (- (:y global) (:top rect))})
 
+(defn mobile-device? []
+  #?(:cljs
+     (let [user-agent (s/lower-case (-> js/window .-navigator .-userAgent))
+           rxp        #"android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini"]
+       (boolean (re-find rxp user-agent)))))
+
 (defn use-window-event
   "Window event hook (it cleans after itself).
   Example: (use-window-event 'mouse' mouse-handler)"
@@ -89,19 +97,37 @@
                                (let [mouse    (client-pos e)
                                      relative (relative-pos @rect mouse)]
                                  (reset! pos {:x (:x relative) :y (:y relative)})))
-                 ]
+                 mobile? (mobile-device?)]
              [:div.glow-cont.cf
               {:ref cont
                :onMouseEnter (fn [e]
                                (do (set-position e)
                                    (reset! visible (not @visible))))
-               :onMouseLeave (fn [e] (do (reset! visible (not @visible))))
-               :onMouseMove set-position}
-              [:div.glow.yellow-gr
-               {:style
-                {:opacity (if @visible 1 0)
-                 :transform (str "translate(" (:x @pos) "px," (:y @pos) "px)")
-                 :transition "opacity 0.8s ease-in"}}
+               :onMouseLeave (fn [] (reset! visible (not @visible)))
+               :onMouseMove  set-position
+               :onTap(fn [e]
+                       (do (set-position e)
+                           (reset! visible (not @visible))))
+               }
+              [:> (.-div motion)
+               (merge
+                (if mobile?
+                  {:draggable true
+                   :drag (clj->js true)
+                   :dragElastic 0
+                   :dragConstraints
+                   (clj->js
+                    {:top 40
+                     :left 40
+                     :right (:width @rect)
+                     :bottom (:height @rect)})
+                   } {})
+                {:class "glow yellow-gr"
+                 :style
+                 {:opacity (if @visible 1 0)
+                  :transform (str "translate(" (:x @pos) "px," (:y @pos) "px)")
+                  :transition "opacity 0.8s ease-in"}})
+
                [:div.wave.wave-1.yellow-gr]
                [:div.wave.wave-2.yellow-gr]
                [:div.wave.wave-3.yellow-gr]
@@ -153,7 +179,7 @@
                  :onHoverEnd
                  (fn [] (do
                           (reset! s (update-hover-state s i 1 1))))
-                 :onTapStart
+                 :onTap
                  (fn [] (do (reset! s (update-hover-state s @p 1 1))
                             (reset! s (update-hover-state s i 0.65 0.3))
                             (reset! p i)))
@@ -161,12 +187,8 @@
                 [:> (.-div motion)
                  {:class "dot black-bg"
                   :animate #js {:scale (get @s i)}
-                  ;; :transition #js {:ease "easeOut" :duration duration}
-                  :transition (clj->js
-                               {:ease "easeOut" :duration duration}
-                               )
+                  :transition (clj->js {:type "spring" :mass 0.5})
                   }]])])))
-
 
 
 ;;;;
@@ -375,16 +397,16 @@
         A (frontal-area dot)
         Vd (-> dot :velocity d)]
     (if (zero? Vd) 0
-        (* -0.5 Cd A rho (* 2 Vd) (/ Vd (Math/abs Vd))))))
+        (/ (* (- 0 0.5) Cd A rho (* 3 Vd)) (Math/abs Vd)))))
 
 (defn accel
   ([dot d] (accel dot d 0))
   ([dot d ag]
    (+ ag (/ (drag-force dot d) (:mass dot)))))
 
-
 (defn position [o]
   (let [frame-rate (/ 1.0 120)
+        ag 9.81
         ax (accel o :x 0)
         ay (accel o :y 9.81)
         vx (+ (-> o :velocity :x) (* ax frame-rate 1))
@@ -430,7 +452,7 @@
 (defn use-raf [cb]
   (let [id (uix/ref 0)]
     (uix/effect! (fn []
-                   (reset! id (js/window.requestAnimationFrame cb))
+                  (reset! id (js/window.requestAnimationFrame cb))
                   (fn [] (js/window.cancelAnimationFrame id))
                   [cb]))))
 
@@ -459,13 +481,18 @@
                  raf  (use-raf (fn [] (reset! dots (mapv move @dots))))
                  ]
              [:svg {:viewBox "0 0 100 100"
+                    :onClick
+                    (fn []
+                      (reset! dots
+                              (repeatedly 7 #(make-dot {:x (rand-r x-min x-max) :y y-min}
+                                                       {:x 0 :y (rand-r 1 10)}))))
+
                     :onTouchEnd
                     (fn []
                       (reset! dots
-                              (repeatedly 7
-                                          #(make-dot {:x (rand-r x-min x-max) :y y-min}
-                                                     {:x 0 :y (rand-r 1 10)})))
-                      )}
+                              (repeatedly 7 #(make-dot {:x (rand-r x-min x-max) :y y-min}
+                                                       {:x 0 :y 5}))))
+                    }
               (for [dot @dots]
                 (let [done (uix/ref true)]
                    [:circle
