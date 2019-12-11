@@ -338,6 +338,7 @@ header.main {
     border-right: 1px solid #fff;
     border-left: 1px solid #fff;
     border-bottom: 1px solid #000;
+    -webkit-transform: translateZ(100px);
     z-index: 10;
 }
 header.main::before {
@@ -720,6 +721,7 @@ footer.main {
     transform-style: preserve-3d;
     -webkit-transform-style: preserve-3d;
     -moz-transform-style: preserve-3d;
+    z-index: 1;
 }
 .dot.front {
     transform: rotateY(0deg);
@@ -731,6 +733,7 @@ footer.main {
     transform: rotateY(180deg);
     -webkit-transform: rotateY(180deg);
     -moz-transform: rotateY(180deg);
+    z-index: 2;
 }
 
 .dot.front, .dot.back {
