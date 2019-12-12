@@ -394,7 +394,12 @@ header.main.compact .email .disk {
 .progress .state {
     position: relative;
     height: 1px;
+    width: 0%;
     background-color: #121212 ;
+    transform-origin: left top;
+    -webkit-transform-origin: left top;
+    -moz-transform-origin: left top;
+    -ms-transform-origin: left top;
     z-index: 1;
 }
 .progress .rail {

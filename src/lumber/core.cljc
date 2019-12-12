@@ -111,7 +111,7 @@
    (.getElementById js/document "app"))
 
   (js/window.addEventListener "mousemove" mouse-move-handler)
-  (js/window.addEventListener "scroll"    debounced-scroll-handler)
+  (js/window.addEventListener "scroll"    scroll-handler)
   )
 
 (defn ^:export init []

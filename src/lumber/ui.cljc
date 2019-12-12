@@ -18,11 +18,11 @@
 ;;;;
 
 (defn progress []
-  #?(:cljs (let [scroll (useViewportScroll)
-                 scrollY (.-scrollYProgress scroll)]
+  #?(:cljs (let [scr (<sub [:db/scroll])]
              [:div.progress
               [:> (.-div motion)
-               {:class "state" :style {:scaleX scrollY :transform-origin "left top"}}]
+               {:class "state"
+                :style {:width (str (scroll) "%")}}]
               [:div.rail]])))
 
 ;;;;
