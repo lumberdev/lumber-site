@@ -43,11 +43,11 @@
       (xf/dispatch [:set-mouse-stop true])))
 
 (defn scroll-handler [e]
-  (xf/dispatch [:set-scroll (.-pageY e)]))
+  (xf/dispatch [:set-scroll (.-scrollY js/window)]))
 
 (def debounced-mouse-move-handler (goog.functions.debounce mouse-move-handler 150))
 (def debounced-mouse-stop-handler (goog.functions.debounce mouse-stop-handler 1000))
-(def debounced-scroll-handler     (goog.functions.debounce scroll-handler 500))
+(def debounced-scroll-handler     (goog.functions.debounce scroll-handler 30))
 
 (xf/reg-event-db :set-scroll
                  (fn [db [_ value]]
@@ -110,8 +110,7 @@
    [home/home]
    (.getElementById js/document "app"))
 
-  (js/window.addEventListener "mousemove" debounced-mouse-move-handler)
-  (js/window.addEventListener "mousemove" debounced-mouse-stop-handler)
+  (js/window.addEventListener "mousemove" mouse-move-handler)
   (js/window.addEventListener "scroll"    debounced-scroll-handler)
   )
 

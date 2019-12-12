@@ -79,9 +79,9 @@
   #?(:cljs [:> (.-div motion)
             {:class (str "clock-arrow " cls)
              :animate #js {:rotate #js [start (+ start 360)]}
-             :transition #js {:duration duration
-                              :ease "linear"
-                              :loop (clj->js 'Infinity)}}]))
+             :transition (clj->js {:duration duration
+                                   :ease "linear"
+                                   :loop (clj->js 'Infinity)})}]))
 
 (defn clock
   "Takes a utc timezone int?

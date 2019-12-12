@@ -143,8 +143,7 @@
      [:footer  [:a.btn.re.black {:href "mailto:hello@lumberdev.nyc"} "hello@lumberdev.nyc"]]]]
 
    [:section.box.dots.white-bg.last-box
-    [:div.ar [dots/glow-dots]]]
-   ])
+    [:div.ar [dots/grid-dots]]]])
 
 (defn footer []
   [:footer.main.t1
