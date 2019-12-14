@@ -86,9 +86,9 @@
     [:div.ar
      [:header  [:h3.h3 "Open Source"]]
      [:article [:h2.h2 "Zeal"] [:p.t1 "Clipboard manager meets programming environment"]]
-     [:footer  [:a.a.u {:href "https://github.com/den1k/zeal/" :target "_blank"} [:div.video "Learn More"]]
+     [:footer  [:a.a.u {:href "https://www.notion.so/vimsical/ZEAL-d2c72fa9c7f2497c9657134573e5317f" :target "_blank"} [:div.video "Learn More"]]
       [:div.pipe]
-      [:a.a.u.link {:href "https://www.notion.so/vimsical/ZEAL-d2c72fa9c7f2497c9657134573e5317f" :target "_blank"}
+      [:a.a.u.link {:href "https://github.com/den1k/zeal/" :target "_blank"}
        [:div "See Source" [:span.arrow]]]]]]
 
    [:section.box.value
