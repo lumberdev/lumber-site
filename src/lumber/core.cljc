@@ -25,6 +25,8 @@
     :open false
     :scroll 0
     :scroll-dir :down
+    :resize {}
+    :eyes-pos {:x 0 :y 0}
     :mouse {:x 0 :y 0}
     :mouse-stop true
     :variant :roll
@@ -43,19 +45,31 @@
       (xf/dispatch [:set-mouse-stop true])))
 
 (defn scroll-handler [e]
-  (xf/dispatch [:set-scroll (.-scrollY js/window)]))
+  (do (xf/dispatch [:set-scroll (.-scrollY js/window)])))
 
-(def debounced-mouse-move-handler (goog.functions.debounce mouse-move-handler 150))
+(defn resize-handler [e]
+  (do (xf/dispatch [:set-resize e])))
+
+(def debounced-mouse-move-handler (goog.functions.debounce mouse-move-handler 250))
 (def debounced-mouse-stop-handler (goog.functions.debounce mouse-stop-handler 1000))
-(def debounced-scroll-handler     (goog.functions.debounce scroll-handler 30))
+(def debounced-scroll-handler     (goog.functions.debounce scroll-handler 250))
+(def debounced-resize-handler     (goog.functions.debounce scroll-handler 250))
 
 (xf/reg-event-db :set-scroll
                  (fn [db [_ value]]
-                   (cond (> (get-in db [:scroll]) value)
-                         (do (xf/dispatch [:set-scroll-dir :up]))
-                         (< (get-in db [:scroll]) value)
-                         (do (xf/dispatch [:set-scroll-dir :down])))
-                   (assoc-in db [:scroll] value)))
+                   (let [prev (:y (get-in db [:scroll]))
+                         dy   (- value prev)]
+                     (do
+                      #_(cond (> prev value)
+                            (do (xf/dispatch [:set-scroll-dir :up]))
+                            (< prev value)
+                            (do (xf/dispatch [:set-scroll-dir :down])))
+                      (assoc-in db [:scroll]
+                                {:y value
+                                 :dy dy
+                                 :eyes (ui/measure-eyes)
+                                 :header (ui/measure-header)})))))
+
 
 (xf/reg-event-db :set-scroll-dir
                  (fn [db [_ value]]
@@ -68,6 +82,10 @@
 (xf/reg-event-db :set-mouse-stop
                  (fn [db [_ v]]
                    (assoc-in db [:mouse-stop] v)))
+
+(xf/reg-event-db :set-resize
+                 (fn [db [_ value]]
+                   (assoc-in db [:set-resize] value)))
 
 (xf/reg-event-db :set-gravity
                  (fn [db [_ value]]
@@ -94,6 +112,7 @@
 (xf/reg-sub :db/scroll-dir (fn [] (:scroll-dir (xf/<- [::xf/db]))))
 (xf/reg-sub :db/mouse      (fn [] (:mouse      (xf/<- [::xf/db]))))
 (xf/reg-sub :db/mouse-stop (fn [] (:mouse-stop (xf/<- [::xf/db]))))
+(xf/reg-sub :db/resize     (fn [] (:resize     (xf/<- [::xf/db]))))
 (xf/reg-sub :db/gravity    (fn [] (:gravity    (xf/<- [::xf/db]))))
 (xf/reg-sub :db/variant    (fn [] (:variant    (xf/<- [::xf/db]))))
 (xf/reg-sub :db/blink      (fn [] (:blink      (xf/<- [::xf/db]))))
@@ -112,6 +131,9 @@
 
   (js/window.addEventListener "mousemove" mouse-move-handler)
   (js/window.addEventListener "scroll"    scroll-handler)
+  (js/window.addEventListener "resize"    debounced-resize-handler)
+  ;; (xf/dispath [:header (measure-header)])
+  ;; (xf/dispath [:eyes   (measure-eyes)])
   )
 
 (defn ^:export init []

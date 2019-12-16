@@ -447,7 +447,7 @@ footer.main {
     right: 0;
     bottom: 0;
     left: 0;
-    padding: 26px 40px 40px 40px;
+    padding: 26px 40px 26px 40px;
 
     /* with grid layout (no support) */
     /* display: grid; */
@@ -481,7 +481,7 @@ footer.main {
 }
 .box footer {
     position: absolute;
-    bottom: 20px;
+    bottom: 26px;
 }
 
 .info {}
@@ -625,7 +625,7 @@ footer.main {
 
 .dots .ar {
     grid-template-rows: 100%;
-    padding-top: 40px;
+    /* padding-top: 40px; */
 }
 .dot-cont {
     float: left;
@@ -1224,10 +1224,10 @@ footer.main {
         height: 69px;
     }
     .ar {
-        padding: 6px 20px 20px 20px;
+        padding: 6px 20px 6px 20px;
     }
     .dots .ar {
-        padding-top: 20px;
+        /* padding-top: 20px; */
     }
     .glow {
         top: -40px;
@@ -1247,6 +1247,10 @@ footer.main {
         -ms-user-select: none;
         user-select: none;
     }
+    .clock-bg {
+        width: 65%;
+        height: 65%;
+    }
 }
 @media all and (max-width: 980px) {
     .grid {
@@ -1254,7 +1258,7 @@ footer.main {
         border-right: 2px solid #000;
     }
     .ar {
-        padding: 26px 40px 40px 40px;
+        padding: 26px 40px 26px 40px;
     }
 
     .glow {
@@ -1274,7 +1278,7 @@ footer.main {
 }
 @media all and (max-width: 768px) {
     .ar {
-        padding: 6px 20px 20px 20px;
+        padding: 6px 20px 6px 20px;
     }
     .glow {
         top: -40px;
@@ -1285,6 +1289,16 @@ footer.main {
     }
     .pipe {
         margin: 0 10px;
+    }
+}
+
+@media all and (min-width: 560px) and (max-width: 660px) {
+    .clock-bg {
+        width: 60%;
+        height: 60%;
+    }
+    .box footer {
+        bottom: 16px;
     }
 }
 
@@ -1345,7 +1359,7 @@ footer.main {
 @media all and (max-width: 360px) {
     /* Galaxy S (Older)*/
     .ar {
-        padding: 6px 20px 20px 20px;
+        padding: 6px 20px 6px 6px;
     }
     .dots .ar {
         padding: 20px 20px 20px 20px;

@@ -10,7 +10,7 @@
 
 
 (defn nav []
-  [:header.main
+  [:header.main#header
    [:div.logo  [:img {:src "images/Lumber.svg" :alt "Lumber"}]]
    ;; [:div.logo  [:span.l "Lumber"]]
    [:div.nav   [ui/progress]]
@@ -143,7 +143,9 @@
      [:footer  [:a.btn.re.black {:href "mailto:hello@lumberdev.nyc"} "hello@lumberdev.nyc"]]]]
 
    [:section.box.dots.white-bg.last-box
-    [:div.ar [dots/grid-dots]]]])
+    [:div.ar [dots/grid-dots]]]
+   ]
+  )
 
 (defn footer []
   [:footer.main.t1

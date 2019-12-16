@@ -48,10 +48,19 @@
    (range 1 (inc (count xs)))))
 
 (defn bounding-rect [elem]
-  #(:cljs
-    (let [r (-> elem .getBoundingClientRect)]
-      {:left (.-left r) :top (.-top r) :width (.-width r) :height (.-height r)
-       :doc (- (+ (.-pageYOffset js/window) (.-scrollTop elem)) (.-innerHieght js/window))})))
+  #?(:cljs
+     (let [r (-> elem .getBoundingClientRect)
+           t (.-top r)
+           d (- (+ (.-pageYOffset js/window) (.-scrollTop elem))
+                (.-innerHeight js/window))
+           ]
+       {:top (.-top r)
+        :right (.-right r)
+        :bottom (.-bottom r)
+        :left (.-left r)
+        :width (.-width r)
+        :height (.-height r)
+        :doc (+ t d)})))
 
 (defn client-pos [e]
   {:x (-> e .-clientX) :y (-> e .-clientY)})
@@ -59,12 +68,16 @@
 (defn screen-pos [e]
   {:x (-> e .-screenX) :y (-> e .-screenY)})
 
+(defn page-pos [e]
+  {:x (-> e .-pageX) :y (-> e .-pageY)})
+
 (defn relative-pos [rect global]
   {:x (- (:x global) (:left rect))
    :y (- (:y global) (:top rect))})
 
 (defn client-size []
-  {:width js/window.innerWidth :height js/window.innerHeight})
+  #?(:cljs
+     {:width js/window.innerWidth :height js/window.innerHeight}))
 
 (defn mobile-device? []
   #?(:cljs
@@ -72,24 +85,25 @@
            rxp        #"android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini"]
        (boolean (re-find rxp user-agent)))))
 
-(defn use-window-event
-  "Window event hook (it cleans after itself).
-  Example: (use-window-event 'mouse' mouse-handler)"
-  [event cb]
-  (uix/effect! (fn []
-                 (js/window.addEventListener event cb)
-                 (fn [] (js/window.removeEventListener event cb))
-                 [event cb])))
-
-(defn use-global-mouse-move [cb]
-  (use-window-event "mousemove" cb))
-
 (defn in-view-port? [elem]
   (let [rect   (bounding-rect elem)
         client (client-size)
         in-view? (and (<= (:top rect) (:height client))
                       (>= (+ (:top rect) (:height rect)) 0))]
     in-view?))
+
+(defn use-window-events
+  "Window event hook (it cleans after itself).
+  Example: (use-window-event 'mouse' mouse-handler)"
+  [event cb]
+  #?(:cljs
+     (uix/effect! (fn []
+                    (js/window.addEventListener event cb)
+                    (fn [] (js/window.removeEventListener event cb))
+                    [event cb]))))
+
+(defn use-global-mouse-move [cb]
+  (use-window-events "mousemove" cb))
 
 ;;;;
 ;; Glow Mouse on Hover Dots
@@ -99,7 +113,7 @@
                  pos      (uix/state {:x 150 :y 150})
                  visible  (uix/state false)
                  cont     (uix/ref)
-                 set-cont (uix/with-effect (reset! rect (bounding-rect @cont)))
+                 ;; set-cont (uix/with-effect (reset! rect (bounding-rect @cont)))
                  r 0
                  set-position (fn [e]
                                (let [mouse    (client-pos e)
@@ -300,23 +314,42 @@
 
 (def debounced-set-blink (goog.functions.debounce set-blink 500))
 
-(defn look-x [client mouse]
-  (transform-range 0 (:width client) -100 90 (.-clientX mouse)))
+(defn clamp
+  "Constraints x to be in closed interval [min max]."
+  [x min-x max-x] (clojure.core/max min-x (clojure.core/min max-x x)))
 
-(defn look-y [client mouse]
-  (transform-range 0 (:height client) -40 40 (.-clientY mouse)))
+(defn viewport-ratio
+  "Offset ratio within visible viewport"
+  [rect]
+  (let [{:keys [top]} rect
+        win-height (.-innerHeight js/window)]
+    (clamp (/ top win-height) 0 1)))
 
+(defn look-x [client mouse rect]
+  (let [mouse-with-offset
+        (- (.-clientX mouse)
+           (- (:left rect)
+              (/ (.-innerWidth js/window) 2)))]
+    (transform-range 0 (:width client) -100 90 mouse-with-offset)))
+
+(defn look-y [client mouse scroll]
+  (let [rect   (:eyes scroll)
+        offset (:header scroll)]
+    (transform-range 0 (+ (- (:top rect) offset) (:height client))
+                    -40 40
+                    (+ offset (.-screenY mouse)))))
 
 (defn eyeball [variant rect xr yr]
   (let [client (client-size)
         mouse  (<sub [:db/mouse])
-        xm     (look-x client mouse)
-        ym     (look-y client mouse)
         scroll (<sub [:db/scroll])
+        res    (<sub [:db/resize])
+        xm     (look-x client mouse rect)
+        ym     (look-y client mouse scroll)
         xs     0
         ys     (transform-range (:doc rect)
                                 (+ (:height client) (:doc rect))
-                                -40 40 scroll)
+                                -40 40 (:y scroll))
         variants {:mobile
                   {:style
                    {:transform
@@ -337,23 +370,28 @@
                      (xf/dispatch [:set-variant :roll]))}}]
     [:div.eyeball (variant variants)]))
 
+(defn eye []
+  (let [node (uix/state false)
+        rect (uix/ref)
+        xr (rand-r -100 100)
+        yr (rand-r -40 40)
+        mobile? (mobile-device?)
+        variant (<sub [:db/variant])
+        ]
+    [:div {:ref #(when-not @node
+                   (do (reset! node %)
+                       (reset! rect (bounding-rect %))))}
+     [:div.eye
+      [:div {:class (if true "pupil blink" "pupil")}]]
+     [eyeball (if mobile? :mobile :follow) @rect xr yr]]))
+
 (defn eye-dots [idx]
-  #?(:cljs (let [rect   (uix/ref {:doc 1700})
-                 cont   (uix/ref)
-                 sr     (uix/with-effect (reset! rect (bounding-rect @cont)))
-                 xr (rand-r -100 90)
-                 yr (rand-r -40 40)
-                 mobile?  (mobile-device?)
-                 variant  (<sub [:db/variant])]
-             [:div.eyes-cont.cf {:ref cont}
-              (for [i (range 0 25)] ^{:key i}
-                (do [:div.dot.black-bg
-                     (when (contains? (into #{} idx) i)
-                       [:div
-                        [:div.eye
-                         [:div {:class (if true "pupil blink" "pupil")}]]
-                        [eyeball (if mobile? :mobile :follow) @rect xr yr]]
-                       )]))])))
+  #?(:cljs
+     [:div.eyes-cont.cf
+      (for [i (range 0 25)] ^{:key i}
+        (do [:div.dot.black-bg
+             (when (contains? (into #{} idx) i)
+               [eye])]))]))
 
 
 
@@ -439,18 +477,48 @@
         py (+ (-> o :position :y) (* vy frame-rate 100))]
     (make-dot {:x px :y py} {:x vx :y vy})))
 
-(defn collision? [dot dot2]
-  (let [px  (-> dot :position :x)
-        py  (-> dot :position :y)
-        px2 (-> dot2 :position :x)
-        py2 (-> dot2 :position :y)
-        r   (:radius dot)]
-    (not (or (< (+ py r) py2)
-             (> py (+ py2 r))
-             (< (+ px r) px2)
-             (> px (+ px2 r))))))
+(defn collision? [d1 d2]
+  (let [dx (- (-> d2 :position :x) (-> d1 :position :x))
+        dy (- (-> d2 :position :y) (-> d2 :position :y))
+        r-sum (+ (-> d1 :radius) (-> d2 :radius))]
+    (<= (+ (* dx dx) (* dy dy))
+        (* r-sum r-sum))))
 
-(defn collision [width height dot]
+(defn acv [d1 d2 d]
+  (let [d1-m (-> d1 :mass)
+        d2-m (-> d2 :mass)
+        d1-v (-> d1 :velocity d)
+        d2-v (-> d2 :velocity d)]
+    (/ (+ (* d1-v (- d1-m d2-m)) (* 2 d2-m d2-v))
+       (+ d1-m d2-m))))
+
+(defn handle-dot-dot-collision [d1 d2]
+  (let [px (-> d1 :position :x)
+        py (-> d1 :position :y)
+        vx (-> d1 :velocity :x)
+        vy (-> d1 :velocity :y)
+        vx-new (acv d1 d2 :x)
+        vy-new (acv d1 d2 :y)]
+    (make-dot {:x (+ px vx-new) :y (+ py vy-new)}
+              {:x vx-new :y vy-new})))
+
+(defn dot-dot
+  ([dots] (dot-dot dots []))
+  ([dots xs]
+   (cond (empty? dots) xs
+         :else
+         (dot-dot (rest dots)
+                  (conj xs
+                        (reduce
+                         (fn [acc dot]
+                           (if (collision? (first dots) dot)
+                             (handle-dot-dot-collision
+                              dot (first dots))
+                             acc))
+                         {}
+                         dots))))))
+
+(defn dot-wall [width height dot]
   (let [px (-> dot :position :x)
         py (-> dot :position :y)
         vx (-> dot :velocity :x)
@@ -458,36 +526,20 @@
         r  (:radius dot)
         restitution (:restitution dot)]
       (cond (> py (- height r))
-            (collision width height (make-dot {:x px :y (- height r)}
-                                              {:x vx :y (* vy restitution)}))
+            (dot-wall width height (make-dot {:x px :y (- height r)}
+                                             {:x vx :y (* vy restitution)}))
             (< py 0)
-            (collision width height (make-dot {:x px :y r}
-                                              {:x vx :y (* vy restitution)}))
+            (dot-wall width height (make-dot {:x px :y r}
+                                             {:x vx :y (* vy restitution)}))
             (> px (- width r))
-            (collision width height (make-dot {:x (- width r) :y py}
-                                              {:x (* vx restitution) :y vy}))
+            (dot-wall width height (make-dot {:x (- width r) :y py}
+                                             {:x (* vx restitution) :y vy}))
             (< px r)
-            (collision width height (make-dot {:x r :y py}
-                                              {:x (* vx restitution) :y vy}))
+            (dot-wall width height (make-dot {:x r :y py}
+                                             {:x (* vx restitution) :y vy}))
             :else dot)))
 
-(def move (comp position (partial collision 100 100)))
-
-(defn update-velocity [dot velocity]
-  (make-dot (:position dot) velocity))
-
-(defn update-velocities [dots velocities]
-  (mapv (fn [d v] (update-velocity d v)) dots velocities))
-
-(defn rand-update-velocities [size dots]
-  (update-velocities dots (repeatedly size (fn [] {:x 0 :y (rand-r 3 8)}))))
-
-#_(defn use-raf [cb]
-  (let [id (uix/ref 0)]
-    (uix/effect! (fn []
-                   (reset! id (js/window.requestAnimationFrame cb))
-                   (fn [] (js/window.cancelAnimationFrame id))
-                   [cb]))))
+(def move (comp position (partial dot-wall 100 100)))
 
 (defn use-raf [cb]
   (uix/effect! (fn []
@@ -499,9 +551,15 @@
         y1 (-> next :velocity :y)]
     (Math/abs (- y1 y0))))
 
+(defn rest? [prev next]
+  (< (delta-y prev next) 0.00001))
+
+(defn all-in-rest? [prev next]
+  (every? true? (map rest? prev next)))
+
 (defn rand-dots [x-min x-max y-min y-max]
   (repeatedly 7 #(make-dot {:x (rand-r x-min x-max) :y y-min}
-                           {:x 0 :y (rand-r 1 10)})))
+                           {:x (rand-r -1 1) :y (rand-r 1 10)})))
 
 (defn gravity-dots [n]
   #?(:cljs (let [node     (uix/ref)
@@ -517,12 +575,11 @@
                  init-dots (rand-dots x-min x-max y-min y-max)
                  dots (uix/state init-dots)
                  raf  (use-raf (fn [] (let [prev @dots
-                                            next (mapv move prev)
-                                            delta (delta-y (first prev) (first next))]
-                                        (if (< delta 0.00001)
-                                          (do #_(prn "done" delta)
-                                              (reset! dots init-dots))
-                                         (reset! dots next)))))]
+                                            next (mapv move prev)]
+                                        (if (rest? (first prev) (first next))
+                                          (do (reset! dots init-dots))
+                                          (reset! dots next)))))
+                 ]
              [:svg {:viewBox "0 0 100 100"}
               (for [dot @dots]
                 (let [done (uix/ref true)]
@@ -532,3 +589,27 @@
                      :r  r
                      :fill "#ffcc08"}]
                   ))])))
+
+
+;; (def dots [(make-dot {:x 10 :y 10} {:x 0 :y 1})
+;;            (make-dot {:x 40 :y 10} {:x 0 :y 1})
+;;            (make-dot {:x 12 :y 12} {:x 0 :y -1})
+           ;; #_(make-dot {:x 100 :y 10} {:x 0 :y 1})])
+
+;; (def dots [(make-dot {:x 5 :y 10} {:x 0.1 :y 0.1})
+;;            (make-dot {:x 15 :y 10} {:x -0.1 :y 0.1})
+;;            (make-dot {:x 30 :y 10} {:x 0.1 :y 0.1})
+;;            (make-dot {:x 45 :y 10} {:x -0.1 :y 0.1})
+;;            (make-dot {:x 60 :y 10} {:x 0.1 :y 0.1})
+;;            (make-dot {:x 75 :y 10} {:x -0.1 :y 0.1})
+;;            (make-dot {:x 90 :y 10} {:x 0.1 :y 0.1})])
+;; (defn dot-dots [dots]
+;;   (map (fn [d1]
+;;          (reduce (fn [acc d2]
+;;                    (if (collision? d1 d2)
+;;                      (handle-dot-dot-collision d1 d2)
+;;                      d1))
+;;                  {}
+;;                  (rest dots)))
+;;        dots))
+;; (dot-dots dots)

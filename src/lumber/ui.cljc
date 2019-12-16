@@ -6,6 +6,28 @@
    #?(:cljs ["framer-motion" :refer (motion useMotionValue useViewportScroll)])
    ))
 
+
+(defn bounding-rect [elem]
+  #?(:cljs
+     (let [r (-> elem .getBoundingClientRect)
+           t (.-top r)
+           d (- (+ (.-pageYOffset js/window) (.-scrollTop elem))
+                (.-innerHeight js/window))
+           ]
+       {:top (.-top r)
+        :right (.-right r)
+        :bottom (.-bottom r)
+        :left (.-left r)
+        :width (.-width r)
+        :height (.-height r)
+        :doc (+ t d)})))
+
+(defn measure-header []
+  (.-offsetHeight (.querySelector js/document "#header")))
+
+(defn measure-eyes []
+  (bounding-rect (js/document.querySelector ".eye")))
+
 (defn percentage [total x] (/ (* 100.0 x) total))
 
 (defn scroll []
