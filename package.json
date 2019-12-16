@@ -16,6 +16,6 @@
     "framer-motion": "^1.6.15",
     "react": "^16.8.6",
     "react-anime": "^2.2.0",
-    "react-dom": "^16.8.6"
+    "react-dom": "^16.12.0"
   }
 }
