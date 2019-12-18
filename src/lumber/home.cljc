@@ -12,11 +12,10 @@
 (defn nav []
   [:header.main#header
    [:div.logo  [:img {:src "images/Lumber.svg" :alt "Lumber"}]]
-   ;; [:div.logo  [:span.l "Lumber"]]
    [:div.nav   [ui/progress]]
-   [:div.email [:div.a.u
+   [:div.email [:div.u.ah
                 [:span.disk-cont [:div.disk]]
-                [:a.a {:href "mailto:hello@lumberdev.nyc"} "Build Something with Us"]]]])
+                [:a.ah {:href "mailto:hello@lumberdev.nyc"} "Build Something with Us"]]]])
 
 
 (defn grid []
@@ -39,7 +38,7 @@
     [:div.ar
      [:header.title  [:h3.h3 "Open Source"]]
      [:header.name   [:h3.h3 "Vimsical"]]
-     [:article.desc  [:h2.h2 "Vimsical"] [:p.t1 "Version control as a learning tool"]]
+     [:article.desc  [:h2.h1 "Vimsical"] [:p.t1 "Version control as a learning tool"]]
      [:article.image [:img {:src "images/Vimsical.jpg"}]]
      [:footer        [:a.a.u {:on-click #(xf/dispatch [:open "https://www.youtube.com/embed/OtvK24bG_IY"])}
                       [:div.video [:span.play] "Play Video"]]
@@ -59,7 +58,7 @@
    [:section.box.clock
     [:div.ar.yellow-bg
      [:header.title [:h3.h3 "Location"]]
-     [:article.desc [:h2.h2 "New York"] [:p.t1 "United States"]]
+     [:article.desc [:h2.h1 "New York"] [:p.t1 "United States"]]
      [ui/clock -5]]]
 
    ;; eyes
@@ -70,7 +69,7 @@
     [:div.ar
      [:header.title  [:h3.h3 "In-House Project"]]
      [:header.name   [:h3.h3 "Duct"]]
-     [:article.desc  [:h2.h2 "Duct"] [:p.t1.light-bulp "IFTTT for developers"]]
+     [:article.desc  [:h2.h1 "Duct"] [:p.t1.light-bulp "IFTTT for developers"]]
      [:article.image [:img {:src "images/Duct.jpg"}]]
      [:footer
       [:a.btn.re.black {:href "https://duct.cloud/" :target "_blank"}
@@ -85,7 +84,7 @@
    [:section.box.work.peach-gr-h
     [:div.ar
      [:header  [:h3.h3 "Open Source"]]
-     [:article [:h2.h2 "Zeal"] [:p.t1 "Clipboard manager meets programming environment"]]
+     [:article [:h2.h1 "Zeal"] [:p.t1 "Clipboard manager meets programming environment"]]
      [:footer  [:a.a.u {:href "https://www.notion.so/vimsical/ZEAL-d2c72fa9c7f2497c9657134573e5317f" :target "_blank"} [:div.video "Learn More"]]
       [:div.pipe]
       [:a.a.u.link {:href "https://github.com/den1k/zeal/" :target "_blank"}
@@ -98,7 +97,7 @@
    [:section.box.work.green-gr-h
     [:div.ar
      [:header  [:h3.h3 "In-House Project"]]
-     [:article [:h2.h2 "Juergen"] [:p.t1 "A self-shooting camera app in React Native"]]
+     [:article [:h2.h1 "Juergen"] [:p.t1 "A self-shooting camera app in React Native"]]
      [:footer  [:a.btn.re.black {:href "https://github.com/lumberdev/Juergen" :target "_blank"} "See Source"]]]]
 
    [:section.box.dots.white-bg
@@ -117,7 +116,7 @@
    [:section.box.work.purple-gr-h
     [:div.ar
      [:header  [:h3.h3 "OPEN SOURCE"]]
-     [:article [:h2.h2 "auth0-clojure"] [:p.t1 "Clojure client library for the [Auth0] platform"]]
+     [:article [:h2.h1 "auth0-clojure"] [:p.t1 "Clojure client library for the [Auth0] platform"]]
      [:footer  [:a.a.u {:href "" :target "_blank"} [:div.video ""]]
       [:a.btn.re.black {:href "https://github.com/lumberdev/auth0-clojure" :target "_blank"}
        [:div "See Source"]]]]]
@@ -125,7 +124,7 @@
    [:section.box.clock
     [:div.ar.yellow-bg
      [:header.title [:h3.h3 "Location"]]
-     [:article.desc [:h2.h2 "Sofia"] [:p.t1 "Bulgaria"]]
+     [:article.desc [:h2.h1 "Sofia"] [:p.t1 "Bulgaria"]]
      [ui/clock 2]]]
 
    [:section.box.dots.white-bg

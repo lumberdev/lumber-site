@@ -157,7 +157,7 @@ header, footer, section, article, nav {
     transition: all 0.4s ease-in-out 0s;
 }
 
-/* Font */
+/* Fonts */
 @font-face {
     font-family: "Messina Serif Light";
     src: url("../fonts/messina-serif-light/MessinaSerifTrialWeb-Light.eot");
@@ -188,13 +188,15 @@ header, footer, section, article, nav {
 }
 .h3 {
     font-family: "Messina Sans SemiBold", sans-serif;
-    font-size: 12px;
+    font-size: 13px;
     line-height: 30px;
+    letter-spacing: 1.3px;
     text-transform: uppercase;
 }
 .t1 {
     font-family: "Messina Sans Regular", sans-serif;
-    font-size: 16px;
+    font-size: 17px;
+    line-spacing: 26px;
     line-height: 22px;
 }
 .q1 {
@@ -220,19 +222,22 @@ header, footer, section, article, nav {
 /* Buttons */
 .btn {
     display: inline-block;
-    height: 40px;
+    height: 45px;
     padding: 0 40px;
     font-family: "Messina Sans SemiBold", sans-serif;
-    font-size: 12px;
-    line-height: 36px;
-    /* letter-spacing: 1.5; */
+    font-size: 13px;
+    line-height: 43px;
+    letter-spacing: 1.5px;
     text-transform: uppercase;
-    border: 1px solid #d1d1d1;
+    border: 1px solid rgba(0, 0, 0, 0.2);
     -webkit-transition: all 0.2s ease-in-out 0s;
     transition: all 0.2s ease-in-out 0s;
 }
 .btn.black {
     color: #121212;
+}
+.btn.white {
+    border: 1px solid rgba(255, 255, 255, 0.2);
 }
 .btn:hover {
     color: #121212;
@@ -245,15 +250,25 @@ header, footer, section, article, nav {
 }
 
 /* Links */
-.a {
+.ah {
     font-family: "Messina Sans SemiBold", serif;
-    font-size: 12px;
-    /* letter-spacing: 1.5; */
+    font-size: 14px;
+    letter-spacing: 0.7px;
     text-transform: uppercase;
     color: #121212;
     text-decoration: none;
     cursor: pointer;
 }
+.a {
+    font-family: "Messina Sans SemiBold", serif;
+    font-size: 13px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #121212;
+    text-decoration: none;
+    cursor: pointer;
+}
+
 .u {
     position: relative;
     text-decoration: none;
@@ -291,16 +306,16 @@ header, footer, section, article, nav {
     width: 1px;
     height: 40px;
     margin: 0 23px;
-    background-color: #d1d1d1;
+    background-color: rgba(0,0,0, 0.1);
 }
 .pointer {
     pointer: cursor;
 }
 .re {
-    border-top-left-radius: 20px;
-    border-top-right-radius: 20px;
-    border-bottom-left-radius: 20px;
-    border-bottom-right-radius: 20px;
+    border-top-left-radius: 30px;
+    border-top-right-radius: 30px;
+    border-bottom-left-radius: 30px;
+    border-bottom-right-radius: 30px;
 }
 
 .round {
@@ -310,8 +325,8 @@ header, footer, section, article, nav {
 /* Layout  */
 .cont {
     position: relative;
-    margin: 0 40px;
-    padding-top: 99px;
+    margin: 0 65px;
+    padding-top: 74px;
 }
 .grid {
     display: grid;
@@ -327,13 +342,13 @@ header.main {
     display: grid;
     position: fixed;
     top: 0;
-    right: 40px;
-    left: 40px;
-    grid-template-columns: 100px auto 210px;
+    right: 65px;
+    left: 65px;
+    grid-template-columns: 100px auto 252px;
     justify-items: center;
     align-items: center;
     text-align: center;
-    height: 100px;
+    height: 75px;
     background-color: #fff;
     border-right: 1px solid #fff;
     border-left: 1px solid #fff;
@@ -346,7 +361,7 @@ header.main::before {
     position: absolute;
     top: 0;
     left: -3px;
-    height: 99px;
+    height: 74px;
     width: 4px;
     background-color: #fff;
 }
@@ -355,7 +370,7 @@ header.main::after {
     position: absolute;
     top: 0;
     right: -3px;
-    height: 99px;
+    height: 74px;
     width: 4px;
     background-color: #fff;
 }
@@ -413,6 +428,7 @@ header.main.compact .email .disk {
 
 .email {
     position: relative;
+    margin-bottom: 1px;
 }
 .email:hover .disk {
     position: relative;
@@ -427,7 +443,7 @@ header.main.compact .email .disk {
 /* Footer */
 footer.main {
     display: grid;
-    grid-template-columns: 200px auto 150px;
+    grid-template-columns: 205px auto 154px;
     justify-items: center;
     align-items: center;
     text-align: center;
@@ -481,7 +497,7 @@ footer.main {
 }
 .box footer {
     position: absolute;
-    bottom: 26px;
+    bottom: 35px;
 }
 
 .info {}
@@ -497,6 +513,11 @@ footer.main {
     display: inline-block;
     padding-left: 24px;
 }
+
+.info ul li:first-child::before {
+    display: none;
+}
+
 .info ul li::before {
     content: '';
     position: absolute;
@@ -540,10 +561,8 @@ footer.main {
 }
 .work .name {
     display: none;
-    /* opacity: 0; */
 }
 .work .image {
-    /* display: none; */
     opacity: 0;
     position: absolute;
     top: 30px;
@@ -557,19 +576,21 @@ footer.main {
     box-shadow: 0px 0px 3px 2px rgba(0, 0, 0, .15);
 }
 .work:hover .image {
-    /* display: block; */
     opacity: 1;
     -webkit-transition: all 0.4s ease-in-out 0.1s;
     transition: all 0.4s ease-in-out 0.1s;
 }
 .work:hover .name {
     display: block;
-    /* opacity: 1; */
     -webkit-transition: all 0.4s ease-in-out 0s;
     transition: all 0.4s ease-in-out 0s;
 }
 .work:hover .title {
     display: none;
+}
+.work .desc .h1 {
+    padding-bottom: 20px;
+    /* 13px */
 }
 
 .value article {
@@ -964,11 +985,12 @@ footer.main {
 .light-bulp::after {
     content: "";
     position: absolute;
-    top: 2px;
-    right: -20px;
-    width: 12px;
-    height: 18px;
-    background-image: url("../images/lightbulp.png");
+    top: -2px;
+    right: -27px;
+    width: 23px;
+    height: 25px;
+    /* background-image: url("../images/lightbulb.png"); */
+    background-image: url("../images/lightbulb.svg");
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }
@@ -981,11 +1003,12 @@ footer.main {
     content: "";
     position: absolute;
     width: 25px;
-    top: 2px;
-    left: -40px;
+    top: -7px;
+    left: -47px;
     width: 30px;
-    height: 42px;
-    background-image: url("../images/thunder.png");
+    height: 57px;
+    /* background-image: url("../images/thunder.png"); */
+    background-image: url("../images/thunder.svg");
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }
@@ -993,11 +1016,12 @@ footer.main {
     content: "";
     position: absolute;
     width: 25px;
-    top: 2px;
+    top: -7px;
     right: -40px;
     width: 30px;
-    height: 42px;
-    background-image: url("../images/thunder.png");
+    height: 57px;
+    /* background-image: url("../images/thunder.png"); */
+    background-image: url("../images/thunder.svg");
     background-size: 100% 100%;
     background-repeat: no-repeat;
 }
@@ -1023,6 +1047,9 @@ footer.main {
 .clock article {
     position: relative;
     z-index: 2;
+}
+.clock .desc .h1 {
+    margin-bottom: 7px;
 }
 .clock-cont {
     position: absolute;
@@ -1090,13 +1117,13 @@ footer.main {
 
 
 @media all and (min-width: 1600px) {
-    .cont {
-        margin: 0 100px;
-    }
-    header.main {
-        right: 100px;
-        left: 100px;
-    }
+    /* .cont { */
+    /*     margin: 0 100px; */
+    /* } */
+    /* header.main { */
+    /*     right: 100px; */
+    /*     left: 100px; */
+    /* } */
 }
 
 @media all and (min-width: 1800px) {
@@ -1172,6 +1199,18 @@ footer.main {
     }
 }
 
+@media all and (min-width: 980px) and (max-width: 1350px) {
+    .work .image img {
+        width: 90%;
+    }
+}
+
+@media all and (min-width: 414px) and (max-width: 980px) {
+    .work .image {
+        top: 16%;
+    }
+}
+
 @media all and (max-width: 1250px) {
     /* Fonts Mobile */
     .h1 {
@@ -1188,6 +1227,18 @@ footer.main {
     }
     .info ul li::before {
         top: 10px;
+    }
+
+    .a {
+        font-size: 12px;
+    }
+    .ah {
+        font-size: 13px;
+    }
+    .btn {
+        font-size: 12px;
+        height: 40px;
+        line-height: 37px;
     }
 
     .q1 {
@@ -1208,20 +1259,8 @@ footer.main {
 }
 
 @media all and (max-width: 1250px) {
-    .cont {
-        margin: 0 20px;
-        padding-top: 69px;
-    }
     header.main {
-        right: 20px;
-        left: 20px;
-        height: 70px;
-    }
-    header.main::before {
-        height: 69px;
-    }
-    header.main::after {
-        height: 69px;
+        grid-template-columns: 100px auto 235px;
     }
     .ar {
         padding: 6px 20px 6px 20px;
@@ -1247,12 +1286,45 @@ footer.main {
         -ms-user-select: none;
         user-select: none;
     }
+    .pipe {
+        margin: 0 10px;
+    }
     .clock-bg {
         width: 65%;
         height: 65%;
     }
+    footer.main {
+        grid-template-columns: 171px auto 128px;
+    }
+}
+
+@media all and (max-width: 1050px) {
 }
 @media all and (max-width: 980px) {
+    .cont {
+        margin: 0 20px;
+        padding-top: 69px;
+    }
+    header.main {
+        right: 20px;
+        left: 20px;
+        height: 70px;
+        grid-template-columns: 100px auto 200px;
+    }
+    header.main::before {
+        height: 69px;
+    }
+    header.main::after {
+        height: 69px;
+    }
+    .ah .disk-cont {
+        display: none;
+    }
+    .ah.u:before {
+        visibility: visible;
+        -webkit-transform: scaleX(1);
+        transform: scaleX(1);
+    }
     .grid {
         grid-template-columns: 50% 50%;
         border-right: 2px solid #000;
@@ -1314,7 +1386,7 @@ footer.main {
     }
 }
 
-@media all and (max-width: 560px) {
+@media all and (max-width: 600px) {
     .nav {
         padding: 0;
     }
@@ -1330,13 +1402,20 @@ footer.main {
         top: -50px;
     }
 }
+
+@media all and (max-width: 440px) {
+    .ah {
+        letter-spacing: 0px;
+    }
+}
+
 @media all and (max-width: 414px) {
     /* IPHONE X */
     .box {
         /* padding-top: 100%; */
     }
     header.main {
-        grid-template-columns: 100px auto 180px;
+        grid-template-columns: 100px auto 183px;
     }
     .email .disk-cont {
         display: none;
@@ -1359,7 +1438,7 @@ footer.main {
 @media all and (max-width: 360px) {
     /* Galaxy S (Older)*/
     .ar {
-        padding: 6px 20px 6px 6px;
+        padding: 6px 20px 6px 20px;
     }
     .dots .ar {
         padding: 20px 20px 20px 20px;
@@ -1468,6 +1547,9 @@ and (orientation: landscape) {
     }
     header.main .logo span {
         font-size: 20px;
+    }
+    .ah.u:before {
+        display: none;
     }
     header.main .email .a {
         font-size: 10px;

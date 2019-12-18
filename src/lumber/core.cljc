@@ -52,23 +52,20 @@
 
 (def debounced-mouse-move-handler (goog.functions.debounce mouse-move-handler 250))
 (def debounced-mouse-stop-handler (goog.functions.debounce mouse-stop-handler 1000))
-(def debounced-scroll-handler     (goog.functions.debounce scroll-handler 250))
-(def debounced-resize-handler     (goog.functions.debounce scroll-handler 250))
+(def debounced-scroll-handler     (goog.functions.debounce scroll-handler 60))
+(def debounced-resize-handler     (goog.functions.debounce resize-handler 250))
 
 (xf/reg-event-db :set-scroll
                  (fn [db [_ value]]
                    (let [prev (:y (get-in db [:scroll]))
                          dy   (- value prev)]
                      (do
-                      #_(cond (> prev value)
-                            (do (xf/dispatch [:set-scroll-dir :up]))
-                            (< prev value)
-                            (do (xf/dispatch [:set-scroll-dir :down])))
                       (assoc-in db [:scroll]
                                 {:y value
                                  :dy dy
                                  :eyes (ui/measure-eyes)
-                                 :header (ui/measure-header)})))))
+                                 :header (ui/measure-header)}
+                                )))))
 
 
 (xf/reg-event-db :set-scroll-dir
@@ -132,8 +129,8 @@
   (js/window.addEventListener "mousemove" mouse-move-handler)
   (js/window.addEventListener "scroll"    scroll-handler)
   (js/window.addEventListener "resize"    debounced-resize-handler)
-  ;; (xf/dispath [:header (measure-header)])
-  ;; (xf/dispath [:eyes   (measure-eyes)])
+  ;; (js/window.addEventListener "orientationchange" resize-handler)
+  ;; (js/window.addEventListener "deviceorientation" resize-handler)
   )
 
 (defn ^:export init []
