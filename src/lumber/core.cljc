@@ -128,7 +128,7 @@
 
   (js/window.addEventListener "mousemove" mouse-move-handler)
   (js/window.addEventListener "scroll"    scroll-handler)
-  (js/window.addEventListener "resize"    debounced-resize-handler)
+  ;; (js/window.addEventListener "resize"    debounced-resize-handler)
   ;; (js/window.addEventListener "orientationchange" resize-handler)
   ;; (js/window.addEventListener "deviceorientation" resize-handler)
   )

@@ -17,13 +17,15 @@
   uix.core                     {:git/url   "https://github.com/roman01la/uix.git"
                                 :deps/root "core"
 
-                                :sha "8fd57bd1e971e180ca35d9ba8b230cf81f0054f3"
-                                ;; "9ddd09dc3395b5bc7b803121abbd9c27d0b2a2b3"
+                                :sha
+                                "9ddd09dc3395b5bc7b803121abbd9c27d0b2a2b3"
+                                ;; "8fd57bd1e971e180ca35d9ba8b230cf81f0054f3"
                                 }
   uix.dom                      {:git/url   "https://github.com/roman01la/uix.git"
                                 :deps/root "dom"
-                                :sha "8fd57bd1e971e180ca35d9ba8b230cf81f0054f3"
-                                ;; "9ddd09dc3395b5bc7b803121abbd9c27d0b2a2b3"
+                                :sha
+                                "9ddd09dc3395b5bc7b803121abbd9c27d0b2a2b3"
+                                ;; "8fd57bd1e971e180ca35d9ba8b230cf81f0054f3"
                                 }
 
   aleph                        {:mvn/version "0.4.6"}
