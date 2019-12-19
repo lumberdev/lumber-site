@@ -39,7 +39,7 @@
      [:header.title  [:h3.h3 "Open Source"]]
      [:header.name   [:h3.h3 "Vimsical"]]
      [:article.desc  [:h2.h1 "Vimsical"] [:p.t1 "Version control as a learning tool"]]
-     [:article.image [:img {:src "images/Vimsical.jpg"}]]
+     [:article.image [:img {:src "images/Vimsical.png"}]]
      [:footer        [:a.a.u {:on-click #(xf/dispatch [:open "https://www.youtube.com/embed/OtvK24bG_IY"])}
                       [:div.video [:span.play] "Play Video"]]
       [:div.pipe]
@@ -70,7 +70,7 @@
      [:header.title  [:h3.h3 "In-House Project"]]
      [:header.name   [:h3.h3 "Duct"]]
      [:article.desc  [:h2.h1 "Duct"] [:p.t1.light-bulp "IFTTT for developers"]]
-     [:article.image [:img {:src "images/Duct.jpg"}]]
+     [:article.image [:img {:src "images/Duct.png"}]]
      [:footer
       [:a.btn.re.black {:href "https://duct.cloud/" :target "_blank"}
        [:div "Go to Site"]]]]]
