@@ -344,7 +344,7 @@ header.main {
     top: 0;
     right: 65px;
     left: 65px;
-    grid-template-columns: 100px auto 252px;
+    grid-template-columns: 100px auto 254px;
     justify-items: center;
     align-items: center;
     text-align: center;
@@ -443,7 +443,7 @@ header.main.compact .email .disk {
 /* Footer */
 footer.main {
     display: grid;
-    grid-template-columns: 205px auto 154px;
+    grid-template-columns: 206px auto 156px;
     justify-items: center;
     align-items: center;
     text-align: center;
@@ -985,13 +985,13 @@ footer.main {
 .light-bulp::after {
     content: "";
     position: absolute;
-    top: -2px;
-    right: -27px;
-    width: 23px;
-    height: 25px;
-    /* background-image: url("../images/lightbulb.png"); */
-    background-image: url("../images/lightbulb.svg");
-    background-size: 100% 100%;
+    top: -1px;
+    right: -20px;
+    width: 14px;
+    height: 22px;
+    background-image: url("../images/lightbulb.png");
+    /* background-image: url("../images/lightbulb.svg"); */
+    background-size: contain;
     background-repeat: no-repeat;
 }
 
@@ -999,30 +999,38 @@ footer.main {
 .thunder {
     position: relative;
 }
+
+.thunder .before {
+    position: absolute;
+    width: 25%;
+}
+.thunder .after {
+    position: absolute;
+    width: 25%;
+}
+
 .thunder::before {
     content: "";
     position: absolute;
-    width: 25px;
-    top: -7px;
+    top: -5px;
     left: -47px;
-    width: 30px;
-    height: 57px;
-    /* background-image: url("../images/thunder.png"); */
-    background-image: url("../images/thunder.svg");
-    background-size: 100% 100%;
+    width: 35px;
+    height: 50px;
+    background-image: url("../images/thunder.png");
+    /* background-image: url("../images/thunder.svg"); */
+    background-size: contain;
     background-repeat: no-repeat;
 }
 .thunder::after {
     content: "";
     position: absolute;
-    width: 25px;
-    top: -7px;
-    right: -40px;
-    width: 30px;
-    height: 57px;
-    /* background-image: url("../images/thunder.png"); */
-    background-image: url("../images/thunder.svg");
-    background-size: 100% 100%;
+    top: -5px;
+    right: -45px;
+    width: 35px;
+    height: 50px;
+    background-image: url("../images/thunder.png");
+    /* background-image: url("../images/thunder.svg"); */
+    background-size: contain;
     background-repeat: no-repeat;
 }
 
@@ -1181,7 +1189,7 @@ footer.main {
         border-bottom-right-radius: 30px;
     }
     header.main {
-        grid-template-columns: 95px auto 270px;
+        grid-template-columns: 95px auto 272px;
     }
     .ar {
         padding: 46px 60px 60px 60px;
@@ -1195,7 +1203,7 @@ footer.main {
     }
 
     footer.main {
-        grid-template-columns: 240px auto 190px;
+        grid-template-columns: 242px auto 192px;
     }
 }
 
@@ -1260,7 +1268,7 @@ footer.main {
 
 @media all and (max-width: 1250px) {
     header.main {
-        grid-template-columns: 100px auto 235px;
+        grid-template-columns: 100px auto 237px;
     }
     .ar {
         padding: 6px 20px 6px 20px;
@@ -1294,7 +1302,7 @@ footer.main {
         height: 65%;
     }
     footer.main {
-        grid-template-columns: 171px auto 128px;
+        grid-template-columns: 173px auto 130px;
     }
 }
 
@@ -1309,7 +1317,7 @@ footer.main {
         right: 20px;
         left: 20px;
         height: 70px;
-        grid-template-columns: 100px auto 200px;
+        grid-template-columns: 100px auto 202px;
     }
     header.main::before {
         height: 69px;
@@ -1415,7 +1423,7 @@ footer.main {
         /* padding-top: 100%; */
     }
     header.main {
-        grid-template-columns: 100px auto 183px;
+        grid-template-columns: 100px auto 187px;
     }
     .email .disk-cont {
         display: none;
