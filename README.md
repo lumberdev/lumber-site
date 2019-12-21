@@ -5,26 +5,32 @@
     $ git clone https://github.com/lumberdev/lumber-site.git
 
     $ npm install
-    
-or 
-    
-    $ yarn install
+
+or
+
+\$ yarn install
 
 ## Usage
 
 Run the development setup (localhost:3000/):
 
     $ shadow-cljs watch app
-    
+
 Optional (but useful for mobile device testing):
 
     $ npm install -g browser-sync
 
     $ browser-sync start --server 'resources/public' --files 'resources/public'
-    
+
 Build clojurescript for production:
 
-    $ shadow-cljs release app
+    $ yarn release
+
+Build clojurescript for [GH pages](https://lumberdev.github.io/lumber-site/):
+
+    $ yarn release-dev
+
+Remember to push `docs` to master after!
 
 Run the project production server:
 
