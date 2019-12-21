@@ -23,4 +23,5 @@ package-lock.json
 resources/public/js
 *.iml
 .shadow-cljs/
-
+.DS_Store
+.vscode/
