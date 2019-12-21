@@ -43,7 +43,7 @@
      [:footer        [:a.a.u {:on-click #(xf/dispatch [:open "https://www.youtube.com/embed/OtvK24bG_IY"])}
                       [:div.video [:span.play] "Play Video"]]
       [:div.pipe]
-      [:a.a.u.link {:href "https://github.com/vimsical/vimsical" :target "_blank"}
+      [:a.a.u.link {:href "https://github.com/den1k/vimsical" :target "_blank"}
        [:div "See Source" [:span.arrow]]]]]]
 
    [:section.box.value
