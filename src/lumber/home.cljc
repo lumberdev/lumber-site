@@ -142,7 +142,8 @@
      [:footer  [:a.btn.re.black {:href "mailto:hello@lumberdev.nyc"} "hello@lumberdev.nyc"]]]]
 
    [:section.box.dots.white-bg.last-box
-    [:div.ar [dots/grid-dots]]]
+    ;; [:div.ar [dots/grid-dots]]]
+    [:div.ar [dots/emoji-game]]]
    ]
   )
 

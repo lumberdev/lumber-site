@@ -113,7 +113,7 @@
                  hours  (+ (.getUTCHours ^js date) utc)
                  mins   (.getUTCMinutes ^js date)
                  secs   (.getUTCMinutes ^js date)
-                 angles (uix/state (time->angles hours mins secs))]
+                 angles (uix/ref (time->angles hours mins secs))]
              [:div.clock-cont
               [:div.clock-bg.white-bg
                [:div.arrows-intersection.yellow-bg]

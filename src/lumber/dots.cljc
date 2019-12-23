@@ -638,3 +638,152 @@
                   :r  r
                   :fill "#ffcc08"}]
                 )])))
+
+;;;;
+;; Emoji Game
+;;;;
+(def emojies
+  {0 {:unicode "U+1F648" :icon "🙈" :name "see-no-evil monkey"}
+   1 {:unicode "U+1F620" :icon "😠" :name "angry face"}
+   2 {:unicode "U+1F62D" :icon "😭" :name "loudly crying face"}
+   3 {:unicode "U+1F643" :icon "🙃" :name "upside-down face"}
+   4 {:unicode "U+1F634" :icon "😴" :name "sleeping face"}
+   5 {:unicode "U+1F61C" :icon "😜" :name "winking face with tongue"}
+   6 {:unicode "U+1F633" :icon "😳" :name "flushed face"}
+   7 {:unicode "U+1F611" :icon "😑" :name "expressionless face"}
+   8 {:unicode "U+1F60E" :icon "😎" :name "smiling face with sunglasses"}
+   9 {:unicode "U+1F62C" :icon "😬" :name "grimacing face"}
+   10 {:unicode "U+1F60D" :icon "😍" :name "smiling face with heart-eyes"}
+   11 {:unicode "U+1F60B" :icon "😋" :name "face savoring food"}
+   12 {:unicode "U+1F605" :icon "😅" :name "grinning face with sweat"}})
+
+(defn emoji [icon] [:span.emoji {:role "img"} icon])
+
+(defn number->emoji [n]
+  (emoji (:icon (get emojies n))))
+
+(defn make-token [{:keys [value index]}]
+  {:value value :index index :reveal false :pick false})
+
+(defn eq-token? [t1 t2]
+  (and (= (:value t1) (:value t2))
+       (= (:index t1) (:index t2))))
+
+(defn eqv-token? [t1 t2]
+  (and (= (:value t1) (:value t2))
+       (not (= (:index t1) (:index t2)))))
+
+(defn game-init-state []
+  {0 (make-token {:value 2 :index 0})
+   1 (make-token {:value 4 :index 1})
+   2 (make-token {:value 6 :index 2})
+   3 (make-token {:value 8 :index 3})
+   4 (make-token {:value 10 :index 4})
+
+   5 (make-token {:value 1 :index 5})
+   6 (make-token {:value 3 :index 6})
+   7 (make-token {:value 5 :index 7})
+   8 (make-token {:value 7 :index 8})
+   9 (make-token {:value 9 :index 9})
+
+   10 (make-token {:value 11 :index 10})
+   11 (make-token {:value 12 :index 11})
+   12 (make-token {:value 0  :index 12})
+   13 (make-token {:value 11 :index 13})
+   14 (make-token {:value 12 :index 14})
+
+   15 (make-token {:value 2 :index 15})
+   16 (make-token {:value 4 :index 16})
+   17 (make-token {:value 6 :index 17})
+   18 (make-token {:value 8 :index 18})
+   19 (make-token {:value 10 :index 19})
+
+   20 (make-token {:value 9 :index 20})
+   21 (make-token {:value 7 :index 21})
+   22 (make-token {:value 5 :index 22})
+   23 (make-token {:value 3 :index 23})
+   24 (make-token {:value 1 :index 24})})
+
+(defn shuffle-tokens []
+  (map-indexed (fn [i v] (make-token {:value v :index i}))
+               (flatten [(shuffle (range 1 13)) 0 (shuffle (range 1 13))])))
+
+(defn game-rand-init-state []
+  (reduce (fn [acc t] (assoc acc (:index t) t)) {} (shuffle-tokens)))
+
+(defn game-end? [state]
+  (every? true? (map :reveal (vals state))))
+
+(defn token [i state picks]
+  (let [self  (get @state i)
+        value (:value self)]
+    [:> (.-div motion)
+    {:class (str "flipper "
+                 (if (or (:reveal self)
+                         (:pick self)) "show-back" "show-front"))
+     :style {:transition-timing-function "ease-in"
+             :transition-duration        (sec 0.15)}
+     :on-click (fn []
+                 (let [reveal (eqv-token? self @picks)]
+                  (swap! state assoc-in [(:index @picks) :pick] false)
+                  (if reveal
+                     (do
+                       (swap! state assoc-in [(:index @picks) :reveal] true)
+                       (swap! state assoc-in [i :reveal] true))
+                     (do
+                       (swap! state assoc-in [i :reveal] false)))
+                   (swap! state assoc-in [i :pick] true)
+                   (reset! picks self)
+                   ))
+     :onHoverEnd   (fn []
+                     (swap! state assoc-in [i :pick] false))
+     }
+     ;; [:div.dot.front.yellow-bg [:div.index (str (:value self))]]
+     [:div.dot.front.yellow-bg (number->emoji (:value self))]
+     [:div.dot.back.black-bg]]))
+
+(defn on-game-end [state]
+  (let [delay 75]
+    (do (mapv (fn [i]
+                (js/setTimeout
+                 #(swap! state assoc-in [i :reveal] false)
+                 (* delay i)))
+             (range 0 25))
+       (js/setTimeout
+        #(do (reset! state (game-rand-init-state))
+             (swap! state assoc-in [12 :reveal] true))
+        (* delay 25)))))
+
+(defn emoji-game []
+  #?(:cljs (let [
+                 state (uix/state (game-init-state))
+                 node  (r/useRef nil)
+                 picks (uix/ref {:index 12 :value 0})
+                 revealed (uix/ref #{0})
+                 p (when (game-end? @state)
+                     (on-game-end state))
+                  {:as vis
+                   :keys [isVisible visibilityRect]}
+                  (useVisibilitySensor node
+                                       (clj->js
+                                        {:intervalCheck false
+                                         :scrollCheck true
+                                         :resizeCheck false}))
+                  fired? (uix/ref false)
+                  start
+                  (fn []
+                    (do (reset! fired? true)
+                        (swap! state assoc-in [12 :reveal] true)))
+                  preview
+                  (if (and (-> vis .-isVisible) (not @fired?))
+                    (start))
+                 ]
+             [:> (.-div motion)
+              {:class "flipping-dots emoji-game cf"
+               :ref node
+               :onHoverStart (fn [] (swap! state assoc-in [12 :reveal] true))
+               }
+              (for [i (range 0 25)] ;;^{:key i}
+                (token i state picks)
+                )]
+             )))
