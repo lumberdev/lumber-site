@@ -789,6 +789,42 @@ footer.main {
 }
 
 
+.emoji {
+    text-decoration: none;
+    color: #ccc;
+    font-family: "Noto Color Emoji", "Apple Color Emoji", "Segoe UI Emoji", Times, Symbola, Aegyptus, Code2000, Code2001, Code2002, Musica, serif, LastResort;
+    font-variant-emoji: emoji;
+
+    position: absolute;
+    top: 50%;
+    left: 0px;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    -moz-transform: translateY(-50%);
+    text-align: center;
+    width: 100%;
+    font-size: 220%;
+}
+.emoji-game {
+}
+.emoji-game .dot.front {
+}
+.emoji-game .dot.back {
+}
+.emoji-game .dot.back:hover {
+    background-color: #FFCC08;
+}
+
+.dot.front .index {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    -webkit-transform: translateY(-50%);
+    text-align: center;
+    width: 100%;
+    font-size: 16px;
+}
+
 
 /* Following Eyes */
 .eyes-cont {
