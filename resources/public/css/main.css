@@ -463,7 +463,7 @@ footer.main {
     right: 0;
     bottom: 0;
     left: 0;
-    padding: 26px 40px 26px 40px;
+    padding: 40px;
 
     /* with grid layout (no support) */
     /* display: grid; */
@@ -738,6 +738,7 @@ footer.main {
 .flipping-dots {
     width: 100%;
 }
+
 .flipper {
     float: left;
     position: relative;
@@ -1227,12 +1228,6 @@ footer.main {
     header.main {
         grid-template-columns: 95px auto 272px;
     }
-    .ar {
-        padding: 46px 60px 60px 60px;
-    }
-    .dots .ar {
-        padding-top: 60px;
-    }
     .glow {
         top: 0px;
         left: 0px;
@@ -1306,9 +1301,6 @@ footer.main {
     header.main {
         grid-template-columns: 100px auto 237px;
     }
-    .ar {
-        padding: 6px 20px 6px 20px;
-    }
     .dots .ar {
         /* padding-top: 20px; */
     }
@@ -1373,9 +1365,6 @@ footer.main {
         grid-template-columns: 50% 50%;
         border-right: 2px solid #000;
     }
-    .ar {
-        padding: 26px 40px 26px 40px;
-    }
 
     .glow {
         top: -40px;
@@ -1393,9 +1382,6 @@ footer.main {
     /* } */
 }
 @media all and (max-width: 768px) {
-    .ar {
-        padding: 6px 20px 6px 20px;
-    }
     .glow {
         top: -40px;
         left: -40px;
@@ -1481,11 +1467,8 @@ footer.main {
 }
 @media all and (max-width: 360px) {
     /* Galaxy S (Older)*/
-    .ar {
-        padding: 6px 20px 6px 20px;
-    }
     .dots .ar {
-        padding: 20px 20px 20px 20px;
+        padding: 20px;
     }
 }
 @media all and (max-width: 350px) {

@@ -1,21 +1,16 @@
 (ns lumber.dots
   (:require
    [clojure.string :as s]
-
-   [uix.dom.alpha :as uix.dom]
    [uix.core.alpha :as uix]
    [xframe.core.alpha :as xf :refer [<sub]]
-
    #?(:cljs [goog.functions])
-
-
    #?(:cljs [react :as r])
    #?(:cljs [rooks :refer [useVisibilitySensor]])
    #?(:cljs ["react-anime" :default anime])
    #?(:cljs ["framer-motion" :refer
              (motion transform useMotionValue
-              useViewportScroll useSpring
-              useCycle useAnimation)])
+                     useViewportScroll useSpring
+                     useCycle useAnimation)])
    ))
 
 
@@ -26,7 +21,7 @@
 (defn per [n] (str n "%"))
 (defn log [x]
   #?(:cljs (js/console.log x))
-  #?(:clj  (prn x)))
+  #?(:clj (prn x)))
 
 (defn rand-r
   "Random number in range [min..max]."
@@ -58,13 +53,13 @@
            d (- (+ (.-pageYOffset js/window) (.-scrollTop elem))
                 (.-innerHeight js/window))
            ]
-       {:top (.-top r)
-        :right (.-right r)
+       {:top    (.-top r)
+        :right  (.-right r)
         :bottom (.-bottom r)
-        :left (.-left r)
-        :width (.-width r)
+        :left   (.-left r)
+        :width  (.-width r)
         :height (.-height r)
-        :doc (+ t d)})))
+        :doc    (+ t d)})))
 
 (defn client-pos [e]
   {:x (-> e .-clientX) :y (-> e .-clientY)})
@@ -90,8 +85,8 @@
        (boolean (re-find rxp user-agent)))))
 
 (defn in-view-port? [elem]
-  (let [rect   (bounding-rect elem)
-        client (client-size)
+  (let [rect     (bounding-rect elem)
+        client   (client-size)
         in-view? (and (<= (:top rect) (:height client))
                       (>= (+ (:top rect) (:height rect)) 0))]
     in-view?))
@@ -113,54 +108,55 @@
 ;; Glow Mouse on Hover Dots
 ;;;;
 (defn glow-dots []
-  #?(:cljs (let [rect     (uix/ref   {:width 300 :height 300 :left 40 :top 240})
-                 pos      (uix/state {:x 150 :y 150})
-                 visible  (uix/state false)
-                 cont     (uix/ref)
-                 ;; set-cont (uix/with-effect (reset! rect (bounding-rect @cont)))
-                 r 0
-                 set-position (fn [e]
-                               (let [mouse    (client-pos e)
-                                     relative (relative-pos @rect mouse)]
-                                 (reset! pos {:x (:x relative) :y (:y relative)})))
-                 mobile? (mobile-device?)]
-             [:div.glow-cont.cf
-              {:ref cont
-               :onMouseEnter (fn [e]
-                               (do (set-position e)
-                                   (reset! visible (not @visible))))
-               :onMouseLeave (fn [] (reset! visible (not @visible)))
-               :onMouseMove  set-position
-               :onTap(fn [e]
-                       (do (set-position e)
-                           (reset! visible (not @visible))))
-               }
-              [:> (.-div motion)
-               (merge
-                (if mobile?
-                  {:draggable true
-                   :drag (clj->js true)
-                   :dragElastic 0
-                   :dragConstraints
-                   (clj->js
-                    {:top 40
-                     :left 40
-                     :right (:width @rect)
-                     :bottom (:height @rect)})
-                   } {})
-                {:class "glow yellow-gr"
-                 :style
-                 {:opacity (if @visible 1 0)
-                  :transform (str "translate(" (:x @pos) "px," (:y @pos) "px)")
-                  :transition "opacity 0.8s ease-in"}})
+  #?(:cljs
+     (let [rect         (uix/ref {:width 300 :height 300 :left 40 :top 240})
+           pos          (uix/state {:x 150 :y 150})
+           visible      (uix/state false)
+           cont         (uix/ref)
+           ;; set-cont (uix/with-effect (reset! rect (bounding-rect @cont)))
+           r            0
+           set-position (fn [e]
+                          (let [mouse    (client-pos e)
+                                relative (relative-pos @rect mouse)]
+                            (reset! pos {:x (:x relative) :y (:y relative)})))
+           mobile?      (mobile-device?)]
+       [:div.glow-cont.cf
+        {:ref          cont
+         :onMouseEnter (fn [e]
+                         (do (set-position e)
+                             (reset! visible (not @visible))))
+         :onMouseLeave (fn [] (reset! visible (not @visible)))
+         :onMouseMove  set-position
+         :onTap        (fn [e]
+                         (do (set-position e)
+                             (reset! visible (not @visible))))
+         }
+        [:> (.-div motion)
+         (merge
+          (if mobile?
+            {:draggable   true
+             :drag        (clj->js true)
+             :dragElastic 0
+             :dragConstraints
+                          (clj->js
+                           {:top    40
+                            :left   40
+                            :right  (:width @rect)
+                            :bottom (:height @rect)})
+             } {})
+          {:class "glow yellow-gr"
+           :style
+                  {:opacity    (if @visible 1 0)
+                   :transform  (str "translate(" (:x @pos) "px," (:y @pos) "px)")
+                   :transition "opacity 0.8s ease-in"}})
 
-               [:div.wave.wave-1.yellow-gr]
-               [:div.wave.wave-2.yellow-gr]
-               [:div.wave.wave-3.yellow-gr]
-               ]
-              (for [i (range 0 25)] ^{:key i}
-                [:div.dot-cont
-                 [:div {:class "dot black-bg"}]])])))
+         [:div.wave.wave-1.yellow-gr]
+         [:div.wave.wave-2.yellow-gr]
+         [:div.wave.wave-3.yellow-gr]
+         ]
+        (for [i (range 0 25)] ^{:key i}
+                              [:div.dot-cont
+                               [:div {:class "dot black-bg"}]])])))
 
 
 
@@ -172,15 +168,15 @@
         right-edge #{4 9 14 19 24}]
     (cond (contains? left-edge i)
           [(- i 5) (- i 4)
-              i    (inc i)
+           i (inc i)
            (+ i 5) (+ i 6)]
           (contains? right-edge i)
           [(- i 6) (- i 5)
-           (dec i)    i
+           (dec i) i
            (+ i 4) (+ i 5)]
           :else
           [(- i 6) (- i 5) (- i 4)
-           (dec i)    i    (inc i)
+           (dec i) i (inc i)
            (+ i 4) (+ i 5) (+ i 6)]
           )))
 
@@ -192,29 +188,30 @@
                         {} (grid-hover index-inner))))
 
 (defn grid-dots []
-  #?(:cljs(let [s (uix/state {})
-                p (uix/state 0)
-                done (uix/state {})
-                duration 0.25]
-            [:div.cf {:style {:width "100%"}}
-             (for [i (range 0 25)] ^{:key i}
-               [:> (.-div motion)
-                {:class "dot-cont"
-                 :onHoverStart
-                 (fn [] (do (reset! s (update-hover-state s i 0.65 0.3))))
-                 :onHoverEnd
-                 (fn [] (do
-                          (reset! s (update-hover-state s i 1 1))))
-                 :onTap
-                 (fn [] (do (reset! s (update-hover-state s @p 1 1))
-                            (reset! s (update-hover-state s i 0.65 0.3))
-                            (reset! p i)))
-                 }
-                [:> (.-div motion)
-                 {:class "dot black-bg"
-                  :animate #js {:scale (get @s i)}
-                  :transition (clj->js {:type "spring" :mass 0.5})
-                  }]])])))
+  #?(:cljs
+     (let [s        (uix/state {})
+           p        (uix/state 0)
+           done     (uix/state {})
+           duration 0.25]
+       [:div.cf {:style {:width "100%"}}
+        (for [i (range 0 25)] ^{:key i}
+                              [:> (.-div motion)
+                               {:class "dot-cont"
+                                :onHoverStart
+                                       (fn [] (do (reset! s (update-hover-state s i 0.65 0.3))))
+                                :onHoverEnd
+                                       (fn [] (do
+                                                (reset! s (update-hover-state s i 1 1))))
+                                :onTap
+                                       (fn [] (do (reset! s (update-hover-state s @p 1 1))
+                                                  (reset! s (update-hover-state s i 0.65 0.3))
+                                                  (reset! p i)))
+                                }
+                               [:> (.-div motion)
+                                {:class      "dot black-bg"
+                                 :animate    #js {:scale (get @s i)}
+                                 :transition (clj->js {:type "spring" :mass 0.5})
+                                 }]])])))
 
 ;;;;
 ;; Flip on Hover Dots
@@ -222,56 +219,55 @@
 (defn flipping-dots
   ([] (flipping-dots 0.3 "ease-in-out" 0.2))
   ([duration easing delay]
-   #?(:cljs (let [state          (uix/state {:hover false :done true})
-                  node           (r/useRef nil)
-                  {:as   vis
-                   :keys [isVisible visibilityRect]}
-                  (useVisibilitySensor node
-                                       (clj->js
-                                        {:intervalCheck false
-                                         :scrollCheck true
-                                         :resizeCheck false}))
-                  fired?         (uix/ref false)
-                  mobile?        (mobile-device?)
-                  total-duration (* 1000 (+ (* delay 5) duration))
-                  index->delay   [5 4 3 4 5
-                                  4 2 1 2 4
-                                  3 1 0 1 3
-                                  4 2 1 2 4
-                                  5 4 3 4 5]
-                  start
-                  (fn []
-                    (do (reset! fired? true)
-                        (reset! state {:hover true :done false})
-                        (js/setTimeout #(reset! state {:hover false :done true})
-                                       total-duration)))
-                  preview
-                  (if (and (-> vis .-isVisible) (not @fired?))
-                    (start))]
-              [:> (.-div motion)
-               {:class "flipping-dots cf"
-                :ref node
-                :onHoverStart start
-                :onHoverEnd
-                (fn [] (do (swap! state assoc :hover false)))
-                :onTapStart
-                (fn [] (do (reset! state {:hover true :done false})
-                           (js/setTimeout #(reset! state {:hover false :done true})
-                                          total-duration)))
-                }
-               (for [i index->delay] ;;^{:key i}
-                 [:div
-                  {:class (str "flipper "
-                               (if (and (:done @state)
-                                        (not (:hover @state)))
-                                 "show-back"
-                                 "show-front"))
-                   :style {:transition-timing-function easing
-                           :transition-duration        (sec duration)
-                           :transition-delay           (sec (* i delay))}}
-                  [:div.dot.front.black-bg]
-                  [:div.dot.back.yellow-bg]]
-                 )]))))
+   #?(:cljs
+      (let [state          (uix/state {:hover false :done true})
+            node           (r/useRef nil)
+            {:as   vis
+             :keys [isVisible visibilityRect]}
+            (useVisibilitySensor node
+                                 #js {:intervalCheck false
+                                      :scrollCheck   true
+                                      :resizeCheck   false})
+            fired?         (uix/ref false)
+            total-duration (* 1000 (+ (* delay 5) duration))
+            index->delay   [5 4 3 4 5
+                            4 2 1 2 4
+                            3 1 0 1 3
+                            4 2 1 2 4
+                            5 4 3 4 5]
+            start
+                           (fn []
+                             (do (reset! fired? true)
+                                 (reset! state {:hover true :done false})
+                                 (js/setTimeout #(reset! state {:hover false :done true})
+                                                total-duration)))
+            preview
+                           (if (and (-> vis .-isVisible) (not @fired?))
+                             (start))]
+        (into
+         [:> (.-div motion)
+          {:class        "flipping-dots cf"
+           :ref          node
+           :onHoverStart start
+           :onHoverEnd
+                         (fn [] (do (swap! state assoc :hover false)))
+           :onTapStart
+                         (fn [] (do (reset! state {:hover true :done false})
+                                    (js/setTimeout #(reset! state {:hover false :done true})
+                                                   total-duration)))}]
+         (map (fn [i]
+                [:div
+                 {:class ["flipper"
+                          (if (and (:done @state)
+                                   (not (:hover @state)))
+                            "show-back"
+                            "show-front")]
+                  :style {:transition-timing-function easing
+                          :transition-duration        (sec duration)
+                          :transition-delay           (sec (* i delay))}}
+                 [:div.dot.front.black-bg]
+                 [:div.dot.back.yellow-bg]]))
+         index->delay)))))
 
 
 
@@ -281,73 +277,74 @@
 (defn raining-dots
   ([] (raining-dots 0.25 0.3))
   ([delay duration]
-   #?(:cljs (let [s (uix/state {0 {:hover false :done true}
-                                1 {:hover false :done true}
-                                2 {:hover false :done true}
-                                3 {:hover false :done true}
-                                4 {:hover false :done true}})
-                  node (r/useRef nil)
-                  {:as vis
-                   :keys [isVisible visibilityRect]}
-                  (useVisibilitySensor node
-                                       (clj->js
-                                        {:intervalCheck false
-                                         :scrollCheck true
-                                         :resizeCheck false}))
-                  fired? (uix/ref false)
-                  mobile? (mobile-device?)
-                  col-duration (* (+ delay (* 5 duration)) 1000)
-                  variants #js
-                  {:init #js {}
-                   :rain #js {:backgroundColor #js [black yellow black]}}
-                  hover-start
-                  (fn [col _ _]
-                    (do (swap! s assoc-in [col] {:hover true :done false})
-                        (js/setTimeout #(swap! s assoc-in [col :done] true)
-                                       col-duration)))
-                  start
-                  (fn []
-                    (do (reset! fired? true)
-                        (mapv (fn [col]
-                                (js/setTimeout #(hover-start col nil nil)
-                                               (* col 250)))
-                              [0 1 2 3 4])))
-                  preview
-                  (if (and (-> vis .-isVisible) (not @fired?))
-                    (start))
-                  ]
-              [:div.cf {:style {:width "100%"}
-                        :ref node}
-               (for [col [0 1 2 3 4]] ^{:key col}
-                 [:> (.-div motion)
-                  {:class "dot-cont"
-                   :onHoverStart (partial hover-start col)
-                   :onHoverEnd
-                   (fn [_ _] (swap! s assoc-in [col :hover] false))
+   #?(:cljs
+      (let [s            (uix/state {0 {:hover false :done true}
+                                     1 {:hover false :done true}
+                                     2 {:hover false :done true}
+                                     3 {:hover false :done true}
+                                     4 {:hover false :done true}})
+            node         (r/useRef nil)
+            {:as   vis
+             :keys [isVisible visibilityRect]}
+            (useVisibilitySensor node
+                                 (clj->js
+                                  {:intervalCheck false
+                                   :scrollCheck   true
+                                   :resizeCheck   false}))
+            fired?       (uix/ref false)
+            mobile?      (mobile-device?)
+            col-duration (* (+ delay (* 5 duration)) 1000)
+            variants     #js
+                             {:init #js {}
+                              :rain #js {:backgroundColor #js [black yellow black]}}
+            hover-start
+                         (fn [col _ _]
+                           (do (swap! s assoc-in [col] {:hover true :done false})
+                               (js/setTimeout #(swap! s assoc-in [col :done] true)
+                                              col-duration)))
+            start
+                         (fn []
+                           (do (reset! fired? true)
+                               (mapv (fn [col]
+                                       (js/setTimeout #(hover-start col nil nil)
+                                                      (* col 250)))
+                                     [0 1 2 3 4])))
+            preview
+                         (if (and (-> vis .-isVisible) (not @fired?))
+                           (start))
+            ]
+        [:div.cf {:style {:width "100%"}
+                  :ref   node}
+         (for [col [0 1 2 3 4]] ^{:key col}
+                                [:> (.-div motion)
+                                 {:class        "dot-cont"
+                                  :onHoverStart (partial hover-start col)
+                                  :onHoverEnd
+                                                (fn [_ _] (swap! s assoc-in [col :hover] false))
 
-                   :onTapStart
-                   (fn [_ _]
-                     (do (swap! s assoc-in [col] {:hover true :done false})
-                         (js/setTimeout #(swap! s assoc-in [col]
-                                                {:done true :hover false})
-                                        col-duration)))
-                   }
-                  (for [i [0 1 2 3 4]] ^{:key i}
-                    [:> (.-div motion)
-                     {:class "dot black-bg"
-                      :transition #js {:delay (* i delay)
-                                       :duration duration
-                                       :times #js [0 0.99 1]
-                                       :repeatDelay 1500}
-                      :animate (let [done?  (get-in @s [col :done])
-                                     hover? (get-in @s [col :hover])]
-                                 (if (and done? (not hover?))
-                                   "init"
-                                   "rain"
-                                   ))
-                      :variants variants
-                      }])]
-                 )]))))
+                                  :onTapStart
+                                                (fn [_ _]
+                                                  (do (swap! s assoc-in [col] {:hover true :done false})
+                                                      (js/setTimeout #(swap! s assoc-in [col]
+                                                                             {:done true :hover false})
+                                                                     col-duration)))
+                                  }
+                                 (for [i [0 1 2 3 4]] ^{:key i}
+                                                      [:> (.-div motion)
+                                                       {:class      "dot black-bg"
+                                                        :transition #js {:delay       (* i delay)
+                                                                         :duration    duration
+                                                                         :times       #js [0 0.99 1]
+                                                                         :repeatDelay 1500}
+                                                        :animate    (let [done?  (get-in @s [col :done])
+                                                                          hover? (get-in @s [col :hover])]
+                                                                      (if (and done? (not hover?))
+                                                                        "init"
+                                                                        "rain"
+                                                                        ))
+                                                        :variants   variants
+                                                        }])]
+                                )]))))
 
 
 
@@ -384,34 +381,34 @@
   (let [rect   (:eyes scroll)
         offset (:header scroll)]
     (transform-range 0 (+ (- (:top rect) offset) (:height client))
-                    -40 40
-                    (+ offset (.-screenY mouse)))))
+                     -40 40
+                     (+ offset (.-screenY mouse)))))
 
 (defn eyeball [variant rect xr yr]
-  (let [client (client-size)
-        mouse  (<sub [:db/mouse])
-        scroll (<sub [:db/scroll])
+  (let [client   (client-size)
+        mouse    (<sub [:db/mouse])
+        scroll   (<sub [:db/scroll])
         ;; scroll {:y 0 :top 0 :doc 0}
         ;; mouse  {:y 0 :x 0}
-        xm     (look-x client mouse @rect)
-        ym     (look-y client mouse scroll)
-        xs     0
-        ys     (transform-range (:doc @rect)
-                                (+ (:height client) (:doc @rect))
-                                -40 40 (:y scroll))
+        xm       (look-x client mouse @rect)
+        ym       (look-y client mouse scroll)
+        xs       0
+        ys       (transform-range (:doc @rect)
+                                  (+ (:height client) (:doc @rect))
+                                  -40 40 (:y scroll))
         variants {:mobile
                   {:style
                    {:transform
-                    (str "translate( " xs "%," ys "%)")
+                                (str "translate( " xs "%," ys "%)")
                     :transition "transform 0s ease-out"}}
                   :follow
                   {:style
-                   {:transform (str "translate( " xm "%," ym "%)")
-                    :transition "transform 0s ease-out"}
+                                    {:transform  (str "translate( " xm "%," ym "%)")
+                                     :transition "transform 0s ease-out"}
                    :onTransitionEnd (fn [] (xf/dispatch [:set-variant :roll]))}
                   :roll
                   {:style
-                   {:transform (str "translate( " xr "%," yr "%)")
+                   {:transform  (str "translate( " xr "%," yr "%)")
                     :transition "transform 0.15s ease-out 5s"}
                    :onTransitionEnd
                    (fn []
@@ -420,10 +417,10 @@
     [:div.eyeball (variant variants)]))
 
 (defn eye []
-  (let [node (uix/state false)
-        rect (uix/ref)
-        xr (rand-r -100 100)
-        yr (rand-r -40 40)
+  (let [node    (uix/state false)
+        rect    (uix/ref)
+        xr      (rand-r -100 100)
+        yr      (rand-r -40 40)
         mobile? (mobile-device?)
         ;; res     (<sub [:db/resize])
         variant (<sub [:db/variant])
@@ -438,10 +435,11 @@
 (defn eye-dots [idx]
   #?(:cljs
      [:div.eyes-cont.cf
-      (for [i (range 0 25)] ^{:key i}
-        (do [:div.dot.black-bg
-             (when (contains? (into #{} idx) i)
-               [eye])]))]))
+      (for [i (range 0 25)]
+        ^{:key i}
+        [:div.dot.black-bg
+         (when (contains? (into #{} idx) i)
+           [eye])])]))
 
 
 
@@ -449,67 +447,69 @@
 ;; Floating Dots
 ;;;;
 (defn rand-edge [min-x max-x min-y max-y n]
-  (let [edges [{:x min-x :y (rand-r min-y max-y)}
-               {:x (rand-r min-y max-y) :y min-y}
-               {:x max-x :y (rand-r min-y max-y)}
-               {:x (rand-r min-y max-y) :y max-y}]
+  (let [edges  [{:x min-x :y (rand-r min-y max-y)}
+                {:x (rand-r min-y max-y) :y min-y}
+                {:x max-x :y (rand-r min-y max-y)}
+                {:x (rand-r min-y max-y) :y max-y}]
         orders [[0 1 2 3]
                 [1 2 3 0]
                 [2 3 0 1]
                 [3 0 1 2]]
-        start (rand-nth edges)
-        order (rand-nth orders)
-        idxs  (take n (cycle order))
-        pos   (mapv (partial nth edges) idxs)]
+        start  (rand-nth edges)
+        order  (rand-nth orders)
+        idxs   (take n (cycle order))
+        pos    (mapv (partial nth edges) idxs)]
     pos))
 
 (defn floating-dots [n offsets]
-  #?(:cljs [:svg {:viewBox "0 0 100 100"}
-            (for [i (range 1 (inc n))] ^{:key i}
-              (let [w 100
-                    offset (rand-nth offsets)
-                    r 5
-                    size 4.5
-                    x-min (- (+ 0 size) offset)
-                    x-max (- (+ w offset) size)
-                    y-min (- (+ 0 size) offset)
-                    y-max (- (+ w offset) size)
-                    x (rand-r x-min x-max)
-                    y (rand-r y-min y-max)
-                    xs (repeatedly 100 (fn [] {:value (str (rand-r x-min x-max) "%")
-                                               :duration (rand-r 1000 2000)}))
-                    ys (repeatedly 100 (fn [] {:value (str (rand-r y-min y-max) "%")
-                                               :duration (rand-r 1000 2000)}))]
-                [:> anime
-                 {:cx (clj->js xs)
-                  :cy (clj->js ys)
-                  :loop true
-                  :direction "alternate"
-                  :easing "easeInOutSine"}
-                 [:circle {:cx x :cy y :r (str r "%") :fill "#ffcc08"}]]
-                )
-              )]))
+  #?(:cljs
+     [:svg {:viewBox "0 0 100 100"}
+      (for [i (range 1 (inc n))]
+        (let [w      100
+              offset (rand-nth offsets)
+              r      5
+              size   4.5
+              x-min  (- (+ 0 size) offset)
+              x-max  (- (+ w offset) size)
+              y-min  (- (+ 0 size) offset)
+              y-max  (- (+ w offset) size)
+              x      (rand-r x-min x-max)
+              y      (rand-r y-min y-max)
+              xs     (repeatedly 100 (fn [] {:value    (str (rand-r x-min x-max) "%")
+                                             :duration (rand-r 1000 2000)}))
+              ys     (repeatedly 100 (fn [] {:value    (str (rand-r y-min y-max) "%")
+                                             :duration (rand-r 1000 2000)}))]
+          ^{:key i}
+          [:> anime
+           {:cx        (clj->js xs)
+            :cy        (clj->js ys)
+            :loop      true
+            :direction "alternate"
+            :easing    "easeInOutSine"}
+           [:circle {:cx x :cy y :r (str r "%") :fill "#ffcc08"}]]
+          )
+        )]))
 
 ;;;;
 ;; Gravity
 ;;;;
 (defn make-dot [position velocity]
-  {:position position
-   :velocity velocity
-   :mass 1
-   :radius 5
+  {:position    position
+   :velocity    velocity
+   :mass        1
+   :radius      5
    :restitution -0.7})
 
 (defn frontal-area [dot]
   (/ (* Math/PI (:radius dot) (:radius dot)) 10000))
 
 (defn drag-force [dot d]
-  (let [Cd 0.47
+  (let [Cd  0.47
         rho 1.22
-        A (frontal-area dot)
-        Vd (-> dot :velocity d)]
+        A   (frontal-area dot)
+        Vd  (-> dot :velocity d)]
     (if (zero? Vd) 0
-        (/ (* (- 0 0.5) Cd A rho (* 3 Vd)) (Math/abs Vd)))))
+                   (/ (* (- 0 0.5) Cd A rho (* 3 Vd)) (Math/abs Vd)))))
 
 (defn accel
   ([dot d] (accel dot d 0))
@@ -518,18 +518,18 @@
 
 (defn position [o]
   (let [frame-rate (/ 1.0 120)
-        ag 9.81
-        ax (accel o :x 0)
-        ay (accel o :y 9.81)
-        vx (+ (-> o :velocity :x) (* ax frame-rate 1))
-        vy (+ (-> o :velocity :y) (* ay frame-rate 1))
-        px (+ (-> o :position :x) (* vx frame-rate 100))
-        py (+ (-> o :position :y) (* vy frame-rate 100))]
+        ag         9.81
+        ax         (accel o :x 0)
+        ay         (accel o :y 9.81)
+        vx         (+ (-> o :velocity :x) (* ax frame-rate 1))
+        vy         (+ (-> o :velocity :y) (* ay frame-rate 1))
+        px         (+ (-> o :position :x) (* vx frame-rate 100))
+        py         (+ (-> o :position :y) (* vy frame-rate 100))]
     (make-dot {:x px :y py} {:x vx :y vy})))
 
 (defn collision? [d1 d2]
-  (let [dx (- (-> d2 :position :x) (-> d1 :position :x))
-        dy (- (-> d2 :position :y) (-> d2 :position :y))
+  (let [dx    (- (-> d2 :position :x) (-> d1 :position :x))
+        dy    (- (-> d2 :position :y) (-> d2 :position :y))
         r-sum (+ (-> d1 :radius) (-> d2 :radius))]
     (<= (+ (* dx dx) (* dy dy))
         (* r-sum r-sum))))
@@ -543,10 +543,10 @@
        (+ d1-m d2-m))))
 
 (defn handle-dot-dot-collision [d1 d2]
-  (let [px (-> d1 :position :x)
-        py (-> d1 :position :y)
-        vx (-> d1 :velocity :x)
-        vy (-> d1 :velocity :y)
+  (let [px     (-> d1 :position :x)
+        py     (-> d1 :position :y)
+        vx     (-> d1 :velocity :x)
+        vy     (-> d1 :velocity :y)
         vx-new (acv d1 d2 :x)
         vy-new (acv d1 d2 :y)]
     (make-dot {:x (+ px (* vx-new 1)) :y (+ py (* 1 vy-new))}
@@ -569,25 +569,25 @@
                          dots))))))
 
 (defn dot-wall [width height dot]
-  (let [px (-> dot :position :x)
-        py (-> dot :position :y)
-        vx (-> dot :velocity :x)
-        vy (-> dot :velocity :y)
-        r  (:radius dot)
+  (let [px          (-> dot :position :x)
+        py          (-> dot :position :y)
+        vx          (-> dot :velocity :x)
+        vy          (-> dot :velocity :y)
+        r           (:radius dot)
         restitution (:restitution dot)]
-      (cond (> py (- height r))
-            (dot-wall width height (make-dot {:x px :y (- height r)}
-                                             {:x vx :y (* vy restitution)}))
-            (< py 0)
-            (dot-wall width height (make-dot {:x px :y r}
-                                             {:x vx :y (* vy restitution)}))
-            (> px (- width r))
-            (dot-wall width height (make-dot {:x (- width r) :y py}
-                                             {:x (* vx restitution) :y vy}))
-            (< px r)
-            (dot-wall width height (make-dot {:x r :y py}
-                                             {:x (* vx restitution) :y vy}))
-            :else dot)))
+    (cond (> py (- height r))
+          (dot-wall width height (make-dot {:x px :y (- height r)}
+                                           {:x vx :y (* vy restitution)}))
+          (< py 0)
+          (dot-wall width height (make-dot {:x px :y r}
+                                           {:x vx :y (* vy restitution)}))
+          (> px (- width r))
+          (dot-wall width height (make-dot {:x (- width r) :y py}
+                                           {:x (* vx restitution) :y vy}))
+          (< px r)
+          (dot-wall width height (make-dot {:x r :y py}
+                                           {:x (* vx restitution) :y vy}))
+          :else dot)))
 
 (def move (comp position (partial dot-wall 100 100)))
 
@@ -612,47 +612,47 @@
                            {:x 0 :y (rand-r 1 10)})))
 
 (defn gravity-dots [n]
-  #?(:cljs (let [node     (uix/ref)
-                 rect     (uix/ref)
-                 w 100
-                 offset 0
-                 r 4.8
-                 size 4.6
-                 x-min  (- (+ 0 size) offset)
-                 x-max  (- (+ w offset) size)
-                 y-min  (- (+ 0 (* 2 size)) offset)
-                 y-max  (- (+ w offset) size)
-                 init-dots (rand-dots x-min x-max y-min y-max)
-                 dots (uix/state init-dots)
-                 raf  (use-raf (fn [] (let [prev @dots
-                                            next (mapv move prev)]
-                                        (if (rest? (first prev) (first next))
-                                          (do (reset! dots init-dots))
-                                          (reset! dots next)))))
-                 ]
-             [:svg {:viewBox "0 0 100 100"}
-              (for [dot @dots]
-                [:circle
-                 {:cx (-> dot :position :x)
-                  :cy (-> dot :position :y)
-                  :r  r
-                  :fill "#ffcc08"}]
-                )])))
+  #?(:cljs
+     (let [node      (uix/ref)
+           rect      (uix/ref)
+           w         100
+           offset    0
+           r         4.8
+           size      4.6
+           x-min     (- (+ 0 size) offset)
+           x-max     (- (+ w offset) size)
+           y-min     (- (+ 0 (* 2 size)) offset)
+           y-max     (- (+ w offset) size)
+           init-dots (rand-dots x-min x-max y-min y-max)
+           dots      (uix/state init-dots)
+           raf       (use-raf (fn [] (let [prev @dots
+                                           next (mapv move prev)]
+                                       (if (rest? (first prev) (first next))
+                                         (do (reset! dots init-dots))
+                                         (reset! dots next)))))]
+       (into [:svg {:viewBox "0 0 100 100"}]
+             (map (fn [dot]
+                    [:circle
+                     {:cx   (-> dot :position :x)
+                      :cy   (-> dot :position :y)
+                      :r    r
+                      :fill "#ffcc08"}]))
+             @dots))))
 
 ;;;;
 ;; Emoji Game
 ;;;;
 (def emojies
-  {0 {:unicode "U+1F648" :icon "🙈" :name "see-no-evil monkey"}
-   1 {:unicode "U+1F620" :icon "😠" :name "angry face"}
-   2 {:unicode "U+1F62D" :icon "😭" :name "loudly crying face"}
-   3 {:unicode "U+1F643" :icon "🙃" :name "upside-down face"}
-   4 {:unicode "U+1F634" :icon "😴" :name "sleeping face"}
-   5 {:unicode "U+1F61C" :icon "😜" :name "winking face with tongue"}
-   6 {:unicode "U+1F633" :icon "😳" :name "flushed face"}
-   7 {:unicode "U+1F611" :icon "😑" :name "expressionless face"}
-   8 {:unicode "U+1F60E" :icon "😎" :name "smiling face with sunglasses"}
-   9 {:unicode "U+1F62C" :icon "😬" :name "grimacing face"}
+  {0  {:unicode "U+1F648" :icon "🙈" :name "see-no-evil monkey"}
+   1  {:unicode "U+1F620" :icon "😠" :name "angry face"}
+   2  {:unicode "U+1F62D" :icon "😭" :name "loudly crying face"}
+   3  {:unicode "U+1F643" :icon "🙃" :name "upside-down face"}
+   4  {:unicode "U+1F634" :icon "😴" :name "sleeping face"}
+   5  {:unicode "U+1F61C" :icon "😜" :name "winking face with tongue"}
+   6  {:unicode "U+1F633" :icon "😳" :name "flushed face"}
+   7  {:unicode "U+1F611" :icon "😑" :name "expressionless face"}
+   8  {:unicode "U+1F60E" :icon "😎" :name "smiling face with sunglasses"}
+   9  {:unicode "U+1F62C" :icon "😬" :name "grimacing face"}
    10 {:unicode "U+1F60D" :icon "😍" :name "smiling face with heart-eyes"}
    11 {:unicode "U+1F60B" :icon "😋" :name "face savoring food"}
    12 {:unicode "U+1F605" :icon "😅" :name "grinning face with sweat"}})
@@ -674,21 +674,21 @@
        (not (= (:index t1) (:index t2)))))
 
 (defn game-init-state []
-  {0 (make-token {:value 2 :index 0})
-   1 (make-token {:value 4 :index 1})
-   2 (make-token {:value 6 :index 2})
-   3 (make-token {:value 8 :index 3})
-   4 (make-token {:value 10 :index 4})
+  {0  (make-token {:value 2 :index 0})
+   1  (make-token {:value 4 :index 1})
+   2  (make-token {:value 6 :index 2})
+   3  (make-token {:value 8 :index 3})
+   4  (make-token {:value 10 :index 4})
 
-   5 (make-token {:value 1 :index 5})
-   6 (make-token {:value 3 :index 6})
-   7 (make-token {:value 5 :index 7})
-   8 (make-token {:value 7 :index 8})
-   9 (make-token {:value 9 :index 9})
+   5  (make-token {:value 1 :index 5})
+   6  (make-token {:value 3 :index 6})
+   7  (make-token {:value 5 :index 7})
+   8  (make-token {:value 7 :index 8})
+   9  (make-token {:value 9 :index 9})
 
    10 (make-token {:value 11 :index 10})
    11 (make-token {:value 12 :index 11})
-   12 (make-token {:value 0  :index 12})
+   12 (make-token {:value 0 :index 12})
    13 (make-token {:value 11 :index 13})
    14 (make-token {:value 12 :index 14})
 
@@ -718,26 +718,26 @@
   (let [self  (get @state i)
         value (:value self)]
     [:> (.-div motion)
-    {:class (str "flipper "
-                 (if (or (:reveal self)
-                         (:pick self)) "show-back" "show-front"))
-     :style {:transition-timing-function "ease-in"
-             :transition-duration        (sec 0.15)}
-     :on-click (fn []
-                 (let [reveal (eqv-token? self @picks)]
-                  (swap! state assoc-in [(:index @picks) :pick] false)
-                  (if reveal
-                     (do
-                       (swap! state assoc-in [(:index @picks) :reveal] true)
-                       (swap! state assoc-in [i :reveal] true))
-                     (do
-                       (swap! state assoc-in [i :reveal] false)))
-                   (swap! state assoc-in [i :pick] true)
-                   (reset! picks self)
-                   ))
-     :onHoverEnd   (fn []
-                     (swap! state assoc-in [i :pick] false))
-     }
+     {:class      (str "flipper "
+                       (if (or (:reveal self)
+                               (:pick self)) "show-back" "show-front"))
+      :style      {:transition-timing-function "ease-in"
+                   :transition-duration        (sec 0.15)}
+      :on-click   (fn []
+                    (let [reveal (eqv-token? self @picks)]
+                      (swap! state assoc-in [(:index @picks) :pick] false)
+                      (if reveal
+                        (do
+                          (swap! state assoc-in [(:index @picks) :reveal] true)
+                          (swap! state assoc-in [i :reveal] true))
+                        (do
+                          (swap! state assoc-in [i :reveal] false)))
+                      (swap! state assoc-in [i :pick] true)
+                      (reset! picks self)
+                      ))
+      :onHoverEnd (fn []
+                    (swap! state assoc-in [i :pick] false))
+      }
      ;; [:div.dot.front.yellow-bg [:div.index (str (:value self))]]
      [:div.dot.front.yellow-bg (number->emoji (:value self))]
      [:div.dot.back.black-bg]]))
@@ -748,42 +748,44 @@
                 (js/setTimeout
                  #(swap! state assoc-in [i :reveal] false)
                  (* delay i)))
-             (range 0 25))
-       (js/setTimeout
-        #(do (reset! state (game-rand-init-state))
-             (swap! state assoc-in [12 :reveal] true))
-        (* delay 25)))))
+              (range 0 25))
+        (js/setTimeout
+         #(do (reset! state (game-rand-init-state))
+              (swap! state assoc-in [12 :reveal] true))
+         (* delay 25)))))
 
 (defn emoji-game []
-  #?(:cljs (let [
-                 state (uix/state (game-init-state))
-                 node  (r/useRef nil)
-                 picks (uix/ref {:index 12 :value 0})
-                 revealed (uix/ref #{0})
-                 p (when (game-end? @state)
-                     (on-game-end state))
-                  {:as vis
-                   :keys [isVisible visibilityRect]}
-                  (useVisibilitySensor node
-                                       (clj->js
-                                        {:intervalCheck false
-                                         :scrollCheck true
-                                         :resizeCheck false}))
-                  fired? (uix/ref false)
-                  start
-                  (fn []
-                    (do (reset! fired? true)
-                        (swap! state assoc-in [12 :reveal] true)))
-                  preview
-                  (if (and (-> vis .-isVisible) (not @fired?))
-                    (start))
-                 ]
-             [:> (.-div motion)
-              {:class "flipping-dots emoji-game cf"
-               :ref node
-               :onHoverStart (fn [] (swap! state assoc-in [12 :reveal] true))
-               }
-              (for [i (range 0 25)] ;;^{:key i}
-                (token i state picks)
-                )]
-             )))
+  #?(:cljs
+     (let [
+           state    (uix/state (game-init-state))
+           node     (r/useRef nil)
+           picks    (uix/ref {:index 12 :value 0})
+           revealed (uix/ref #{0})
+           p        (when (game-end? @state)
+                      (on-game-end state))
+           {:as   vis
+            :keys [isVisible visibilityRect]}
+           (useVisibilitySensor node
+                                (clj->js
+                                 {:intervalCheck false
+                                  :scrollCheck   true
+                                  :resizeCheck   false}))
+           fired?   (uix/ref false)
+           start
+                    (fn []
+                      (do (reset! fired? true)
+                          (swap! state assoc-in [12 :reveal] true)))
+           preview
+                    (if (and (-> vis .-isVisible) (not @fired?))
+                      (start))
+           ]
+       [:> (.-div motion)
+        {:class        "flipping-dots emoji-game cf"
+         :ref          node
+         :onHoverStart (fn [] (swap! state assoc-in [12 :reveal] true))
+         }
+        (for [i (range 0 25)]
+          ^{:key i}
+           [token i state picks]
+          )]
+       )))

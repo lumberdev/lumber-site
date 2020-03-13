@@ -1,18 +1,23 @@
 {:deps true
  :source-paths ["src"]
- :dev-http {3000 {:root "resources/public/"
-                  :handler lumber.serve/dev-handler}}
- :builds
- {:app {:target :browser
-        :output-dir "resources/public/js"
-        :asset-path "/js"
-        :modules {:main {:entries [lumber.core]}}
-        :release {:compiler-options
-                  {:optimizations :advanced
-                   :infer-externs :auto}}
 
-        :devtools {:repl-pprint true
-                   :before-load lumber.core/stop
-                   :after-load  lumber.core/start
-                   }}}}
+ :builds
+ {:app
+  {:target     :browser
+   :output-dir "resources/public/js/compiled"
+   :asset-path "/js/compiled"
+
+   :modules    {:main
+                {:entries [lumber.core]}}
+
+   :devtools
+   ;; before live-reloading any code call this function
+               {:before-load lumber.core/stop
+                ;; after live-reloading finishes call this function
+                :after-load  lumber.core/start
+                ;; serve the public directory over http at port 8700
+                ;:http-root   "public"
+                ;:http-port   8700
+                :preloads    [devtools.preload]}
+   }}}
 

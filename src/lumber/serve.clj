@@ -10,10 +10,6 @@
    [ring.middleware.defaults :refer [wrap-defaults site-defaults]]
    [ring.middleware.content-type :refer [wrap-content-type]]
    [ring.middleware.not-modified :refer [wrap-not-modified]]
-
-   [compojure.core :refer :all]
-   [compojure.handler]
-   [compojure.route]
    ))
 
 (defn raw-html
@@ -52,12 +48,11 @@
               {:__html "window.dataLayer = window.dataLayer || [];
                         function gtag () { dataLayer.push(arguments); }
                         gtag('js', new Date());
-                        gtag('config', 'UA-125582926-1');"}}]
-    ]
+                        gtag('config', 'UA-125582926-1');"}}]]
 
    [:body
     [:div#app]
-    [:script {:src "./js/main.js"}]
+    [:script {:src "/js/compiled/main.js"}]
     [:script {:type "text/javascript"} "lumber.core.init();"]
     ]])
 
@@ -71,10 +66,6 @@
      :headers {"content-type" "text/html"}
      :body    res}))
 
-(defn dev-handler [req]
-  {:status  200
-   :headers {"content-type" "text/html"}
-   :body    (uix.dom/render-to-string [html])})
 
 ;; without router
 (def app-resource-handler
@@ -97,22 +88,9 @@
 
 (def app-handler (app-default-middleware app-routes))
 
-
-
-;; with compojure
-(defroutes app*
-  (GET  "/" request index)
-  (compojure.route/not-found "404 - Sorry, there's nothing here."))
-
-(def app (-> (compojure.handler/site app*)
-             (wrap-params)
-             (wrap-defaults (assoc site-defaults :static {:resources "public"}))))
-
-
-
 (defstate server
   ;; :start (http/start-server app-handler {:port 80})
-  :start (http/start-server #'app {:port 80})
+  :start (http/start-server #'app-handler {:port 3600})
   :stop  (.close server))
 
 (defn -main []

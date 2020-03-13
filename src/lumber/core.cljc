@@ -14,26 +14,24 @@
    ))
 
 (xf/reg-event-db
- :db/init
- (fn [_ _]
-   {:partners
-    ["Casper" "Resy" "Choosy" "Patagonia" "Workframe" "Village Studio"]
-    :projects
-    {:vimsical {:video "https://www.youtube.com/watch?v=OtvK24bG_IY&feature=youtu.be"
-                :code  "https://github.com/vimsical/vimsical"}
-     :juergen  {:code  "https://github.com/lumberdev/Juergen"}}
-    :open false
-    :scroll 0
-    :scroll-dir :down
-    :resize {}
-    :eyes-pos {:x 0 :y 0}
-    :mouse {:x 0 :y 0}
-    :mouse-stop true
-    :variant :roll
-    :blink 7
-    :embed ""
-    :gravity 9.81
-    }))
+  :db/init
+  (fn [_ _]
+    {:partners   ["Casper" "Resy" "Choosy" "Patagonia" "Workframe" "Village Studio"]
+     :projects   {:vimsical {:video "https://www.youtube.com/watch?v=OtvK24bG_IY&feature=youtu.be"
+                             :code  "https://github.com/vimsical/vimsical"}
+                  :juergen  {:code "https://github.com/lumberdev/Juergen"}}
+     :open       false
+     :scroll     0
+     :scroll-dir :down
+     :resize     {}
+     :eyes-pos   {:x 0 :y 0}
+     :mouse      {:x 0 :y 0}
+     :mouse-stop true
+     :variant    :roll
+     :blink      7
+     :embed      ""
+     :gravity    9.81
+     }))
 
 (defn mouse-move-handler [e]
   (do (xf/dispatch [:set-mouse-stop false])
@@ -52,70 +50,70 @@
 
 (def debounced-mouse-move-handler (goog.functions.debounce mouse-move-handler 250))
 (def debounced-mouse-stop-handler (goog.functions.debounce mouse-stop-handler 1000))
-(def debounced-scroll-handler     (goog.functions.debounce scroll-handler 60))
-(def debounced-resize-handler     (goog.functions.debounce resize-handler 250))
+(def debounced-scroll-handler (goog.functions.debounce scroll-handler 60))
+(def debounced-resize-handler (goog.functions.debounce resize-handler 250))
 
 (xf/reg-event-db :set-scroll
-                 (fn [db [_ value]]
-                   (let [prev (:y (get-in db [:scroll]))
-                         dy   (- value prev)]
-                     (do
-                      (assoc-in db [:scroll]
-                                {:y value
-                                 :dy dy
-                                 :eyes (ui/measure-eyes)
-                                 :header (ui/measure-header)}
-                                )))))
+  (fn [db [_ value]]
+    (let [prev (:y (get-in db [:scroll]))
+          dy   (- value prev)]
+      (do
+        (assoc-in db [:scroll]
+                  {:y      value
+                   :dy     dy
+                   :eyes   (ui/measure-eyes)
+                   :header (ui/measure-header)}
+                  )))))
 
 
 (xf/reg-event-db :set-scroll-dir
-                 (fn [db [_ value]]
-                   (assoc-in db [:scroll-dir] value)))
+  (fn [db [_ value]]
+    (assoc-in db [:scroll-dir] value)))
 
 (xf/reg-event-db :set-mouse
-                 (fn [db [_ value]]
-                   (assoc-in db [:mouse] value)))
+  (fn [db [_ value]]
+    (assoc-in db [:mouse] value)))
 
 (xf/reg-event-db :set-mouse-stop
-                 (fn [db [_ v]]
-                   (assoc-in db [:mouse-stop] v)))
+  (fn [db [_ v]]
+    (assoc-in db [:mouse-stop] v)))
 
 (xf/reg-event-db :set-resize
-                 (fn [db [_ value]]
-                   (assoc-in db [:set-resize] value)))
+  (fn [db [_ value]]
+    (assoc-in db [:set-resize] value)))
 
 (xf/reg-event-db :set-gravity
-                 (fn [db [_ value]]
-                   (assoc-in db [:gravity] value)))
+  (fn [db [_ value]]
+    (assoc-in db [:gravity] value)))
 
 (xf/reg-event-db :set-variant
-                 (fn [db [_ value]]
-                   (assoc-in db [:variant] value)))
+  (fn [db [_ value]]
+    (assoc-in db [:variant] value)))
 
 (xf/reg-event-db :set-blink
-                 (fn [db [_ value]]
-                   (assoc-in db [:blink] value)))
+  (fn [db [_ value]]
+    (assoc-in db [:blink] value)))
 
 (xf/reg-event-db :open (fn [db [_ value]]
-                   (-> db
-                       (assoc-in [:embed] value)
-                       (assoc-in [:open] true))))
+                         (-> db
+                             (assoc-in [:embed] value)
+                             (assoc-in [:open] true))))
 
 (xf/reg-event-db :close
-                 (fn [db [_ value]]
-                   (assoc-in db [:open] false)))
+  (fn [db [_ value]]
+    (assoc-in db [:open] false)))
 
-(xf/reg-sub :db/scroll     (fn [] (:scroll     (xf/<- [::xf/db]))))
+(xf/reg-sub :db/scroll (fn [] (:scroll (xf/<- [::xf/db]))))
 (xf/reg-sub :db/scroll-dir (fn [] (:scroll-dir (xf/<- [::xf/db]))))
-(xf/reg-sub :db/mouse      (fn [] (:mouse      (xf/<- [::xf/db]))))
+(xf/reg-sub :db/mouse (fn [] (:mouse (xf/<- [::xf/db]))))
 (xf/reg-sub :db/mouse-stop (fn [] (:mouse-stop (xf/<- [::xf/db]))))
-(xf/reg-sub :db/resize     (fn [] (:resize     (xf/<- [::xf/db]))))
-(xf/reg-sub :db/gravity    (fn [] (:gravity    (xf/<- [::xf/db]))))
-(xf/reg-sub :db/variant    (fn [] (:variant    (xf/<- [::xf/db]))))
-(xf/reg-sub :db/blink      (fn [] (:blink      (xf/<- [::xf/db]))))
-(xf/reg-sub :db/partners   (fn [] (:partners   (xf/<- [::xf/db]))))
-(xf/reg-sub :db/open       (fn [] (:open       (xf/<- [::xf/db]))))
-(xf/reg-sub :db/embed      (fn [] (:embed      (xf/<- [::xf/db]))))
+(xf/reg-sub :db/resize (fn [] (:resize (xf/<- [::xf/db]))))
+(xf/reg-sub :db/gravity (fn [] (:gravity (xf/<- [::xf/db]))))
+(xf/reg-sub :db/variant (fn [] (:variant (xf/<- [::xf/db]))))
+(xf/reg-sub :db/blink (fn [] (:blink (xf/<- [::xf/db]))))
+(xf/reg-sub :db/partners (fn [] (:partners (xf/<- [::xf/db]))))
+(xf/reg-sub :db/open (fn [] (:open (xf/<- [::xf/db]))))
+(xf/reg-sub :db/embed (fn [] (:embed (xf/<- [::xf/db]))))
 
 (defn start []
   (prn "start")
@@ -127,21 +125,21 @@
    (.getElementById js/document "app"))
 
   (js/window.addEventListener "mousemove" mouse-move-handler)
-  (js/window.addEventListener "scroll"    scroll-handler)
+  (js/window.addEventListener "scroll" scroll-handler)
   ;; (js/window.addEventListener "resize"    debounced-resize-handler)
   ;; (js/window.addEventListener "orientationchange" resize-handler)
   ;; (js/window.addEventListener "deviceorientation" resize-handler)
   )
 
 (defn ^:export init []
-;; init is called ONCE when the page loads
-;; this is called in the index.html and must be exported
-;; so it is available even in :advanced release builds
+  ;; init is called ONCE when the page loads
+  ;; this is called in the index.html and must be exported
+  ;; so it is available even in :advanced release builds
   (start))
 
 (defn stop []
-;; stop is called before any code is reloaded
-;; this is controlled by :before-load in the config
+  ;; stop is called before any code is reloaded
+  ;; this is controlled by :before-load in the config
   (prn "stop"))
 
 (defn reload [] (prn "reload"))

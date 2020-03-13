@@ -1,47 +1,28 @@
 {:paths
  ["src" "resources"]
  :deps
- {org.clojure/clojure          {:mvn/version "1.10.0"}
+ {org.clojure/clojure       {:mvn/version "RELEASE"}
+  org.clojure/clojurescript {:mvn/version "RELEASE"}
 
-  org.clojure/tools.deps.alpha {:git/url "https://github.com/clojure/tools.deps.alpha.git"
-                                :sha     "d0b33e0d346736aa985c150145b332f97b92135e"}
+  mount                     {:mvn/version "0.1.16"}
 
-  thheller/shadow-cljs         {:mvn/version "2.8.40"}
+  aleph                     {:mvn/version "0.4.6"}
+  ring/ring-core            {:mvn/version "1.7.1"}
+  ring/ring-defaults        {:mvn/version "0.3.2"}
 
-  binaryage/devtools           {:mvn/version "0.9.10"}
-
-  org.clojure/clojurescript    {:mvn/version "RELEASE"}
-
-  mount                        {:mvn/version "0.1.16"}
-
-  uix.core                     {:git/url   "https://github.com/roman01la/uix.git"
-                                :deps/root "core"
-
-                                :sha
-                                "9ddd09dc3395b5bc7b803121abbd9c27d0b2a2b3"
-                                ;; "8fd57bd1e971e180ca35d9ba8b230cf81f0054f3"
-                                }
-  uix.dom                      {:git/url   "https://github.com/roman01la/uix.git"
-                                :deps/root "dom"
-                                :sha
-                                "9ddd09dc3395b5bc7b803121abbd9c27d0b2a2b3"
-                                ;; "8fd57bd1e971e180ca35d9ba8b230cf81f0054f3"
-                                }
-
-  aleph                        {:mvn/version "0.4.6"}
-  ring/ring-core               {:mvn/version "1.7.1"}
-  ring/ring-defaults           {:mvn/version "0.3.2"}
-  compojure                    {:mvn/version "1.6.1"}
+  uix.core                  {:git/url   "https://github.com/roman01la/uix.git"
+                             :deps/root "core"
+                             :sha       "46011c8a2f1a05025971af8e26b8b6704520383c"}
+  uix.dom                   {:git/url   "https://github.com/roman01la/uix.git"
+                             :deps/root "dom"
+                             :sha       "46011c8a2f1a05025971af8e26b8b6704520383c"}
 
   }
 
  :aliases
-
  {:dev      {:extra-paths ["dev"]}
-  :dev/cljs {:extra-deps {
-                          thheller/shadow-cljs {:mvn/version "2.8.40"}
-                          binaryage/devtools   {:mvn/version "0.9.10"}
-                          }}
-  :depster  {:extra-deps {seancorfield/depstar {:mvn/version "0.3.1"}}}
+  :dev/cljs {:extra-deps
+             {thheller/shadow-cljs {:mvn/version "2.8.40"}
+              binaryage/devtools   {:mvn/version "0.9.10"}}}
   }
  }

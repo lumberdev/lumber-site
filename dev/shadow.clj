@@ -14,7 +14,6 @@
   (mount/start #'lumber.serve/server)
 
   (mount/stop)
-  (mount/start #'lumber.serve/server)
 
   (shadow.api/repl :app)
   :cljs/quit
