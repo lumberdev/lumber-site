@@ -1,6 +1,6 @@
 FROM clojure:openjdk-14-tools-deps
 
-LABEL "creators"="lumberdev.nyc" \
+LABEL "creators"="lumber.dev" \
       "dev"="Dimitar Marinov" \
       "ops"="Irina Yaroslavova Stefanova"
 

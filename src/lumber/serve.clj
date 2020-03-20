@@ -90,7 +90,7 @@
 
 (defstate server
   ;; :start (http/start-server app-handler {:port 80})
-  :start (http/start-server #'app-handler {:port 3600})
+  :start (http/start-server #'app-handler {:port 80})
   :stop  (.close server))
 
 (defn -main []

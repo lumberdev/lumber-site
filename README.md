@@ -46,9 +46,9 @@ To create a test deployment
 
     now --docker
 
-If the deployment works properly point lumberdev.nyc to it
+If the deployment works properly point lumber.dev to it
 
-    now alias set https://lumber-site-<code-here>.now.sh/ lumberdev.nyc
+    now alias set https://lumber-site-<code-here>.now.sh/ lumber.dev
 
 where you'll get the code from the previous step.
 

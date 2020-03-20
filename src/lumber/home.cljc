@@ -15,7 +15,7 @@
    [:div.nav   [ui/progress]]
    [:div.email [:div.u.ah
                 [:span.disk-cont [:div.disk]]
-                [:a.ah {:href "mailto:hello@lumberdev.nyc"} "Build Something with Us"]]]])
+                [:a.ah {:href "mailto:hello@lumber.dev"} "Build Something with Us"]]]])
 
 
 (defn grid []
@@ -28,7 +28,7 @@
     [:div.ar
      [:header  [:h3.h3 "Who we are"]]
      [:article [:h2.h2 "A software studio with a global network of developers."]]
-     [:footer  [:a.btn.re.black {:href "mailto:hello@lumberdev.nyc"} "Email Us"]]]]
+     [:footer  [:a.btn.re.black {:href "mailto:hello@lumber.dev"} "Email Us"]]]]
 
    [:section.box.value
     [:div.ar
@@ -79,7 +79,7 @@
     [:div.ar
      [:header  [:h3.h3 "Clients & Partners"]]
      [:article [:ul.white (for [p (<sub [:db/partners])] ^{:key p} [:li.h2 [:a p]])]]
-     [:footer  [:a.btn.re.white {:href "mailto:hello@lumberdev.nyc"} "Build Something With Us"]]]]
+     [:footer  [:a.btn.re.white {:href "mailto:hello@lumber.dev"} "Build Something With Us"]]]]
 
    [:section.box.work.peach-gr-h
     [:div.ar
@@ -107,7 +107,7 @@
     [:div.ar
      [:header  [:h3.h3 "Need Extra Hands"]]
      [:article [:h2.h2 "Grow your team with our global talent network of developers"]]
-     [:footer  [:a.btn.re.black {:href "mailto:hello@lumberdev.nyc"} "Build Something with Us"]]]]
+     [:footer  [:a.btn.re.black {:href "mailto:hello@lumber.dev"} "Build Something with Us"]]]]
 
    [:section.box.value
     [:div.ar
@@ -139,7 +139,7 @@
     [:div.ar
      [:header  [:h3.h3 "Say Hello"]]
      [:article [:p.h1 [:div "Send us"] [:div.thunder "electronic"] [:div "mail"]]]
-     [:footer  [:a.btn.re.black {:href "mailto:hello@lumberdev.nyc"} "hello@lumberdev.nyc"]]]]
+     [:footer  [:a.btn.re.black {:href "mailto:hello@lumber.dev"} "hello@lumber.dev"]]]]
 
    [:section.box.dots.white-bg.last-box
     [:div.ar [dots/grid-dots]]
