@@ -89,8 +89,8 @@
 (def app-handler (app-default-middleware app-routes))
 
 (defstate server
-  ;; :start (http/start-server app-handler {:port 80})
-  :start (http/start-server #'app-handler {:port 80})
+  ;; :start (http/start-server app-handler {:port 8080})
+  :start (http/start-server #'app-handler {:port 8080})
   :stop  (.close server))
 
 (defn -main []

@@ -18,6 +18,6 @@ RUN apt-get update \
     && apt-get remove -y nodejs \
     && apt-get remove -y npm
 
-EXPOSE 80
+EXPOSE 8080
 
 CMD clj -m lumber.serve
