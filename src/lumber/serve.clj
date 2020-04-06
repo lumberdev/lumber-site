@@ -96,4 +96,4 @@
 (defn -main []
   (println "Starting Lumber ...")
   (mount/start)
-  (print "Lumber is ready!"))
+  (println "Lumber is ready!"))
