@@ -81,7 +81,14 @@
 
 (defn app-routes [{:as req :keys [uri]}]
   (case uri
-    "/" (index req)
+    "/"
+    (index req)
+
+    "/ready-to-deploy"
+    {:status  200
+     :headers {"content-type" "text/plain"}
+     :body    "ready"}
+
     {:status 404
      :headers {"content-type" "text/plain"}
      :body "404"}))
